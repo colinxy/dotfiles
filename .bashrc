@@ -22,13 +22,6 @@ alias ect='emacsclient -t'
 
 #export -f ec
 
-# dealing with seasnet server
-function seas {
-    echo "xinyuy@lnxsrv$1.seas.ucla.edu"
-}
-
-export -f seas
-
 CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare -Werror=return-type \
     -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer'
 
