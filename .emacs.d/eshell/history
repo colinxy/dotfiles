@@ -1,0 +1,7 @@
+ll
+ls
+g++ -o array array.cpp
+g++ -o array array.cpp
+./array
+g++ -o array array.cpp
+./array

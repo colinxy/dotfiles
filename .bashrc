@@ -1,9 +1,6 @@
 
 set -o emacs
 
-# Setting PATH for Python 3.4
-export PATH="/Library/Frameworks/Python.framework/Versions/3.4/bin:$PATH"
-
 # export PS1="\u:\w \$ "
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
@@ -31,4 +28,4 @@ export CXXFLAGS
 powerline-daemon -q
 POWERLINE_BASH_CONTINUATION=1
 POWERLINE_BASH_SELECT=1
-. /usr/local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
+. $powerline_root/powerline/bindings/bash/powerline.sh

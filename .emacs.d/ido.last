@@ -1,0 +1,71 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/Users/yxy/Documents/playground/" . "cpp/")
+ ("/Users/yxy/Documents/" . "playground/")
+ ("/Users/" . "yxy/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/Users/yxy/"
+ "/Users/yxy/Documents/playground/"
+ "/Users/yxy/Documents/playground/linux/"
+ "/Users/yxy/Documents/Classes/16win/CS32/projects/project1/test/"
+ "/Users/yxy/Documents/CS/Python/code_format/"
+ "/Users/yxy/Documents/playground/cpp/"
+ "/Users/yxy/Documents/Classes/fall15/CS31/CS31Projects/Project7/robot/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ ".bash_profile"
+ ".vimrc"
+ ".emacs"
+ "linkedlist.h"
+ "remove_backspace.cpp"
+ "bash.txt"
+ "run_test.sh"
+ "notify32A.py"
+ "cpp_segment.py"
+ "pointer_arr.cpp"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/Users/yxy/" (22188 1794 0 0) "VirtualBox VMs/" "Public/" "Pictures/" "OneDrive/" "octave/" "Music/" "Movies/" "Library/" "Google Drive/" "Downloads/" "dotfiles/" "Documents/" "Desktop/" "Applications/" ".Xauthority" ".vimrc_szh" ".vimrc_gpi_szh" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".sympy-history" ".subversion/" ".ssh/" ".sh_history" ".saves/" ".rnd" ".python_history" ".PyCharm50/" ".PyCharm40/" ".php_history" ".oracle_jre_usage/" ".octave_packages" ".octave_hist" ".node_repl_history" ".matplotlib/" ".lobo/" ".lldb/" ".lesshst" ".jupyter/" ".ipython/" ".idlerc/" ".gradle/" ".gnuplot_history" ".gitconfig" ".ghc/" ".gem/" ".emacs.eggert" ".emacs.d/" ".emacs" ".DS_Store" ".dropbox/" ".cups/" ".config/" ".cisco/" ".CFUserTextEncoding" ".cache/" ".bashrc" ".bash_profile" ".bash_history" ".atom/" ".anyconnect" ".android/" "../" "./")
+
+ ("/Users/yxy/dotfiles/" (22188 1794 0 0) ".vimrc" ".git/" ".emacs" ".bashrc" "../" "./")
+
+ ("/Users/yxy/Documents/playground/cpp/cs32/" (22181 48760 0 0) "linked.cpp" "a.out" "../" "./")
+
+ ("/Users/yxy/Documents/CS/Python/code_format/" (22121 62784 0 0) "test/" "parse_cpp.py" "cpp_segment.py" "__pycache__/" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/yxy/Documents/playground/" (22175 7505 0 0) "web/" "tmp" "testimage.png" "test_socks.txt" "test_linkedlist.cpp" "test.sqlite" "test.sh" "test.py" "test.java" "test.db" "sqlite.py" "socks.py" "socks.cpp" "server.py" "search_google.py" "runAllPEJavaFiles.sh" "resume.md" "pe293/" "parentheses.py" "p3tester.sh" "notify32A.py" "medianfinder.py" "Maze.java" "linux/" "linkedlist.h" "linkedlist.cpp" "leetcode/" "kpcbchallenge.py" "jsworkshop/" "firstscript.m" "example.md" "eval_arith_wrong.cpp" "eval.cpp" "D11670.txt" "D11670.py" "D11670.cpp" "cpp/" "browser.py" "average.m" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/CS32/projects/project1/test/" (22163 22527 0 0) "test/" "run_test.sh" "README.md" "makefile" "expected_output.txt" ".git/" "../" "./")
+
+ ("/Users/yxy/Documents/playground/cpp/" (22173 51869 0 0) "while_assign.cpp" "while_assign.c" "test.py" "test.cpp" "switch.cpp" "swap.cpp" "swap.c" "struct.cpp" "struct.c" "string.cpp" "reference.cpp" "prog_paradigm/" "pointer_arr.cpp" "pointer.cpp" "plus_assign.cpp" "overload.cpp" "date.cpp" "cs31grade.cpp" "cout_setf.cpp" "copy_cons_assign_op.cpp" "continue_assign.cpp" "const.cpp" "class.cpp" "array.cpp" "a.out" "../" "./")
+
+ ("/Users/yxy/Documents/playground/linux/" (22174 37861 0 0) "tr.txt" "sort.txt" "shell/" "sed.txt" "rm_bs.out" "remove_backspace.cpp" "patch.txt" "ls.txt" "locale.txt" "grep.txt" "find.txt" "comm.txt" "chmod_ls.txt" "chmod.txt" "bash.txt" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/fall15/CS31/CS31Projects/Project7/robot/" (22111 50969 0 0) "test_robots.dSYM/" "test.cpp" "test" "robots.h" "robots.cpp" "README.md" "play_robots.dSYM/" "play" "makefile" "main.cpp" "experiment/" "check_output.py" "auxiliary.h" "auxiliary.cpp" ".gitignore" ".git/" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/" (22098 42774 0 0) "webpage/" "UCLA/" "test.tex" "Resume/" "playground/" "Metrolink_All_Lines_timetable.pdf" "CS/" "Cracking the Coding Interview, 5th Edition.pdf" "Classes/" ".localized" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/fall15/CS31/CS31Projects/Project6/" (22098 25755 0 0) "hw.txt" "1b.cpp" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/" (22065 481 0 0) "Physics/" "MATH/" "fall15/" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/fall15/" (22021 46996 0 0) "MATH31B/" "EngComp3/" "CS31/" "CS1/" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/fall15/CS31/" (22090 44289 0 0) "CS31Projects/" "CS31.pages" "ChangMidterm2Solution.pdf" "ChangMidterm2.pdf" "ChangMidterm1Solution.pdf" "ChangMidterm1.pdf" "Absolute.CPP.5th.Edition.pdf" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/fall15/CS31/CS31Projects/" (22092 49617 0 0) "Project6/" "Project5/" "Project4/" "Project3/" "Project2/" "Project1/" ".DS_Store" "../" "./")
+
+ ("/Users/" (21995 45401 0 0) "yxy/" "Shared/" ".localized" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t
