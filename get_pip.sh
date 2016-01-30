@@ -7,4 +7,5 @@ fi
 
 # get pip
 wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
-python ez_setup.py –user
+python ez_setup.py --user > /dev/null
+easy_install --user pip
