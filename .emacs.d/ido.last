@@ -2,14 +2,24 @@
 
 ;; ----- ido-last-directory-list -----
 (
+ ("/Users/yxy/dotfiles/.emacs.d/elpa/" . "linum-relative-20160117.2200/")
+ ("/Users/yxy/dotfiles/.emacs.d/" . "elpa/")
+ ("/Users/yxy/Documents/Classes/16win/" . "CS32/")
+ ("/Users/yxy/Documents/Classes/" . "16win/")
+ ("/Users/yxy/" . "Documents/")
+ ("/Users/yxy/Documents/Classes/16win/CS32/projects/" . "hw2/")
+ ("/Users/yxy/Documents/Classes/16win/CS32/" . "projects/")
  ("/Users/yxy/Documents/playground/" . "cpp/")
- ("/Users/yxy/Documents/" . "playground/")
+ ("/Users/yxy/Documents/" . "Classes/")
  ("/Users/" . "yxy/")
 )
 
 ;; ----- ido-work-directory-list -----
 (
  "/Users/yxy/"
+ "/Users/yxy/Documents/Classes/16win/CS32/projects/hw2/"
+ "/Users/yxy/dotfiles/"
+ "/Users/yxy/dotfiles/.emacs.d/elpa/linum-relative-20160117.2200/"
  "/Users/yxy/Documents/playground/"
  "/Users/yxy/Documents/playground/linux/"
  "/Users/yxy/Documents/Classes/16win/CS32/projects/project1/test/"
@@ -20,23 +30,47 @@
 
 ;; ----- ido-work-file-list -----
 (
- ".bash_profile"
- ".vimrc"
  ".emacs"
- "linkedlist.h"
- "remove_backspace.cpp"
- "bash.txt"
- "run_test.sh"
- "notify32A.py"
- "cpp_segment.py"
- "pointer_arr.cpp"
+ "test_eval.cpp"
+ "eval.cpp"
+ "makefile"
+ "mazestack.cpp"
+ "test_maze.cpp"
+ "routines.h"
+ "hw.txt"
+ "main.cpp"
+ "linum-relative.el"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/Users/yxy/" (22188 1794 0 0) "VirtualBox VMs/" "Public/" "Pictures/" "OneDrive/" "octave/" "Music/" "Movies/" "Library/" "Google Drive/" "Downloads/" "dotfiles/" "Documents/" "Desktop/" "Applications/" ".Xauthority" ".vimrc_szh" ".vimrc_gpi_szh" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".sympy-history" ".subversion/" ".ssh/" ".sh_history" ".saves/" ".rnd" ".python_history" ".PyCharm50/" ".PyCharm40/" ".php_history" ".oracle_jre_usage/" ".octave_packages" ".octave_hist" ".node_repl_history" ".matplotlib/" ".lobo/" ".lldb/" ".lesshst" ".jupyter/" ".ipython/" ".idlerc/" ".gradle/" ".gnuplot_history" ".gitconfig" ".ghc/" ".gem/" ".emacs.eggert" ".emacs.d/" ".emacs" ".DS_Store" ".dropbox/" ".cups/" ".config/" ".cisco/" ".CFUserTextEncoding" ".cache/" ".bashrc" ".bash_profile" ".bash_history" ".atom/" ".anyconnect" ".android/" "../" "./")
+ ("/Users/yxy/" (22190 50928 0 0) "VirtualBox VMs/" "Public/" "Pictures/" "OneDrive/" "octave/" "Music/" "Movies/" "Library/" "Google Drive/" "Downloads/" "dotfiles/" "Documents/" "Desktop/" "Applications/" ".Xauthority" ".wget-hsts" ".vimrc_szh" ".vimrc_gpi_szh" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".sympy-history" ".subversion/" ".ssh/" ".sh_history" ".saves/" ".rnd" ".python_history" ".PyCharm50/" ".PyCharm40/" ".php_history" ".oracle_jre_usage/" ".octave_packages" ".octave_hist" ".node_repl_history" ".matplotlib/" ".lobo/" ".lldb/" ".lesshst" ".jupyter/" ".ipython/" ".idlerc/" ".gradle/" ".gnuplot_history" ".gitconfig" ".ghc/" ".gem/" ".emacs.eggert" ".emacs.d/" ".emacs" ".ecb-tip-of-day.el" ".DS_Store" ".dropbox/" ".cups/" ".config/" ".cisco/" ".CFUserTextEncoding" ".cache/" ".bashrc" ".bash_profile" ".bash_history" ".atom/" ".anyconnect" ".android/" "../" "./")
 
- ("/Users/yxy/dotfiles/" (22188 1794 0 0) ".vimrc" ".git/" ".emacs" ".bashrc" "../" "./")
+ ("/Users/yxy/.emacs.d/" (22190 56480 0 0) "themes/" "snippets/" "init_bash.sh" "ido.last" "games/" "eshell/" "elpa/" "auto-save-list/" "ac-comphist.dat" ".mc-lists.el" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/.emacs.d/elpa/" (22190 47267 0 0) "zenburn-theme-20160117.1119/" "yasnippet-0.6.1/" "with-editor-20160128.1201/" "solarized-theme-1.0.0/" "smooth-scrolling/" "smart-mode-line-powerline-theme-20160111.932/" "smart-mode-line-20160125.900/" "rich-minority-20151201.400/" "python-environment-20150310.153/" "powerline-20151008.1449/" "powerline/" "popup-20150626.711/" "multiple-cursors-1.3.0/" "markdown-mode-2.0/" "magit-popup-20160130.649/" "magit-20160130.649/" "linum-relative-20160117.2200/" "jedi-core-20151029.2202/" "irony-20151016.1420/" "git-commit-20160130.649/" "epc-20140609.2234/" "ecb/" "deferred-20151007.1657/" "dash-20151216.1315/" "ctable-20140304.1659/" "concurrent-20150309.2052/" "company-jedi-20151021.1441/" "company-irony-20150810.239/" "company-20151103.230/" "color-theme-sanityinc-tomorrow-readme.txt" "color-theme-sanityinc-solarized-readme.txt" "auto-complete-c-headers-20150911.2023/" "auto-complete-1.4/" "async-20160108.1249/" "archives/" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/CS32/projects/hw2/" (22190 50368 0 0) "test_maze.cpp" "test_eval.o" "test_eval.cpp" "routines.h" "mazestack.cpp" "mazequeue.cpp" "Map.o" "Map.h" "Map.cpp" "makefile" "hw.txt" "eval.out" "eval.o" "eval.cpp" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/yxy/dotfiles/" (22190 37351 0 0) "get_pip.sh" ".vimrc" ".git/" ".emacs.d/" ".emacs.before_ecb_2.50" ".emacs" ".bashrc" "../" "./")
+
+ ("/Users/yxy/dotfiles/.emacs.d/elpa/linum-relative-20160117.2200/" (22190 36904 0 0) "linum-relative.elc" "linum-relative.el" "linum-relative-pkg.elc" "linum-relative-pkg.el" "linum-relative-autoloads.el" "../" "./")
+
+ ("/Users/yxy/dotfiles/.emacs.d/" (22190 36907 0 0) "themes/" "snippets/" "init_bash.sh" "ido.last" "games/" "eshell/" "elpa/" "auto-save-list/" "ac-comphist.dat" ".mc-lists.el" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/dotfiles/.emacs.d/elpa/" (22190 28513 0 0) "zenburn-theme-20160117.1119/" "yasnippet-0.6.1/" "solarized-theme-1.0.0/" "smart-mode-line-powerline-theme-20160111.932/" "smart-mode-line-20160125.900/" "rich-minority-20151201.400/" "python-environment-20150310.153/" "powerline-20151008.1449/" "powerline/" "popup-20150626.711/" "multiple-cursors-1.3.0/" "markdown-mode-2.0/" "linum-relative-20160117.2200/" "jedi-core-20151029.2202/" "irony-20151016.1420/" "epc-20140609.2234/" "ecb/" "deferred-20151007.1657/" "ctable-20140304.1659/" "concurrent-20150309.2052/" "company-jedi-20151021.1441/" "company-irony-20150810.239/" "company-20151103.230/" "color-theme-sanityinc-tomorrow-readme.txt" "color-theme-sanityinc-solarized-readme.txt" "auto-complete-c-headers-20150911.2023/" "auto-complete-1.4/" "archives/" "../" "./")
+
+ ("/Users/yxy/Documents/" (22156 40294 0 0) "webpage/" "UCLA/" "test.tex" "Resume/" "playground/" "Metrolink_All_Lines_timetable.pdf" "CS/" "Cracking the Coding Interview, 5th Edition.pdf" "Classes/" ".localized" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/" (22169 35737 0 0) "UNIX and Linux System Administration Handbook 4th Edition [Jun 2010][Prentice.Hall].pdf" "Textbooks/" "Practical Vim - Edit Text at the Speed of Thought [V.7] - D. Neil (Pragmatic, 2012) BBS.pdf" "Physics/" "MATH/" "Introduction to Probability With Texas Holdem Examples.pdf" "Discrete Mathematics 7th Edition.pdf" "Code Complete 2nd Edition V413HAV.pdf" "A First Course in Probability.pdf" "16win/" "15fall/" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/" (22185 45636 0 0) "PHYS1A/" "MATH32A/" "CS35L/" "CS32/" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/CS32/" (22179 16188 0 0) "SupplementLinkedLists.pdf" "projects/" "midterm1/" "CS32-Handouts-16/" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/CS32/projects/" (22184 31571 0 0) "project2/" "project1/" "hw2/" "hw1/" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/.emacs.d/elpa/ecb-20140215.114/" (22189 9414 0 0) "tree-buffer.elc" "tree-buffer.el" "silentcomp.elc" "silentcomp.el" "ecb2/" "ecb.info-3" "ecb.info-2" "ecb.info-1" "ecb.info" "ecb.elc" "ecb.el" "ecb-winman-support.elc" "ecb-winman-support.el" "ecb-util.elc" "ecb-util.el" "ecb-upgrade.elc" "ecb-upgrade.el" "ecb-tod.elc" "ecb-tod.el" "ecb-symboldef.elc" "ecb-symboldef.el" "ecb-speedbar.elc" "ecb-speedbar.el" "ecb-semantic.elc" "ecb-semantic.el" "ecb-semantic-wrapper.elc" "ecb-semantic-wrapper.el" "ecb-pkg.el" "ecb-navigate.elc" "ecb-navigate.el" "ecb-multiframe.elc" "ecb-multiframe.el" "ecb-mode-line.elc" "ecb-mode-line.el" "ecb-method-browser.elc" "ecb-method-browser.el" "ecb-layout.elc" "ecb-layout.el" "ecb-layout-defs.elc" "ecb-layout-defs.el" "ecb-jde.elc" "ecb-jde.el" "ecb-images/" "ecb-help.elc" "ecb-help.el" "ecb-file-browser.elc" "ecb-file-browser.el" "ecb-face.elc" "ecb-face.el" "ecb-examples.elc" "ecb-examples.el" "ecb-eshell.elc" "ecb-eshell.el" "ecb-cycle.elc" "ecb-cycle.el" "ecb-create-layout.elc" "ecb-create-layout.el" "ecb-compilation.elc" "ecb-compilation.el" "ecb-compatibility.elc" "ecb-compatibility.el" "ecb-common-browser.elc" "ecb-common-browser.el" "ecb-cedet-wrapper.elc" "ecb-cedet-wrapper.el" "ecb-buffertab.elc" "ecb-buffertab.el" "ecb-autoloads.el" "ecb-autogen.elc" "ecb-autogen.el" "ecb-analyse.elc" "ecb-analyse.el" "ecb-advice-test.elc" "ecb-advice-test.el" "dir" "../" "./")
 
  ("/Users/yxy/Documents/playground/cpp/cs32/" (22181 48760 0 0) "linked.cpp" "a.out" "../" "./")
 
@@ -52,11 +86,7 @@
 
  ("/Users/yxy/Documents/Classes/fall15/CS31/CS31Projects/Project7/robot/" (22111 50969 0 0) "test_robots.dSYM/" "test.cpp" "test" "robots.h" "robots.cpp" "README.md" "play_robots.dSYM/" "play" "makefile" "main.cpp" "experiment/" "check_output.py" "auxiliary.h" "auxiliary.cpp" ".gitignore" ".git/" ".DS_Store" "../" "./")
 
- ("/Users/yxy/Documents/" (22098 42774 0 0) "webpage/" "UCLA/" "test.tex" "Resume/" "playground/" "Metrolink_All_Lines_timetable.pdf" "CS/" "Cracking the Coding Interview, 5th Edition.pdf" "Classes/" ".localized" ".DS_Store" "../" "./")
-
  ("/Users/yxy/Documents/Classes/fall15/CS31/CS31Projects/Project6/" (22098 25755 0 0) "hw.txt" "1b.cpp" "../" "./")
-
- ("/Users/yxy/Documents/Classes/" (22065 481 0 0) "Physics/" "MATH/" "fall15/" "../" "./")
 
  ("/Users/yxy/Documents/Classes/fall15/" (22021 46996 0 0) "MATH31B/" "EngComp3/" "CS31/" "CS1/" "../" "./")
 

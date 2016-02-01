@@ -445,6 +445,13 @@
 	       nil "keep track of positions even after buffer changes" single
 	       ((:url . "http://github.com/rocky/emacs-loc-changes")
 		(:keywords))])
+ (loccur .
+	 [(1 2 2)
+	  ((cl-lib
+	    (0)))
+	  "Perform an occur-like folding in current buffer" single
+	  ((:url . "https://github.com/fourier/loccur")
+	   (:keywords "matching"))])
  (markchars .
 	    [(0 2 0)
 	     nil "Mark chars fitting certain characteristics" single
@@ -485,10 +492,10 @@
 	   ((:url . "http://elpa.gnu.org/packages/minimap.html")
 	    (:keywords))])
  (multishell .
-	     [(1 0 8)
-	      nil "facilitate multiple local and remote shell buffers" single
-	      ((:url . "https://github.com/kenmanheimer/EmacsMultishell")
-	       (:keywords "processes"))])
+	     [(1 1 1)
+	      nil "facilitate multiple local and remote shell buffers" tar
+	      ((:keywords "processes")
+	       (:url . "https://github.com/kenmanheimer/EmacsMultishell"))])
  (muse .
        [(3 20)
 	nil "Authoring and publishing tool for Emacs" tar
@@ -771,7 +778,7 @@
       ((:keywords "faces" "help" "comm" "news" "mail" "processes" "mouse" "hypermedia")
        (:url . "http://elpa.gnu.org/packages/w3.html"))])
  (wcheck-mode .
-	      [(2016 1 5)
+	      [(2016 1 30)
 	       nil "General interface for text checkers" single
 	       ((:url . "https://github.com/tlikonen/wcheck-mode")
 		(:keywords "text" "spell" "check" "languages" "ispell"))])

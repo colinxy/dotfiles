@@ -8,15 +8,6 @@
 ;; backup files
 (setq backup-directory-alist `(("." . "~/.saves")))
 
-;; smooth scrolling
-(setq redisplay-dont-pause t
-      scroll-margin 1
-      scroll-step 1
-      scroll-conservatively 10000
-      scroll-preserve-screen-position 1)
-;(load-file "~/.emacs.d/elpa/smooth-scrolling/smooth-scrolling.el")
-;(require 'smooth-scrolling)
-
 ;; delete trailing white space
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -27,16 +18,17 @@
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
+
 ;; start up full screen
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 
 ;; mutiple cursor
-; (require 'multiple-cursors)
-; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-; (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
-; (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
-; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C-.") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
 ;; emacs themes
@@ -50,11 +42,10 @@
 
 
 ;; smart mode line
-(setq sml/shorten-directory nil)
-;(setq sml/shorten-modes t)
+(setq sml/shorten-directory t)
 (setq sml/theme 'powerline)
 (setq sml/no-confirm-load-theme t)
-;(setq sml/name-width 40)
+(setq sml/name-width 40)
 (sml/setup)
 
 ;; powerline
@@ -82,19 +73,17 @@
 ;;        (powerline-make-text "  " nil)))))
 
 
-;; c/c++ support, indent with 4 spaces
-(require 'cc-mode)
+;; indent with 4 spaces
 (setq-default c-basic-offset 4 c-default-style "k&r")
 (setq-default indent-tabs-mode nil)
 ;; (setq-default tab-width 4)
+;; (setq indent-line-function 'insert-tab)
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
 
 ;; show line number and column number
 ; (global-linum-mode 1)
-;; (personal costumized internally, edit elisp file)
-; (require 'linum-relative)
-; (linum-relative-on)
+(setq linum-relative-current-symbol "")
 (setq column-number-mode t)
 (show-paren-mode 1)
 
@@ -133,6 +122,7 @@
 (add-hook 'c-mode-hook 'my:ac-c-header-init)
 
 
+
 ;;;; Add new packages below
 
 
@@ -156,37 +146,29 @@
 
 
 ;; ecb, emacs code browser
+(setq stack-trace-on-error t)
 (add-to-list 'load-path "~/.emacs.d/elpa/ecb")
 (require 'ecb)
-;(require 'ecb-autoloads)
-(setq ecb-layout-name "left6")
-(setq ecb-show-sources-in-directories-buffer 'always)
-;; adjust layout left/right
-;; adjust left column: sources/methods/history
-(setq ecb-layout-window-sizes
-      (quote (("left6"
-               (ecb-sources-buffer-name 0.15 . 0.5)
-               (ecb-history-buffer-name 0.15 . 0.1)
-               (ecb-methods-buffer-name 0.15 . 0.4)))))
-(setq ecb-auto-update-methods-after-save t)
-;; navigating
-;; [C-c . g h] : Go to history
-;; [C-c . g m] : Go to methods
-;; [C-c . g s] : Go to sources:
-;; [C-c . g d] : Go to directories
-;; [C-c . g 1] : Main buffer
+; (require 'ecb-autoloads)
+(ecb-activate)
+(ecb-byte-compile)
+; (setq ecb-layout-name "left13")
+; (setq ecb-show-sources-in-directories-buffer 'always)
 
 
 ;;; enable popup
 ;;; required by auto-complete
 ;(require 'popup)
-
-
+;
+;
 ;;; enable auto-complete-clang
 ;(require 'auto-complete-clang)
 ;;(global-set-key (kbd "C-`") 'ac-complete-clang)
-
-
+;
+;
+;;; set default to split vertically
+;(setq split-height-threshold nil)
+;(setq split-width-threshold 0)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -195,8 +177,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
- '(ecb-options-version "2.50"))
+    ("b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

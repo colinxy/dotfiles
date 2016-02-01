@@ -1,4 +1,4 @@
-" pretty colorscheme in iTerm2
+" 256 color
 set t_Co=256
 
 set nocompatible
