@@ -2,3 +2,4 @@
 .emacs.d/auto-save-list/
 .DS_Store
 *.elc
+.git/
