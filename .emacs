@@ -20,6 +20,9 @@
 ;; delete trailing white space
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+;; enable code folding
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+
 ;; package archive
 (setq package-archives '(("elpa" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
@@ -50,11 +53,11 @@
 
 
 ;; smart mode line
-(setq sml/shorten-directory nil)
+(setq sml/shorten-directory t)
 ;(setq sml/shorten-modes t)
 (setq sml/theme 'powerline)
 (setq sml/no-confirm-load-theme t)
-;(setq sml/name-width 40)
+(setq sml/name-width 40)  ; path-length
 (sml/setup)
 
 ;; powerline
