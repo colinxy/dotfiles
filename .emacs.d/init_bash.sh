@@ -1,3 +1,5 @@
-. ~/.bashrc
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
 
-export PS1='\u:\w $ '
+export PS1=' $ '

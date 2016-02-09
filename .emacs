@@ -30,8 +30,35 @@
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
+;; for gui only
 ;; start up full screen
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(when window-system
+  (setq frame-title-format '(buffer-file-name "%f" ("%b")))
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  ;; The value is in 1/10pt, so 100 will give you 10pt
+  (set-face-attribute 'default nil :height 140)
+
+  ;; for Mac OS X >= 10.7
+  ;; toggle-frame-maximized binded with M-<F10>
+  ;; (add-to-list 'default-frame-alist '(fullscreen . maximized)) ; alternative
+  ;; toggle-frame-fullscreen binded with <F11> (default)
+  ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
+  (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)
+)
+
+
+;; emacs themes
+(if window-system
+    (progn
+      ;; theme for solarized
+      ; (setq custom-safe-themes t)
+      (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+      (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/solarized-theme-1.0.0")
+      (load-theme 'solarized-dark t)
+      (setq solarized-termcolors 256))
+    (load-theme 'tango-dark t))
 
 
 ;; mutiple cursor
@@ -42,50 +69,25 @@
 ; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
-;; emacs themes
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-;; theme for solarized
-; (setq custom-safe-themes t)
-; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/solarized-theme-1.0.0")
-; (load-theme 'solarized-dark t)
-; (setq solarized-termcolors 256)
-(load-theme 'tango-dark t)
-
-
 ;; smart mode line
-(setq sml/shorten-directory t)
+;(setq sml/shorten-directory t)
 ;(setq sml/shorten-modes t)
-(setq sml/theme 'powerline)
-(setq sml/no-confirm-load-theme t)
-(setq sml/name-width 40)  ; path-length
-(sml/setup)
+;(setq sml/theme 'powerline)
+;(setq sml/no-confirm-load-theme t)
+;(setq sml/name-width 40)  ; path-length
+;(sml/setup)
 
 ;; powerline
-;; (add-to-list 'load-path "~/.emacs.d/elpa/powerline/")
-;; (require 'powerline)
-;; (powerline-default-theme)
+(add-to-list 'load-path "~/.emacs.d/elpa/powerline/")
+(require 'powerline)
+(powerline-default-theme)
 ;; (set-face-attribute 'mode-line nil
 ;;                     :foreground "Black"
 ;;                     :background "DarkOrange"
 ;;                     :box nil)
-;; (setq powerline-arrow-shape 'diagonal)
-;; (setq-default mode-line-format '("%e"
-;;      (:eval
-;;       (concat
-;;        (powerline-rmw 'left nil)
-;;        (powerline-buffer-id 'left nil powerline-color1)
-;;        (powerline-minor-modes 'left powerline-color1)
-;;        (powerline-narrow 'left powerline-color1 powerline-color2)
-;;        (powerline-vc 'center powerline-color2)
-;;        (powerline-make-fill powerline-color2)
-;;        (powerline-row 'right powerline-color1 powerline-color2)
-;;        (powerline-make-text ":" powerline-color1)
-;;        (powerline-column 'right powerline-color1)
-;;        (powerline-percent 'right nil powerline-color1)
-;;        (powerline-make-text "  " nil)))))
 
 
-;; c/c++ support, indent with 4 spaces
+;; indentation support, indent with 4 spaces
 (require 'cc-mode)
 (setq-default c-basic-offset 4 c-default-style "k&r")
 (setq-default indent-tabs-mode nil)
@@ -109,23 +111,37 @@
 (setq ido-everywhere t)
 
 
-;; enable auto-complete
-(require 'auto-complete)
-(require 'auto-complete-config)
-(ac-config-default)
-
-
 ;; enable YASnippet
-;; using YASnippet 0.6.1 (legacy version)
-(add-to-list 'load-path "~/.emacs.d/elpa/yasnippet-0.6.1/yasnippet.el")
+(add-to-list 'load-path "~/.emacs.d/elpa/yasnippet-20160131.948")
 (require 'yasnippet)
 ; (require 'yasnippet-bundle)
 ;; set snippet directory
-(setq yas/root-directory "~/.emacs.d/snippets/yasnippet-snippets")
-(yas/load-directory yas/root-directory)
-(yas/initialize)
-(yas/global-mode 1)
+(setq yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
+;; global
+(yas-global-mode 1)
+;; minor
+;(yas-reload-all)
+;(add-hook 'prog-mode-hook #'yas-minor-mode)
 
+
+;; enable auto-complete
+;; requires popup
+(require 'auto-complete)
+(require 'auto-complete-config)
+(ac-config-default)
+;; make yasnippet work with auto-complete
+;; prefer yasnippet to auto-complete
+;; set the trigger key so that it can work together with yasnippet on tab key
+;; if the word exists in yasnippet, pressing tab will cause yasnippet to
+;; activate, otherwise, auto-complete will
+(ac-set-trigger-key "TAB")
+(ac-set-trigger-key "<tab>")
+
+
+;;; language support
+
+
+;; C/C++
 
 ;; auto-complete-c-header
 (defun my:ac-c-header-init ()
@@ -135,28 +151,41 @@
 (add-hook 'c++-mode-hook 'my:ac-c-header-init)
 (add-hook 'c-mode-hook 'my:ac-c-header-init)
 
+;; irony mode for c++
+;(eval-after-load 'company
+;  '(add-to-list 'company-backends 'company-irony))
 
-;;;; Add new packages below
 
+;; Python
 
 ;; company-jedi for python auto-complete
-(defun my/python-mode-hook ()
-  (add-to-list 'company-backends 'company-jedi))
-(add-hook 'python-mode-hook 'my/python-mode-hook)
+;(defun my/python-mode-hook ()
+;  (add-to-list 'company-backends 'company-jedi))
+;(add-hook 'python-mode-hook 'my/python-mode-hook)
+
+;; elpy
+(elpy-enable)
+
+;; autopep8
+(require 'py-autopep8)
+(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 
 
-;; irony mode for c++
-(eval-after-load 'company
-  '(add-to-list 'company-backends 'company-irony))
-
+;; Markdown
 
 ;; markdown mode
+(add-to-list 'load-path "~/.emacs.d/elpa/markdown-mode-20160121.528/")
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing markdown files" t)
+(setq markdown-command
+      "pandoc -f markdown -t html -s --mathjax --highlight-style=pygments")
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
+
+;; IDE like
 
 ;; ecb, emacs code browser
 (add-to-list 'load-path "~/.emacs.d/elpa/ecb")
@@ -164,6 +193,8 @@
 ;(require 'ecb-autoloads)
 (setq ecb-layout-name "left6")
 (setq ecb-show-sources-in-directories-buffer 'always)
+(setq ecb-show-tip-of-the-day 0)
+(setq ecb-tip-of-the-day nil)
 ;; adjust layout left/right
 ;; adjust left column: sources/methods/history
 (setq ecb-layout-window-sizes
@@ -180,10 +211,6 @@
 ;; [C-c . g 1] : Main buffer
 
 
-;;; enable popup
-;;; required by auto-complete
-;(require 'popup)
-
 
 ;;; enable auto-complete-clang
 ;(require 'auto-complete-clang)
@@ -196,10 +223,45 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
- '(ecb-options-version "2.50"))
+    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
+ '(ecb-options-version "2.50")
+ '(fci-rule-color "#073642")
+ '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-tail-colors
+   (quote
+    (("#073642" . 0)
+     ("#546E00" . 20)
+     ("#00736F" . 30)
+     ("#00629D" . 50)
+     ("#7B6000" . 60)
+     ("#8B2C02" . 70)
+     ("#93115C" . 85)
+     ("#073642" . 100))))
+ '(vc-annotate-background "#93a1a1")
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#990A1B")
+     (40 . "#FF6E64")
+     (60 . "#cb4b16")
+     (80 . "#7B6000")
+     (100 . "#b58900")
+     (120 . "#DEB542")
+     (140 . "#546E00")
+     (160 . "#859900")
+     (180 . "#B4C342")
+     (200 . "#3F4D91")
+     (220 . "#6c71c4")
+     (240 . "#9EA0E5")
+     (260 . "#2aa198")
+     (280 . "#69CABF")
+     (300 . "#00629D")
+     (320 . "#268bd2")
+     (340 . "#69B7F0")
+     (360 . "#d33682"))))
+ '(vc-annotate-very-old-color "#93115C"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
