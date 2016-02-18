@@ -14,14 +14,18 @@
       scroll-step 1
       scroll-conservatively 10000
       scroll-preserve-screen-position 1)
-;(load-file "~/.emacs.d/elpa/smooth-scrolling/smooth-scrolling.el")
-;(require 'smooth-scrolling)
+;; (load-file "~/.emacs.d/elpa/smooth-scrolling/smooth-scrolling.el")
+;; (require 'smooth-scrolling)
 
 ;; delete trailing white space
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; enable code folding
 (add-hook 'prog-mode-hook #'hs-minor-mode)
+;; highlight TODO (s) (make sure it is highlighted)
+(add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20140421.922/")
+(require 'fic-mode)
+(add-hook 'prog-mode-hook `turn-on-fic-mode)
 
 ;; package archive
 (setq package-archives '(("elpa" . "http://tromey.com/elpa/")
@@ -31,7 +35,6 @@
 (package-initialize)
 
 ;; for gui only
-;; start up full screen
 (when window-system
   (setq frame-title-format '(buffer-file-name "%f" ("%b")))
   (menu-bar-mode -1)
@@ -45,37 +48,38 @@
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized)) ; alternative
   ;; toggle-frame-fullscreen binded with <F11> (default)
   ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
-  (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)
-)
+  (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen))
 
 
 ;; emacs themes
 (if window-system
+    ;; gui
     (progn
       ;; theme for solarized
-      ; (setq custom-safe-themes t)
+      ;; (setq custom-safe-themes t)
       (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
       (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/solarized-theme-1.0.0")
       (load-theme 'solarized-dark t)
       (setq solarized-termcolors 256))
-    (load-theme 'tango-dark t))
+  ;; terminal
+  (load-theme 'tango-dark t))
 
 
 ;; mutiple cursor
-; (require 'multiple-cursors)
-; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-; (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
-; (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
-; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
+;; (require 'multiple-cursors)
+;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+;; (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
+;; (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
 ;; smart mode line
-;(setq sml/shorten-directory t)
-;(setq sml/shorten-modes t)
-;(setq sml/theme 'powerline)
-;(setq sml/no-confirm-load-theme t)
-;(setq sml/name-width 40)  ; path-length
-;(sml/setup)
+;; (setq sml/shorten-directory t)
+;; (setq sml/shorten-modes t)
+;; (setq sml/theme 'powerline)
+;; (setq sml/no-confirm-load-theme t)
+;; (setq sml/name-width 40)  ; path-length
+;; (sml/setup)
 
 ;; powerline
 (add-to-list 'load-path "~/.emacs.d/elpa/powerline/")
@@ -87,9 +91,7 @@
 ;;                     :box nil)
 
 
-;; indentation support, indent with 4 spaces
-(require 'cc-mode)
-(setq-default c-basic-offset 4 c-default-style "k&r")
+;; indentation support, do not indent with tabs
 (setq-default indent-tabs-mode nil)
 ;; (setq-default tab-width 4)
 (define-key global-map (kbd "RET") 'newline-and-indent)
@@ -129,27 +131,68 @@
 (require 'auto-complete)
 (require 'auto-complete-config)
 (ac-config-default)
+
 ;; make yasnippet work with auto-complete
 ;; prefer yasnippet to auto-complete
 ;; set the trigger key so that it can work together with yasnippet on tab key
 ;; if the word exists in yasnippet, pressing tab will cause yasnippet to
 ;; activate, otherwise, auto-complete will
-(ac-set-trigger-key "TAB")
-(ac-set-trigger-key "<tab>")
+;; (ac-set-trigger-key "TAB")
+;; (ac-set-trigger-key "<tab>")
 
 
 ;;; language support
 
+;; general
+(defun my-select-current-line ()
+  "handy function for selection current line"
+  (interactive)
+  (move-beginning-of-line nil)
+  (set-mark-command nil)
+  (move-end-of-line nil)
+  (setq deactivate-mark nil))
 
 ;; C/C++
 
+;; treat .h as cpp header file
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
+;; indentation
+(require 'cc-mode)
+(setq-default c-basic-offset 4 c-default-style "k&r")
+;; (add-hook 'c-mode-hook (lambda () (setq comment-start "/* "
+;;                                         comment-end   " */")))
+;; (add-hook 'c++-mode-hook (lambda () (setq comment-start "/* "
+;;                                           comment-end   " */")))
+
+;; comment or uncomment line
+(defun my-comment-or-uncomment-line-or-region ()
+  "comment or uncomment current line."
+  (interactive)
+  (let (beg end)
+    (if (region-active-p)
+        (setq beg (region-beginning) end (region-end))
+      (setq beg (line-beginning-position) end (line-end-position)))
+    (comment-or-uncomment-region beg end))
+  ;; (next-line)
+  )
+;; override default binding for C-c C-c
+(add-hook 'c-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c C-c")
+                           #'my-comment-or-uncomment-line-or-region)))
+(add-hook 'c++-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c C-c")
+                           #'my-comment-or-uncomment-line-or-region)))
+
 ;; auto-complete-c-header
-(defun my:ac-c-header-init ()
+(defun my-ac-c-header-init ()
    (require 'auto-complete-c-headers)
    (add-to-list 'ac-sources 'ac-source-c-headers)
-   (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"))
-(add-hook 'c++-mode-hook 'my:ac-c-header-init)
-(add-hook 'c-mode-hook 'my:ac-c-header-init)
+   (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
+(add-hook 'c++-mode-hook 'my-ac-c-header-init)
+(add-hook 'c-mode-hook 'my-ac-c-header-init)
 
 ;; irony mode for c++
 ;(eval-after-load 'company
@@ -169,6 +212,12 @@
 ;; autopep8
 (require 'py-autopep8)
 (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+
+;; javascript
+
+;; indentation level
+;; (setq js-indent-level 2)
 
 
 ;; Markdown

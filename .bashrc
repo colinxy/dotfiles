@@ -6,8 +6,9 @@ export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
 # export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
 
-alias mv='mv -n'
-alias cp='cp -n'
+alias mv='mv -i'
+alias cp='cp -i'
+alias la='ls -a'
 alias ll='ls -alF'
 alias grep='grep --color=auto'
 
