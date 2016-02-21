@@ -10,7 +10,9 @@ alias mv='mv -i'
 alias cp='cp -i'
 alias la='ls -a'
 alias ll='ls -alF'
-alias grep='grep --color=auto'
+alias grep='grep --color'
+alias more='more -R'
+alias less='less -R'
 
 # emacs
 alias emacs='emacs -nw'

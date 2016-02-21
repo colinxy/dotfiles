@@ -30,6 +30,7 @@
 ;; ----- ido-work-directory-list -----
 (
  "/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/FrackMan/"
+ "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign7/"
  "/Users/yxy/"
  "/Users/yxy/Documents/playground/proflow/"
  "/Users/yxy/Documents/playground/codeday16/"
@@ -75,27 +76,37 @@
 
 ;; ----- ido-work-file-list -----
 (
- "StudentWorld.h"
  "StudentWorld.cpp"
  "Actor.cpp"
+ "lab.txt"
+ "StudentWorld.h"
+ "GameConstants.h"
+ "tr2b.c"
+ "tr2u.c"
  "Actor.h"
  ".bashrc"
  "GameWorld.cpp"
- "GraphObject.h"
- ".emacs"
- "GameWorld.h"
- "history.js"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/FrackMan/" (22213 30231 0 0) "StudentWorld.h" "StudentWorld.cpp" "SpriteManager.h" "SoundFX.h" "main.cpp" "GraphObject.h" "GameWorld.h" "GameWorld.cpp" "GameController.h" "GameController.cpp" "GameConstants.h" "freeglut_std.h" "freeglut_ext.h" "freeglut.h" "Actor.h" "Actor.cpp" ".git/" "../" "./")
+ ("/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/FrackMan/" (22217 4780 0 0) "StudentWorld.h" "StudentWorld.cpp" "SpriteManager.h" "SoundFX.h" "main.cpp" "GraphObject.h" "GameWorld.h" "GameWorld.cpp" "GameController.h" "GameController.cpp" "GameConstants.h" "freeglut_std.h" "freeglut_ext.h" "freeglut.h" "Actor.h" "Actor.cpp" ".gitignore" ".git/" ".DS_Store" "../" "./")
 
- ("/Users/yxy/" (22213 8070 0 0) "VirtualBox VMs/" "Public/" "Pictures/" "OneDrive/" "octave/" "News/" "Music/" "Movies/" "Library/" "Google Drive/" "Downloads/" "dotfiles/" "Documents/" "Desktop/" "Applications/" ".Xauthority" ".wget-hsts" ".vimrc_szh" ".vimrc_gpi_szh" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".sympy-history" ".subversion/" ".ssh/" ".sh_history" ".serverauth.8649" ".saves/" ".rnd" ".python_history" ".PyCharm50/" ".PyCharm40/" ".php_history" ".oracle_jre_usage/" ".octave_packages" ".octave_hist" ".npm/" ".node_repl_history" ".matplotlib/" ".lobo/" ".lldb/" ".lesshst" ".jupyter/" ".ipython/" ".idlerc/" ".gradle/" ".gnuplot_history" ".gitconfig" ".ghc/" ".gem/" ".emacs.eggert" ".emacs.d/" ".emacs.before_ecb_2.50" ".emacs" ".ecb-tip-of-day.el" ".DS_Store" ".dropbox/" ".cups/" ".config/" ".cisco/" ".CFUserTextEncoding" ".cache/" ".bashrc" ".bash_profile" ".bash_history" ".atom/" ".anyconnect" ".android/" "../" "./")
+ ("/Users/yxy/Documents/playground/" (22212 11223 0 0) "web/" "tmp" "testimage.png" "test_socks.txt" "test_linkedlist.cpp" "test.sqlite" "test.sh" "test.py" "test.org" "test.java" "test.db" "sqlite.py" "socks.py" "socks.cpp" "server.py" "search_google.py" "runAllPEJavaFiles.sh" "resume.md" "pycharm/" "proflow/" "pe293/" "parentheses.py" "p3tester.sh" "notify33A.py" "notify32A.py" "medianfinder.py" "Maze.java" "linux/" "linkedlist.h" "linkedlist.cpp" "leetcode/" "kpcbchallenge.py" "jsworkshop/" "firstscript.m" "example.md" "eval_arith_wrong.cpp" "eval.cpp" "D11670.txt" "D11670.py" "D11670.cpp" "cpp/" "codeday16/" "chrome-ext-ex/" "browser.py" "average.m" ".DS_Store" "../" "./")
 
- ("/Users/yxy/dotfiles/" (22210 45484 0 0) "get_pip.sh" ".vimrc" ".gitignore" ".git/" ".emacs.d/" ".emacs" ".DS_Store" ".bashrc" "../" "./")
+ ("/Users/yxy/dotfiles/" (22213 32891 0 0) "get_pip.sh" ".vimrc" ".gitignore" ".git/" ".emacs.d/" ".emacs" ".DS_Store" ".bashrc" "../" "./")
 
- ("/Users/yxy/Documents/playground/cpp/" (22208 47526 0 0) "while_assign.cpp" "while_assign.c" "test.py" "test.cpp" "template_string.cpp" "template.cpp" "switch.cpp" "swap.cpp" "swap.c" "struct.cpp" "struct.c" "string.cpp" "stl_list.cpp" "reference.cpp" "prog_paradigm/" "polymorphism.cpp" "pointer_arr.cpp" "pointer.cpp" "plus_assign.cpp" "overload.cpp" "inheritance.cpp" "diary.cpp" "date.cpp" "cs32/" "cs31grade.cpp" "cout_setf.cpp" "copy_cons_assign_op.cpp" "continue_assign.cpp" "const.cpp" "comparator.cpp" "class.cpp" "base_derived_class.cpp" "array.cpp" "a.out" "../" "./")
+ ("/Users/yxy/dotfiles/.emacs.d/elpa/" (22210 48443 0 0) "zenburn-theme-20160117.1119/" "yasnippet-20160131.948/" "with-editor-20160128.1201/" "swiper-20160201.1121/" "solarized-theme-1.0.0/" "smooth-scrolling/" "smart-mode-line-powerline-theme-20160111.932/" "smart-mode-line-20160125.900/" "rich-minority-20151201.400/" "pyvenv-20160108.28/" "python-environment-20150310.153/" "py-autopep8-20151231.614/" "powerline-20151008.1449/" "powerline/" "popup-20151222.1339/" "multiple-cursors-1.3.0/" "markdown-mode-20160121.528/" "magit-popup-20160130.649/" "magit-20160130.649/" "linum-relative-20160117.2200/" "jedi-core-20151029.2202/" "irony-20151016.1420/" "highlight-indentation-20150307.208/" "git-commit-20160130.649/" "find-file-in-project-20151216.1850/" "fic-mode-20140421.922/" "epc-20140609.2234/" "elpy-20160131.118/" "ecb/" "deferred-20151007.1657/" "dash-20151216.1315/" "ctable-20140304.1659/" "concurrent-20150309.2052/" "company-jedi-20151021.1441/" "company-irony-20150810.239/" "company-20151103.230/" "color-theme-sanityinc-tomorrow-readme.txt" "color-theme-sanityinc-solarized-readme.txt" "auto-complete-c-headers-20150911.2023/" "auto-complete-20160107.8/" "async-20160108.1249/" "archives/" "../" "./")
+
+ ("/Users/yxy/.emacs.d/elpa/" (22210 48443 0 0) "zenburn-theme-20160117.1119/" "yasnippet-20160131.948/" "with-editor-20160128.1201/" "swiper-20160201.1121/" "solarized-theme-1.0.0/" "smooth-scrolling/" "smart-mode-line-powerline-theme-20160111.932/" "smart-mode-line-20160125.900/" "rich-minority-20151201.400/" "pyvenv-20160108.28/" "python-environment-20150310.153/" "py-autopep8-20151231.614/" "powerline-20151008.1449/" "powerline/" "popup-20151222.1339/" "multiple-cursors-1.3.0/" "markdown-mode-20160121.528/" "magit-popup-20160130.649/" "magit-20160130.649/" "linum-relative-20160117.2200/" "jedi-core-20151029.2202/" "irony-20151016.1420/" "highlight-indentation-20150307.208/" "git-commit-20160130.649/" "find-file-in-project-20151216.1850/" "fic-mode-20140421.922/" "epc-20140609.2234/" "elpy-20160131.118/" "ecb/" "deferred-20151007.1657/" "dash-20151216.1315/" "ctable-20140304.1659/" "concurrent-20150309.2052/" "company-jedi-20151021.1441/" "company-irony-20150810.239/" "company-20151103.230/" "color-theme-sanityinc-tomorrow-readme.txt" "color-theme-sanityinc-solarized-readme.txt" "auto-complete-c-headers-20150911.2023/" "auto-complete-20160107.8/" "async-20160108.1249/" "archives/" "../" "./")
+
+ ("/Users/yxy/Documents/playground/cpp/" (22212 49407 0 0) "while_assign.cpp" "while_assign.c" "test.py" "test.cpp" "template_string.cpp" "template.cpp" "switch.cpp" "swap.cpp" "swap.c" "struct.cpp" "struct.c" "string.cpp" "stl_list.cpp" "reference.cpp" "prog_paradigm/" "polymorphism.cpp" "pointer_arr.cpp" "pointer.cpp" "plus_assign.cpp" "overload.cpp" "iter_stl_algo.cpp" "inheritance.cpp" "diary.cpp" "date.cpp" "cs32/" "cs31grade.cpp" "cout_setf.cpp" "copy_cons_assign_op.cpp" "continue_assign.cpp" "const.cpp" "comparator.cpp" "class.cpp" "base_derived_class.cpp" "array.cpp" "../" "./")
+
+ ("/Users/yxy/" (22215 49399 0 0) "VirtualBox VMs/" "Public/" "Pictures/" "OneDrive/" "octave/" "News/" "Music/" "Movies/" "Library/" "Google Drive/" "Downloads/" "dotfiles/" "Documents/" "Desktop/" "Applications/" ".Xauthority" ".wget-hsts" ".vimrc_szh" ".vimrc_gpi_szh" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".sympy-history" ".subversion/" ".ssh/" ".sh_history" ".saves/" ".rnd" ".python_history" ".PyCharm50/" ".PyCharm40/" ".php_history" ".oracle_jre_usage/" ".octave_packages" ".octave_hist" ".npm/" ".node_repl_history" ".matplotlib/" ".lobo/" ".lldb/" ".lesshst" ".jupyter/" ".ipython/" ".idlerc/" ".gradle/" ".gnuplot_history" ".gitconfig" ".ghc/" ".gem/" ".emacs.eggert" ".emacs.d/" ".emacs.before_ecb_2.50" ".emacs" ".ecb-tip-of-day.el" ".DS_Store" ".dropbox/" ".cups/" ".config/" ".cisco/" ".CFUserTextEncoding" ".cache/" ".bashrc" ".bash_profile" ".bash_history" ".atom/" ".anyconnect" ".android/" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/CS35L/" (22211 32315 0 0) "Week3-W.pptx" "Week3-M.pptx" "Week1-M.pptx" "sampleScript.sh" "sample.py" "sameln.sh" "ls.pdf" "locale.pdf" "lec5.pdf" "lec4.pdf" "lec2.pdf" "lab5b.ppt" "lab5a.ppt" "lab3b.pptx" "lab3a.ppt" "lab1a.pptx" "grep.pdf" "find.pdf" "Fibonacci.py" "chmod.pdf" "assign7/" "assign6/" "assign5/" "assign4/" "assign3/" "assign2/" "assign10/" "assign1/" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/CS35L/assign7/" (22211 34564 0 0) "tr2u.c.bak" "tr2u.c" "tr2b.c.bak" "tr2b.c" "../" "./")
 
  ("/Users/yxy/Documents/playground/proflow/" (22208 44710 0 0) "view.js" "view.css" "test.html" "README.md" "manifest.json" "index.html" "icon.png" "history.js" "Google_search_API/" "Google_API_testing.html" "Evernote_API/" "color.js" "bower_components/" ".gitignore" ".git/" "../" "./")
 
@@ -106,8 +117,6 @@
  ("/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/" (22210 28709 0 0) "FrackMan.xcodeproj/" "FrackMan/" "DerivedData/" ".DS_Store" "../" "./")
 
  ("/Users/yxy/Documents/playground/codeday16/" (22207 43465 0 0) "manifest.json" ".idea/" "../" "./")
-
- ("/Users/yxy/Documents/playground/" (22207 48409 0 0) "web/" "tmp" "testimage.png" "test_socks.txt" "test_linkedlist.cpp" "test.sqlite" "test.sh" "test.py" "test.org" "test.java" "test.db" "sqlite.py" "socks.py" "socks.cpp" "server.py" "search_google.py" "runAllPEJavaFiles.sh" "resume.md" "pycharm/" "proflow/" "pe293/" "parentheses.py" "p3tester.sh" "notify32A.py" "medianfinder.py" "Maze.java" "linux/" "linkedlist.h" "linkedlist.cpp" "leetcode/" "kpcbchallenge.py" "jsworkshop/" "firstscript.m" "example.md" "eval_arith_wrong.cpp" "eval.cpp" "D11670.txt" "D11670.py" "D11670.cpp" "cpp/" "codeday16/" "chrome-ext-ex/" "browser.py" "average.m" ".DS_Store" "../" "./")
 
  ("/Users/yxy/Documents/Classes/16win/CS32/projects/hw4/" (22206 40160 0 0) "test.cpp" "Map.h" "../" "./")
 
@@ -151,15 +160,9 @@
 
  ("/Users/yxy/Documents/Classes/16win/MATH32A/" (22202 36725 0 0) "Math32ASyllabusWinter2016.pdf" "Math32APracticeExam1Answers.pdf" "Math32APracticeExam1.pdf" "Calculus+by+Jon+Rogawski+3th+3rd+3e.pdf" ".DS_Store" "../" "./")
 
- ("/Users/yxy/dotfiles/.emacs.d/elpa/" (22199 58789 0 0) "zenburn-theme-20160117.1119/" "yasnippet-20160131.948/" "with-editor-20160128.1201/" "swiper-20160201.1121/" "solarized-theme-1.0.0/" "smooth-scrolling/" "smart-mode-line-powerline-theme-20160111.932/" "smart-mode-line-20160125.900/" "rich-minority-20151201.400/" "pyvenv-20160108.28/" "python-environment-20150310.153/" "py-autopep8-20151231.614/" "powerline-20151008.1449/" "powerline/" "popup-20151222.1339/" "multiple-cursors-1.3.0/" "markdown-mode-20160121.528/" "magit-popup-20160130.649/" "magit-20160130.649/" "linum-relative-20160117.2200/" "jedi-core-20151029.2202/" "irony-20151016.1420/" "highlight-indentation-20150307.208/" "git-commit-20160130.649/" "find-file-in-project-20151216.1850/" "epc-20140609.2234/" "elpy-20160131.118/" "ecb/" "deferred-20151007.1657/" "dash-20151216.1315/" "ctable-20140304.1659/" "concurrent-20150309.2052/" "company-jedi-20151021.1441/" "company-irony-20150810.239/" "company-20151103.230/" "color-theme-sanityinc-tomorrow-readme.txt" "color-theme-sanityinc-solarized-readme.txt" "auto-complete-c-headers-20150911.2023/" "auto-complete-20160107.8/" "async-20160108.1249/" "archives/" "../" "./")
-
- ("/Users/yxy/.emacs.d/elpa/" (22199 58789 0 0) "zenburn-theme-20160117.1119/" "yasnippet-20160131.948/" "with-editor-20160128.1201/" "swiper-20160201.1121/" "solarized-theme-1.0.0/" "smooth-scrolling/" "smart-mode-line-powerline-theme-20160111.932/" "smart-mode-line-20160125.900/" "rich-minority-20151201.400/" "pyvenv-20160108.28/" "python-environment-20150310.153/" "py-autopep8-20151231.614/" "powerline-20151008.1449/" "powerline/" "popup-20151222.1339/" "multiple-cursors-1.3.0/" "markdown-mode-20160121.528/" "magit-popup-20160130.649/" "magit-20160130.649/" "linum-relative-20160117.2200/" "jedi-core-20151029.2202/" "irony-20151016.1420/" "highlight-indentation-20150307.208/" "git-commit-20160130.649/" "find-file-in-project-20151216.1850/" "epc-20140609.2234/" "elpy-20160131.118/" "ecb/" "deferred-20151007.1657/" "dash-20151216.1315/" "ctable-20140304.1659/" "concurrent-20150309.2052/" "company-jedi-20151021.1441/" "company-irony-20150810.239/" "company-20151103.230/" "color-theme-sanityinc-tomorrow-readme.txt" "color-theme-sanityinc-solarized-readme.txt" "auto-complete-c-headers-20150911.2023/" "auto-complete-20160107.8/" "async-20160108.1249/" "archives/" "../" "./")
-
  ("/Users/yxy/dotfiles/.emacs.d/" (22198 55117 0 0) "tramp" "themes/" "snippets/" "init_bash.sh" "ido.last" "games/" "eshell/" "elpa/" "auto-save-list/" "ac-comphist.dat" ".mc-lists.el" ".DS_Store" "../" "./")
 
  ("/Users/yxy/.emacs.d/" (22198 55117 0 0) "tramp" "themes/" "snippets/" "init_bash.sh" "ido.last" "games/" "eshell/" "elpa/" "auto-save-list/" "ac-comphist.dat" ".mc-lists.el" ".DS_Store" "../" "./")
-
- ("/Users/yxy/Documents/Classes/16win/CS35L/" (22198 44484 0 0) "Week3-W.pptx" "Week3-M.pptx" "Week1-M.pptx" "sampleScript.sh" "sample.py" "sameln.sh" "ls.pdf" "locale.pdf" "lec5.pdf" "lec4.pdf" "lec2.pdf" "lab5b.ppt" "lab5a.ppt" "lab3b.pptx" "lab3a.ppt" "lab1a.pptx" "grep.pdf" "find.pdf" "Fibonacci.py" "chmod.pdf" "assign5/" "assign4/" "assign3/" "assign2/" "assign10/" "assign1/" ".DS_Store" "../" "./")
 
  ("/Users/yxy/Documents/playground/cpp/cs32/" (22194 21177 0 0) "recursive.cpp" "list_insert.cpp" "linked.cpp" "../" "./")
 
