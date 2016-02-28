@@ -1,6 +1,10 @@
 .emacs.d/tramp
 .emacs.d/auto-save-list/
+.emacs.d/elpa/
+.emacs.d/eshell/
+.emacs.d/games/
+
+.emacs.d/ac-comphist.dat
+.emacs.d/ido.last
 .DS_Store
 *.elc
-.git/
-.emacs.d/games/

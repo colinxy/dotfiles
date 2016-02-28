@@ -8,6 +8,9 @@
 ;; backup files
 (setq backup-directory-alist `(("." . "~/.saves")))
 
+;; substitute y-or-n-p with yes-or-no-p
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 ;; smooth scrolling
 (setq redisplay-dont-pause t
       scroll-margin 1
@@ -22,10 +25,16 @@
 
 ;; enable code folding
 (add-hook 'prog-mode-hook #'hs-minor-mode)
-;; highlight TODO (s) (make sure it is highlighted)
+;; highlight TODO FIXME (s) (make sure it is highlighted)
 (add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20140421.922/")
 (require 'fic-mode)
 (add-hook 'prog-mode-hook `turn-on-fic-mode)
+
+;; auto insert pair
+;; M-( ; insert ()
+(global-set-key (kbd "M-[") 'insert-pair)  ; insert []
+;; (global-set-key (kbd "M-{") 'insert-pair)  ; insert {}  ; conflict keybinding
+(global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
 
 ;; package archive
 (setq package-archives '(("elpa" . "http://tromey.com/elpa/")
@@ -34,10 +43,10 @@
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
-;; for gui only
+;; for gui window
 (when window-system
   (setq frame-title-format '(buffer-file-name "%f" ("%b")))
-  (menu-bar-mode -1)
+  ;; (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   ;; The value is in 1/10pt, so 100 will give you 10pt
@@ -60,9 +69,19 @@
       (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
       (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/solarized-theme-1.0.0")
       (load-theme 'solarized-dark t)
-      (setq solarized-termcolors 256))
+      (setq x-underline-at-descent-line t)
+      ;; (setq solarized-termcolors 256)
+      )
   ;; terminal
   (load-theme 'tango-dark t))
+
+
+;; shell integration
+;; M-x eshell
+;; M-x shell
+;; M-x term
+;; M-x ansi-term
+;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 
 ;; mutiple cursor
@@ -83,12 +102,10 @@
 
 ;; powerline
 (add-to-list 'load-path "~/.emacs.d/elpa/powerline/")
+;; see https://github.com/milkypostman/powerline/issues/54
+(setq ns-use-srgb-colorspace nil)
 (require 'powerline)
 (powerline-default-theme)
-;; (set-face-attribute 'mode-line nil
-;;                     :foreground "Black"
-;;                     :background "DarkOrange"
-;;                     :box nil)
 
 
 ;; indentation support, do not indent with tabs
@@ -98,10 +115,10 @@
 
 
 ;; show line number and column number
-; (global-linum-mode 1)
+;; (global-linum-mode 1)
 ;; (personal costumized internally, edit elisp file)
-; (require 'linum-relative)
-; (linum-relative-on)
+;; (require 'linum-relative)
+;; (linum-relative-on)
 (setq column-number-mode t)
 (show-paren-mode 1)
 
@@ -116,21 +133,64 @@
 ;; enable YASnippet
 (add-to-list 'load-path "~/.emacs.d/elpa/yasnippet-20160131.948")
 (require 'yasnippet)
-; (require 'yasnippet-bundle)
+;; (require 'yasnippet-bundle)
 ;; set snippet directory
 (setq yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
 ;; global
 (yas-global-mode 1)
 ;; minor
-;(yas-reload-all)
-;(add-hook 'prog-mode-hook #'yas-minor-mode)
+;; (yas-reload-all)
+;; (add-hook 'prog-mode-hook #'yas-minor-mode)
 
 
-;; enable auto-complete
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  company-mode  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (add-to-list 'load-path "~/.emacs.d/elpa/company-20160211.520")
+;; (require 'company)
+;; (add-hook 'after-init-hook 'global-company-mode)
+;; ;; customize company color
+;; (require 'color)
+;; (let ((bg (face-attribute 'default :background)))
+;;   (custom-set-faces
+;;    `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+;;    `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+;;    `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+;;    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+;;    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+
+;; company-irony for C/C++
+;; (add-to-list 'load-path "~/.emacs.d/elpa/irony-20160203.1207/")
+;; (require 'irony)
+;; (add-hook 'c++-mode-hook 'irony-mode)
+;; (add-hook 'c-mode-hook 'irony-mode)
+
+;; company irony backend for c++
+;; (eval-after-load 'company
+;;   '(add-to-list 'company-backends 'company-irony))
+
+;; company-jedi for python auto-complete
+;; (defun my/python-mode-hook ()
+;;   (add-to-list 'company-backends 'company-jedi))
+;; (add-hook 'python-mode-hook 'my/python-mode-hook)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  auto-complete  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; requires popup
 (require 'auto-complete)
 (require 'auto-complete-config)
 (ac-config-default)
+
+;; auto-complete-c-header
+(defun my-ac-c-header-init ()
+   (require 'auto-complete-c-headers)
+   (add-to-list 'ac-sources 'ac-source-c-headers)
+   (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
+(add-hook 'c++-mode-hook 'my-ac-c-header-init)
+(add-hook 'c-mode-hook 'my-ac-c-header-init)
+
+;; enable auto-complete-clang
+(add-to-list 'load-path "~/.emacs.d/elpa/auto-complete-clang-20140409.52/")
+(require 'auto-complete-clang)
 
 ;; make yasnippet work with auto-complete
 ;; prefer yasnippet to auto-complete
@@ -186,25 +246,9 @@
             (local-set-key (kbd "C-c C-c")
                            #'my-comment-or-uncomment-line-or-region)))
 
-;; auto-complete-c-header
-(defun my-ac-c-header-init ()
-   (require 'auto-complete-c-headers)
-   (add-to-list 'ac-sources 'ac-source-c-headers)
-   (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
-(add-hook 'c++-mode-hook 'my-ac-c-header-init)
-(add-hook 'c-mode-hook 'my-ac-c-header-init)
-
-;; irony mode for c++
-;(eval-after-load 'company
-;  '(add-to-list 'company-backends 'company-irony))
 
 
 ;; Python
-
-;; company-jedi for python auto-complete
-;(defun my/python-mode-hook ()
-;  (add-to-list 'company-backends 'company-jedi))
-;(add-hook 'python-mode-hook 'my/python-mode-hook)
 
 ;; elpy
 (elpy-enable)
@@ -217,7 +261,7 @@
 ;; javascript
 
 ;; indentation level
-;; (setq js-indent-level 2)
+(setq js-indent-level 2)
 
 
 ;; Markdown
@@ -261,12 +305,6 @@
 
 
 
-;;; enable auto-complete-clang
-;(require 'auto-complete-clang)
-;;(global-set-key (kbd "C-`") 'ac-complete-clang)
-
-
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -289,6 +327,8 @@
      ("#8B2C02" . 70)
      ("#93115C" . 85)
      ("#073642" . 100))))
+ '(powerline-default-separator (quote wave))
+ '(solarized-distinct-fringe-background nil)
  '(vc-annotate-background "#93a1a1")
  '(vc-annotate-color-map
    (quote
@@ -316,4 +356,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(company-scrollbar-bg ((t (:background "#005369"))))
+ '(company-scrollbar-fg ((t (:background "#003f4f"))))
+ '(company-tooltip ((t (:inherit default :background "#003340"))))
+ '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
+ '(company-tooltip-selection ((t (:inherit font-lock-function-name-face)))))

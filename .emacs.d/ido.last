@@ -2,13 +2,21 @@
 
 ;; ----- ido-last-directory-list -----
 (
+ ("/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign8/" . "srt/")
+ ("/Users/yxy/Documents/playground/server_ws/" . "myapp/")
+ ("/ssh:root@45.79.73.214:/etc/nginx/" . "sites-available/")
+ ("/ssh:root@45.79.73.214:/etc/" . "nginx/")
+ ("/ssh:root@45.79.73.214:/" . "etc/")
+ ("/ssh:root@45.79.73.214:/root/myapp/" . "templates/")
+ ("/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/" . "cs35l/")
+ ("/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/" . "Documents/")
  ("/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/" . "FrackMan/")
  ("/Users/yxy/Documents/Classes/16win/CS32/projects/project3/" . "FrackMan/")
  ("/Users/yxy/Documents/CS/CPP/data-structure/" . "queue/")
  ("/Users/yxy/Documents/Classes/16win/CS35L/" . "assign10/")
  ("/Users/yxy/.emacs.d/" . "elpa/")
  ("/" . "Users/")
- ("/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/" . "assign5/")
+ ("/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/" . "assign7/")
  ("/ssh:xinyuy@lnxsrv07.seas.ucla.edu:Documents/cs35l/assign5/" . "coreutils-with-bug/")
  ("/ssh:xinyuy@lnxsrv07.seas.ucla.edu:Documents/cs35l/" . "assign5/")
  ("/ssh:xinyuy@lnxsrv07.seas.ucla.edu:Documents/" . "cs35l/")
@@ -20,23 +28,37 @@
  ("/Users/yxy/Documents/Classes/16win/" . "CS32/")
  ("/Users/yxy/Documents/Classes/" . "16win/")
  ("/Users/yxy/" . "Documents/")
- ("/Users/yxy/Documents/Classes/16win/CS32/projects/" . "project3/")
+ ("/Users/yxy/Documents/Classes/16win/CS32/projects/" . "hw4/")
  ("/Users/yxy/Documents/Classes/16win/CS32/" . "projects/")
- ("/Users/yxy/Documents/playground/" . "proflow/")
+ ("/Users/yxy/Documents/playground/" . "cpp/")
  ("/Users/yxy/Documents/" . "Classes/")
  ("/Users/" . "yxy/")
 )
 
 ;; ----- ido-work-directory-list -----
 (
- "/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/FrackMan/"
- "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign7/"
+ "/Users/yxy/dotfiles/"
  "/Users/yxy/"
+ "/Users/yxy/Documents/Classes/16win/CS32/projects/hw4/"
+ "/Users/yxy/Documents/playground/cpp/"
+ "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign8/"
+ "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign8/srt/"
+ "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign8/srt.orig/"
+ "/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/FrackMan/"
+ "/ssh:xinyuy@lnxsrv09.seas.ucla.edu:"
+ "/Users/yxy/.emacs.d/"
+ "/Users/yxy/Documents/playground/"
+ "/Users/yxy/Documents/playground/server_ws/myapp/"
+ "/Users/yxy/.emacs.d/elpa/"
+ "/ssh:root@45.79.73.214:/etc/nginx/sites-available/"
+ "/ssh:root@45.79.73.214:/root/myapp/templates/"
+ "/ssh:root@45.79.73.214:/root/myapp/"
+ "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign7/"
+ "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:"
  "/Users/yxy/Documents/playground/proflow/"
  "/Users/yxy/Documents/playground/codeday16/"
  "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign6/"
  "/Users/yxy/Documents/Classes/16win/CS32/projects/hw2/"
- "/Users/yxy/Documents/Classes/16win/CS32/projects/hw4/"
  "/Users/yxy/Documents/CS/CPP/data-structure/hash/"
  "/Users/yxy/Documents/CS/CPP/data-structure/segment_tree/"
  "/Users/yxy/Documents/CS/CPP/data-structure/queue/"
@@ -45,64 +67,81 @@
  "/Users/yxy/Documents/CS/CPP/data-structure/linked_list/"
  "/Users/yxy/Documents/CS/CPP/data-structure/heap/"
  "/Users/yxy/Documents/CS/CPP/data-structure/singly_linked_list/"
- "/Users/yxy/Documents/playground/cpp/"
  "/Users/yxy/Documents/Classes/16win/CS35L/assign10/"
  "/Users/yxy/Documents/Classes/16win/MATH32A/"
- "/Users/yxy/.emacs.d/elpa/"
  "/Users/yxy/Documents/Classes/16win/CS32/projects/hw3/"
  "/Users/yxy/Documents/Classes/16win/CS32/projects/hw3/cs32-hw3-test/"
  "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign5/"
  "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign5/coreutils-with-bug/src/"
- "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:"
  "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/w/home.09/cs/ugrad/xinyuy/Documents/cs35l/assign5/coreutils-with-bug/src/\"/w/home.09/cs/ugrad/xinyuy/"
  "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/w/home.09/cs/ugrad/xinyuy/Documents/cs35l/assign5/coreutils-with-bug/src/\"/w/home.09/cs/ugrad/xinyuy/Documents/cs35l/assign5/"
  "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:Documents/"
  "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:Documents/cs35l/assign5/coreutils-with-bug/"
  "/Users/yxy/Documents/playground/cpp/cs32/"
  "/Users/yxy/dotfiles/.emacs.d/elpa/"
- "/Users/yxy/dotfiles/"
  "/ssh:xinyuy@lnxsrv07.seas.ucla.edu:/u/cs/ugrad/xinyuy/Documents/cs35l/assign5/coreutils-with-bug/"
  "/Users/yxy/Documents/Classes/16win/CS32/projects/project2/cs32-proj2-test/"
  "/ssh:lnxsrv07.seas.ucla.edu:"
  "/Users/yxy/Documents/Classes/16win/CS32/projects/hw2/cs32-hw2-test/"
  "/Users/yxy/Documents/CS/CPP/parser/"
  "/Users/yxy/dotfiles/.emacs.d/elpa/linum-relative-20160117.2200/"
- "/Users/yxy/Documents/playground/"
  "/Users/yxy/Documents/playground/linux/"
  "/Users/yxy/Documents/Classes/16win/CS32/projects/project1/test/"
- "/Users/yxy/Documents/CS/Python/code_format/"
- "/Users/yxy/Documents/Classes/fall15/CS31/CS31Projects/Project7/robot/"
 )
 
 ;; ----- ido-work-file-list -----
 (
- "StudentWorld.cpp"
- "Actor.cpp"
- "lab.txt"
- "StudentWorld.h"
- "GameConstants.h"
- "tr2b.c"
- "tr2u.c"
- "Actor.h"
- ".bashrc"
- "GameWorld.cpp"
+ "get_pip.sh"
+ ".emacs"
+ "hw.txt"
+ "list.cpp"
+ "sorts.cpp"
+ "cs31grade.cpp"
+ "Map.h"
+ "log.txt"
+ "main.c"
+ "Makefile"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/FrackMan/" (22217 4780 0 0) "StudentWorld.h" "StudentWorld.cpp" "SpriteManager.h" "SoundFX.h" "main.cpp" "GraphObject.h" "GameWorld.h" "GameWorld.cpp" "GameController.h" "GameController.cpp" "GameConstants.h" "freeglut_std.h" "freeglut_ext.h" "freeglut.h" "Actor.h" "Actor.cpp" ".gitignore" ".git/" ".DS_Store" "../" "./")
+ ("/Users/yxy/dotfiles/" (22227 29048 0 0) "get_pip.sh" ".vimrc" ".gitignore" ".git/" ".emacs.d/" ".emacs" ".DS_Store" ".bashrc" "../" "./")
 
- ("/Users/yxy/Documents/playground/" (22212 11223 0 0) "web/" "tmp" "testimage.png" "test_socks.txt" "test_linkedlist.cpp" "test.sqlite" "test.sh" "test.py" "test.org" "test.java" "test.db" "sqlite.py" "socks.py" "socks.cpp" "server.py" "search_google.py" "runAllPEJavaFiles.sh" "resume.md" "pycharm/" "proflow/" "pe293/" "parentheses.py" "p3tester.sh" "notify33A.py" "notify32A.py" "medianfinder.py" "Maze.java" "linux/" "linkedlist.h" "linkedlist.cpp" "leetcode/" "kpcbchallenge.py" "jsworkshop/" "firstscript.m" "example.md" "eval_arith_wrong.cpp" "eval.cpp" "D11670.txt" "D11670.py" "D11670.cpp" "cpp/" "codeday16/" "chrome-ext-ex/" "browser.py" "average.m" ".DS_Store" "../" "./")
+ ("/Users/yxy/Documents/Classes/16win/CS32/projects/hw4/" (22226 52906 0 0) "test.cpp" "sorts.cpp" "Map.h" "list.cpp" "hw.txt" "3.output" "3.cpp" "2.cpp" "../" "./")
 
- ("/Users/yxy/dotfiles/" (22213 32891 0 0) "get_pip.sh" ".vimrc" ".gitignore" ".git/" ".emacs.d/" ".emacs" ".DS_Store" ".bashrc" "../" "./")
+ ("/Users/yxy/" (22226 48734 0 0) "VirtualBox VMs/" "Public/" "Pictures/" "OneDrive/" "octave/" "News/" "Music/" "Movies/" "Library/" "Google Drive/" "Downloads/" "dotfiles/" "Documents/" "Desktop/" "Applications/" ".Xauthority" ".wget-hsts" ".vimrc_szh" ".vimrc_gpi_szh" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".sympy-history" ".subversion/" ".ssh/" ".sh_history" ".saves/" ".rnd" ".python_history" ".PyCharm50/" ".PyCharm40/" ".php_history" ".oracle_jre_usage/" ".octave_packages" ".octave_hist" ".npm/" ".node_repl_history" ".matplotlib/" ".local/" ".lobo/" ".lldb/" ".lesshst" ".jupyter/" ".ipython/" ".idlerc/" ".gradle/" ".gnuplot_history" ".gitconfig" ".ghc/" ".gem/" ".eshell/" ".emacs.eggert" ".emacs.d/" ".emacs.before_ecb_2.50" ".emacs" ".ecb-tip-of-day.el" ".DS_Store" ".dropbox/" ".cups/" ".config/" ".cisco/" ".CFUserTextEncoding" ".cache/" ".bashrc" ".bash_profile" ".bash_history" ".atom/" ".anyconnect" ".android/" "../" "./")
 
- ("/Users/yxy/dotfiles/.emacs.d/elpa/" (22210 48443 0 0) "zenburn-theme-20160117.1119/" "yasnippet-20160131.948/" "with-editor-20160128.1201/" "swiper-20160201.1121/" "solarized-theme-1.0.0/" "smooth-scrolling/" "smart-mode-line-powerline-theme-20160111.932/" "smart-mode-line-20160125.900/" "rich-minority-20151201.400/" "pyvenv-20160108.28/" "python-environment-20150310.153/" "py-autopep8-20151231.614/" "powerline-20151008.1449/" "powerline/" "popup-20151222.1339/" "multiple-cursors-1.3.0/" "markdown-mode-20160121.528/" "magit-popup-20160130.649/" "magit-20160130.649/" "linum-relative-20160117.2200/" "jedi-core-20151029.2202/" "irony-20151016.1420/" "highlight-indentation-20150307.208/" "git-commit-20160130.649/" "find-file-in-project-20151216.1850/" "fic-mode-20140421.922/" "epc-20140609.2234/" "elpy-20160131.118/" "ecb/" "deferred-20151007.1657/" "dash-20151216.1315/" "ctable-20140304.1659/" "concurrent-20150309.2052/" "company-jedi-20151021.1441/" "company-irony-20150810.239/" "company-20151103.230/" "color-theme-sanityinc-tomorrow-readme.txt" "color-theme-sanityinc-solarized-readme.txt" "auto-complete-c-headers-20150911.2023/" "auto-complete-20160107.8/" "async-20160108.1249/" "archives/" "../" "./")
+ ("/Users/yxy/Documents/CS/CPP/data-structure/red_black_tree/" (22169 60555 0 0) "test_tree.cpp" "red_black_tree.h" "makefile" "../" "./")
 
- ("/Users/yxy/.emacs.d/elpa/" (22210 48443 0 0) "zenburn-theme-20160117.1119/" "yasnippet-20160131.948/" "with-editor-20160128.1201/" "swiper-20160201.1121/" "solarized-theme-1.0.0/" "smooth-scrolling/" "smart-mode-line-powerline-theme-20160111.932/" "smart-mode-line-20160125.900/" "rich-minority-20151201.400/" "pyvenv-20160108.28/" "python-environment-20150310.153/" "py-autopep8-20151231.614/" "powerline-20151008.1449/" "powerline/" "popup-20151222.1339/" "multiple-cursors-1.3.0/" "markdown-mode-20160121.528/" "magit-popup-20160130.649/" "magit-20160130.649/" "linum-relative-20160117.2200/" "jedi-core-20151029.2202/" "irony-20151016.1420/" "highlight-indentation-20150307.208/" "git-commit-20160130.649/" "find-file-in-project-20151216.1850/" "fic-mode-20140421.922/" "epc-20140609.2234/" "elpy-20160131.118/" "ecb/" "deferred-20151007.1657/" "dash-20151216.1315/" "ctable-20140304.1659/" "concurrent-20150309.2052/" "company-jedi-20151021.1441/" "company-irony-20150810.239/" "company-20151103.230/" "color-theme-sanityinc-tomorrow-readme.txt" "color-theme-sanityinc-solarized-readme.txt" "auto-complete-c-headers-20150911.2023/" "auto-complete-20160107.8/" "async-20160108.1249/" "archives/" "../" "./")
+ ("/Users/yxy/dotfiles/.emacs.d/elpa/" (22223 25268 0 0) "zenburn-theme-20160117.1119/" "yasnippet-20160131.948/" "with-editor-20160128.1201/" "swiper-20160201.1121/" "solarized-theme-20160106.15/" "smooth-scrolling/" "smart-mode-line-powerline-theme-20160111.932/" "smart-mode-line-20160125.900/" "rich-minority-20151201.400/" "pyvenv-20160108.28/" "python-environment-20150310.153/" "py-autopep8-20151231.614/" "powerline-20151008.1449/" "powerline/" "popup-20151222.1339/" "multiple-cursors-1.3.0/" "markdown-mode-20160121.528/" "magit-popup-20160130.649/" "magit-20160130.649/" "linum-relative-20160117.2200/" "jedi-core-20151029.2202/" "irony-20160203.1207/" "irony-20151016.1420/" "highlight-indentation-20150307.208/" "git-commit-20160130.649/" "find-file-in-project-20151216.1850/" "fic-mode-20140421.922/" "epc-20140609.2234/" "elpy-20160131.118/" "ecb/" "deferred-20151007.1657/" "dash-20151216.1315/" "ctable-20140304.1659/" "concurrent-20150309.2052/" "company-jedi-20151021.1441/" "company-irony-c-headers-20151018.209/" "company-irony-20150810.239/" "company-20160211.520/" "color-theme-sanityinc-tomorrow-readme.txt" "color-theme-sanityinc-solarized-readme.txt" "auto-complete-c-headers-20150911.2023/" "auto-complete-20160107.8/" "async-20160108.1249/" "archives/" "../" "./")
 
- ("/Users/yxy/Documents/playground/cpp/" (22212 49407 0 0) "while_assign.cpp" "while_assign.c" "test.py" "test.cpp" "template_string.cpp" "template.cpp" "switch.cpp" "swap.cpp" "swap.c" "struct.cpp" "struct.c" "string.cpp" "stl_list.cpp" "reference.cpp" "prog_paradigm/" "polymorphism.cpp" "pointer_arr.cpp" "pointer.cpp" "plus_assign.cpp" "overload.cpp" "iter_stl_algo.cpp" "inheritance.cpp" "diary.cpp" "date.cpp" "cs32/" "cs31grade.cpp" "cout_setf.cpp" "copy_cons_assign_op.cpp" "continue_assign.cpp" "const.cpp" "comparator.cpp" "class.cpp" "base_derived_class.cpp" "array.cpp" "../" "./")
+ ("/Users/yxy/Documents/playground/cpp/cs32/" (22222 50938 0 0) "tree.cpp" "recursive.cpp" "list_insert.cpp" "linked.cpp" "../" "./")
 
- ("/Users/yxy/" (22215 49399 0 0) "VirtualBox VMs/" "Public/" "Pictures/" "OneDrive/" "octave/" "News/" "Music/" "Movies/" "Library/" "Google Drive/" "Downloads/" "dotfiles/" "Documents/" "Desktop/" "Applications/" ".Xauthority" ".wget-hsts" ".vimrc_szh" ".vimrc_gpi_szh" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".sympy-history" ".subversion/" ".ssh/" ".sh_history" ".saves/" ".rnd" ".python_history" ".PyCharm50/" ".PyCharm40/" ".php_history" ".oracle_jre_usage/" ".octave_packages" ".octave_hist" ".npm/" ".node_repl_history" ".matplotlib/" ".lobo/" ".lldb/" ".lesshst" ".jupyter/" ".ipython/" ".idlerc/" ".gradle/" ".gnuplot_history" ".gitconfig" ".ghc/" ".gem/" ".emacs.eggert" ".emacs.d/" ".emacs.before_ecb_2.50" ".emacs" ".ecb-tip-of-day.el" ".DS_Store" ".dropbox/" ".cups/" ".config/" ".cisco/" ".CFUserTextEncoding" ".cache/" ".bashrc" ".bash_profile" ".bash_history" ".atom/" ".anyconnect" ".android/" "../" "./")
+ ("/Users/yxy/.emacs.d/elpa/" (22223 25268 0 0) "zenburn-theme-20160117.1119/" "yasnippet-20160131.948/" "with-editor-20160128.1201/" "swiper-20160201.1121/" "solarized-theme-20160106.15/" "smooth-scrolling/" "smart-mode-line-powerline-theme-20160111.932/" "smart-mode-line-20160125.900/" "rich-minority-20151201.400/" "pyvenv-20160108.28/" "python-environment-20150310.153/" "py-autopep8-20151231.614/" "powerline-20151008.1449/" "powerline/" "popup-20151222.1339/" "multiple-cursors-1.3.0/" "markdown-mode-20160121.528/" "magit-popup-20160130.649/" "magit-20160130.649/" "linum-relative-20160117.2200/" "jedi-core-20151029.2202/" "irony-20160203.1207/" "irony-20151016.1420/" "highlight-indentation-20150307.208/" "git-commit-20160130.649/" "find-file-in-project-20151216.1850/" "fic-mode-20140421.922/" "epc-20140609.2234/" "elpy-20160131.118/" "ecb/" "deferred-20151007.1657/" "dash-20151216.1315/" "ctable-20140304.1659/" "concurrent-20150309.2052/" "company-jedi-20151021.1441/" "company-irony-c-headers-20151018.209/" "company-irony-20150810.239/" "company-20160211.520/" "color-theme-sanityinc-tomorrow-readme.txt" "color-theme-sanityinc-solarized-readme.txt" "auto-complete-c-headers-20150911.2023/" "auto-complete-20160107.8/" "async-20160108.1249/" "archives/" "../" "./")
+
+ ("/Users/yxy/.emacs.d/" (22226 27595 0 0) "url/" "tramp" "themes/" "snippets/" "init_bash.sh" "ido.last" "games/" "eshell/" "elpa/" "auto-save-list/" "ac-comphist.dat" ".mc-lists.el" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/FrackMan/" (22225 14952 0 0) "StudentWorld.h" "StudentWorld.cpp" "SpriteManager.h" "SoundFX.h" "report.txt" "main.cpp" "GraphObject.h" "GameWorld.h" "GameWorld.cpp" "GameController.h" "GameController.cpp" "GameConstants.h" "freeglut_std.h" "freeglut_ext.h" "freeglut.h" "Actor.h" "Actor.cpp" ".gitignore" ".git/" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/" (22213 30975 0 0) "part1.zip" "FrackMan.xcodeproj/" "FrackMan/" "DerivedData/" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/CS32/" (22218 33472 0 0) "SupplementLinkedLists.pdf" "projects/" "oodtips.pdf" "midterm2/" "midterm1/" "CS32-Handouts-16/" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/playground/linux/" (22220 45145 0 0) "tr.txt" "sort.txt" "shell/" "sed.txt" "remove_backspace.cpp" "patch.txt" "ls.txt" "locale.txt" "grep.txt" "get_man.sh" "find.txt" "comm.txt" "chmod_ls.txt" "chmod.txt" "bash.txt" "../" "./")
+
+ ("/Users/yxy/.eshell/" (22220 11987 0 0) "profile" "../" "./")
+
+ ("/Users/yxy/Documents/Classes/16win/MATH32A/" (22218 33461 0 0) "Math32ASyllabusWinter2016.pdf" "Math32APracticeExam2.pdf" "Math32APracticeExam1Answers.pdf" "Math32APracticeExam1.pdf" "Calculus+by+Jon+Rogawski+3th+3rd+3e.pdf" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/playground/server_ws/myapp/" (22220 1618 0 0) "templates/" "app.py" "../" "./")
+
+ ("/Users/yxy/dotfiles/.emacs.d/" (22220 6662 0 0) "url/" "tramp" "themes/" "snippets/" "init_bash.sh" "ido.last" "games/" "eshell/" "elpa/" "auto-save-list/" "ac-comphist.dat" ".mc-lists.el" ".DS_Store" "../" "./")
+
+ ("/Users/yxy/Documents/playground/" (22220 4449 0 0) "web/" "tmp" "testimage.png" "test_socks.txt" "test_linkedlist.cpp" "test.sqlite" "test.sh" "test.py" "test.org" "test.java" "test.db" "strip_comment.pl" "sqlite.py" "socks.py" "socks.cpp" "server_ws/" "server.py" "search_google.py" "runAllPEJavaFiles.sh" "resume.md" "pycharm/" "proflow/" "pe293/" "parentheses.py" "p3tester.sh" "notify33A.py" "notify32A.py" "medianfinder.py" "Maze.java" "linux/" "linkedlist.h" "linkedlist.cpp" "leetcode/" "kpcbchallenge.py" "jsworkshop/" "firstscript.m" "example.md" "eval_arith_wrong.cpp" "eval.cpp" "D11670.txt" "D11670.py" "D11670.cpp" "cpp/" "codeday16/" "chrome-ext-ex/" "browser.py" "average.m" "../" "./")
+
+ ("/Users/yxy/Documents/playground/server_ws/" (22219 64333 0 0) "myapp/" "index.html" "../" "./")
+
+ ("/Users/yxy/Documents/playground/cpp/" (22219 44186 0 0) "while_assign.cpp" "while_assign.c" "test.py" "test.cpp" "template_string.cpp" "template.cpp" "switch.cpp" "swap.cpp" "swap.c" "struct.cpp" "struct.c" "string.cpp" "stl_list.cpp" "reference.cpp" "prog_paradigm/" "polymorphism.cpp" "pointer_arr.cpp" "pointer.cpp" "plus_assign.cpp" "overload.cpp" "iter_stl_algo.cpp" "inheritance.cpp" "diary.cpp" "date.cpp" "cs32/" "cs31grade.cpp" "cout_setf.cpp" "copy_cons_assign_op.cpp" "continue_assign.cpp" "const.cpp" "comparator.cpp" "class.cpp" "base_derived_class.cpp" "array.cpp" "../" "./")
 
  ("/Users/yxy/Documents/Classes/16win/CS35L/" (22211 32315 0 0) "Week3-W.pptx" "Week3-M.pptx" "Week1-M.pptx" "sampleScript.sh" "sample.py" "sameln.sh" "ls.pdf" "locale.pdf" "lec5.pdf" "lec4.pdf" "lec2.pdf" "lab5b.ppt" "lab5a.ppt" "lab3b.pptx" "lab3a.ppt" "lab1a.pptx" "grep.pdf" "find.pdf" "Fibonacci.py" "chmod.pdf" "assign7/" "assign6/" "assign5/" "assign4/" "assign3/" "assign2/" "assign10/" "assign1/" ".DS_Store" "../" "./")
 
@@ -110,15 +149,9 @@
 
  ("/Users/yxy/Documents/playground/proflow/" (22208 44710 0 0) "view.js" "view.css" "test.html" "README.md" "manifest.json" "index.html" "icon.png" "history.js" "Google_search_API/" "Google_API_testing.html" "Evernote_API/" "color.js" "bower_components/" ".gitignore" ".git/" "../" "./")
 
- ("/Users/yxy/Documents/Classes/16win/CS32/" (22210 37867 0 0) "SupplementLinkedLists.pdf" "projects/" "oodtips.pdf" "midterm1/" "CS32-Handouts-16/" ".DS_Store" "../" "./")
-
  ("/Users/yxy/Documents/Classes/16win/CS32/projects/project3/" (22210 36087 0 0) "structure.diff" "FrackMan-skeleton/" "FrackMan-game/" "FrackMan/" ".DS_Store" "../" "./")
 
- ("/Users/yxy/Documents/Classes/16win/CS32/projects/project3/FrackMan/" (22210 28709 0 0) "FrackMan.xcodeproj/" "FrackMan/" "DerivedData/" ".DS_Store" "../" "./")
-
  ("/Users/yxy/Documents/playground/codeday16/" (22207 43465 0 0) "manifest.json" ".idea/" "../" "./")
-
- ("/Users/yxy/Documents/Classes/16win/CS32/projects/hw4/" (22206 40160 0 0) "test.cpp" "Map.h" "../" "./")
 
  ("/usr/" (22065 37901 0 0) "X11R6/" "X11/" "texbin/" "standalone/" "share/" "sbin/" "local/" "libexec/" "lib/" "include/" "bin/" "../" "./")
 
@@ -127,8 +160,6 @@
  ("/usr/share/info/" (21995 47523 0 0) "woman" "widget" "viper" "vip" "uucp.info-8" "uucp.info-7" "uucp.info-6" "uucp.info-5" "uucp.info-4" "uucp.info-3" "uucp.info-2" "uucp.info-1" "uucp.info" "url" "tramp" "texinfo-3" "texinfo-2" "texinfo-1" "texinfo" "speedbar" "smtpmail" "sieve" "ses" "screen.info-5" "screen.info-4" "screen.info-3" "screen.info-2" "screen.info-1" "screen.info" "sc" "reftex" "rcirc" "pgg" "pcl-cvs" "org-2" "org-1" "org" "newsticker" "mh-e-2" "mh-e-1" "mh-e" "message" "info.info" "info-stnd.info" "info" "idlwave" "groff-3" "groff-2" "groff-1" "groff" "gnus-5" "gnus-4" "gnus-3" "gnus-2" "gnus-1" "gnus" "forms" "flymake" "eudc" "eshell" "erc" "emacs-mime" "emacs-8" "emacs-7" "emacs-6" "emacs-5" "emacs-4" "emacs-3" "emacs-2" "emacs-1" "emacs" "elisp-9" "elisp-8" "elisp-7" "elisp-6" "elisp-5" "elisp-4" "elisp-3" "elisp-2" "elisp-10" "elisp-1" "elisp" "eintr-3" "eintr-2" "eintr-1" "eintr" "efaq" "ediff" "ebrowse" "dired-x" "dir" "diff.info" "dc.info" "cl" "ccmode-1" "ccmode" "calc-6" "calc-5" "calc-4" "calc-3" "calc-2" "calc-1" "calc" "bc.info" "bash.info" "autotype" "ada-mode" "../" "./")
 
  ("/Users/yxy/Documents/Classes/16win/CS32/projects/" (22206 8038 0 0) "project3/" "project2/" "project1/" "hw4/" "hw3/" "hw2/" "hw1/" ".DS_Store" "../" "./")
-
- ("/Users/yxy/Documents/playground/linux/" (22204 52563 0 0) "tr.txt" "sort.txt" "shell/" "sed.txt" "remove_backspace.cpp" "patch.txt" "ls.txt" "locale.txt" "grep.txt" "find.txt" "comm.txt" "chmod_ls.txt" "chmod.txt" "bash.txt" "../" "./")
 
  ("/Users/yxy/Documents/CS/CPP/data-structure/singly_linked_list/" (22205 39304 0 0) "test_linked.cpp" "singly_linked.h" "makefile" "CMakeLists.txt" ".idea/" "../" "./")
 
@@ -157,14 +188,6 @@
  ("/Users/yxy/Documents/Classes/16win/CS32/projects/hw3/" (22201 38095 0 0) "tree.cpp" "testing.h" "test_tree.cpp" "test_maze.cpp" "test_linear.cpp" "test_landmark.cpp" "maze.cpp" "makefile" "linear.cpp" "landmark.cpp" "hw3.zip" "cs32-hw3-test/" ".gitignore" ".git/" "../" "./")
 
  ("/Users/yxy/Documents/Classes/16win/CS35L/assign10/" (22201 32894 0 0) "scripting.md" "Reusable_compilation_technology.pdf" "res/" "presentation.md" "presentation.html" "llvm.md" "llvm.html" "../" "./")
-
- ("/Users/yxy/Documents/Classes/16win/MATH32A/" (22202 36725 0 0) "Math32ASyllabusWinter2016.pdf" "Math32APracticeExam1Answers.pdf" "Math32APracticeExam1.pdf" "Calculus+by+Jon+Rogawski+3th+3rd+3e.pdf" ".DS_Store" "../" "./")
-
- ("/Users/yxy/dotfiles/.emacs.d/" (22198 55117 0 0) "tramp" "themes/" "snippets/" "init_bash.sh" "ido.last" "games/" "eshell/" "elpa/" "auto-save-list/" "ac-comphist.dat" ".mc-lists.el" ".DS_Store" "../" "./")
-
- ("/Users/yxy/.emacs.d/" (22198 55117 0 0) "tramp" "themes/" "snippets/" "init_bash.sh" "ido.last" "games/" "eshell/" "elpa/" "auto-save-list/" "ac-comphist.dat" ".mc-lists.el" ".DS_Store" "../" "./")
-
- ("/Users/yxy/Documents/playground/cpp/cs32/" (22194 21177 0 0) "recursive.cpp" "list_insert.cpp" "linked.cpp" "../" "./")
 
  ("/Users/yxy/Documents/CS/CPP/parser/" (22191 51375 0 0) "README.md" "makefile" "main.cpp" "arith_eval.h" "arith_eval.cpp" ".gitignore" ".git/" "../" "./")
 

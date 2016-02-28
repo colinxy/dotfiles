@@ -30,9 +30,3 @@ CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare -Werror=return-type \
     -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer'
 
 export CXXFLAGS
-
-# powerline for bash
-powerline-daemon -q
-POWERLINE_BASH_CONTINUATION=1
-POWERLINE_BASH_SELECT=1
-. $powerline_root/powerline/bindings/bash/powerline.sh
