@@ -1,3 +1,6 @@
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  basic config  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; disable start-up message
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message t)
@@ -30,6 +33,24 @@
 (require 'fic-mode)
 (add-hook 'prog-mode-hook `turn-on-fic-mode)
 
+;; indentation support, do not indent with tabs
+(setq-default indent-tabs-mode nil)
+;; (setq-default tab-width 4)
+(global-set-key (kbd "RET") 'newline-and-indent)
+(global-unset-key (kbd "C-m"))
+(global-unset-key (kbd "C-o"))
+
+;; show line number and column number
+;; (global-linum-mode 1)
+;; personal costumized internally, changed current line indicator
+;; (add-to-list 'load-path "~/.emacs.d/elpa/linum-relative-20160117.2200/")
+;; (require 'linum-relative)
+;; (linum-relative-on)
+(setq column-number-mode t)
+(show-paren-mode 1)
+(when window-system
+  (add-hook 'prog-mode-hook 'hl-line-mode))
+
 ;; auto insert pair
 ;; M-( ; insert ()
 (global-set-key (kbd "M-[") 'insert-pair)  ; insert []
@@ -37,11 +58,18 @@
 (global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
 
 ;; package archive
+(require 'package)
 (setq package-archives '(("elpa" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
+;; melpa stable
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;  windows and moving  ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; for gui window
 (when window-system
@@ -53,12 +81,84 @@
   (set-face-attribute 'default nil :height 140)
 
   ;; for Mac OS X >= 10.7
-  ;; toggle-frame-maximized binded with M-<F10>
+  ;; toggle-frame-maximized binded with M-<f10>
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized)) ; alternative
-  ;; toggle-frame-fullscreen binded with <F11> (default)
+  ;; toggle-frame-fullscreen binded with <f11> (default)
   ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
   (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen))
 
+
+;; window management
+
+(defun my-split-window-right-open-file ()
+  (interactive)
+  (split-window-right)
+  (windmove-right)
+  (ido-find-file)
+  )
+(defun my-split-window-right-switch-buffer ()
+  (interactive)
+  (split-window-right)
+  (windmove-right)
+  (ido-switch-buffer)
+  )
+;; C-x 3   to split right
+;; C-x C-3 to split right and open file
+(if window-system
+    ;; gui
+    (global-set-key (kbd "C-x C-3 f") 'my-split-window-right-open-file)
+  ;; terminal
+  (global-set-key (kbd "C-x M-3 f") 'my-split-window-right-open-file))
+(if window-system
+    ;; gui
+    (global-set-key (kbd "C-x C-3 b") 'my-split-window-right-switch-buffer)
+  ;; terminal
+  (global-set-key (kbd "C-x M-3 b") 'my-split-window-right-switch-buffer))
+
+(defun my-split-window-below-open-file ()
+  (interactive)
+  (split-window-below)
+  (windmove-down)
+  (ido-find-file)
+  )
+(defun my-split-window-below-switch-buffer ()
+  (interactive)
+  (split-window-below)
+  (windmove-down)
+  (ido-switch-buffer)
+  )
+;; C-x 2   to split below
+;; C-x C-2 to split below and open file
+(if window-system
+    ;; gui
+    (global-set-key (kbd "C-x C-2 f") 'my-split-window-below-open-file)
+  ;; terminal
+  (global-set-key (kbd "C-x M-2 f") 'my-split-window-below-open-file))
+(if window-system
+    ;; gui
+    (global-set-key (kbd "C-x C-2 b") 'my-split-window-below-switch-buffer)
+  ;; terminal
+  (global-set-key (kbd "C-x M-2 b") 'my-split-window-below-switch-buffer))
+
+;; move between windows
+;; only works for gui
+(global-set-key (kbd "M-<up>") 'windmove-up)
+(global-set-key (kbd "M-<down>") 'windmove-down)
+(global-set-key (kbd "M-<left>") 'windmove-left)
+(global-set-key (kbd "M-<right>") 'windmove-right)
+
+
+;; mutiple cursor
+;; Shift key does not work for terminal
+(add-to-list 'load-path "~/.emacs.d/elpa/multiple-cursors-1.3.0/")
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C-.") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;  themes and convenience  ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; emacs themes
 (if window-system
@@ -66,8 +166,9 @@
     (progn
       ;; theme for solarized
       ;; (setq custom-safe-themes t)
-      (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-      (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/solarized-theme-1.0.0")
+      ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+      (add-to-list 'custom-theme-load-path
+                   "~/.emacs.d/elpa/solarized-theme-20160106.15/")
       (load-theme 'solarized-dark t)
       (setq x-underline-at-descent-line t)
       ;; (setq solarized-termcolors 256)
@@ -84,13 +185,7 @@
 ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 
-;; mutiple cursor
-;; (require 'multiple-cursors)
-;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-;; (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
-;; (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
-;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
-
+;;;; modeline
 
 ;; smart mode line
 ;; (setq sml/shorten-directory t)
@@ -106,21 +201,6 @@
 (setq ns-use-srgb-colorspace nil)
 (require 'powerline)
 (powerline-default-theme)
-
-
-;; indentation support, do not indent with tabs
-(setq-default indent-tabs-mode nil)
-;; (setq-default tab-width 4)
-(define-key global-map (kbd "RET") 'newline-and-indent)
-
-
-;; show line number and column number
-;; (global-linum-mode 1)
-;; (personal costumized internally, edit elisp file)
-;; (require 'linum-relative)
-;; (linum-relative-on)
-(setq column-number-mode t)
-(show-paren-mode 1)
 
 
 ;; enable interactively do things (ido)
@@ -145,36 +225,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  company-mode  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (add-to-list 'load-path "~/.emacs.d/elpa/company-20160211.520")
+;; (add-to-list 'load-path "~/.emacs.d/elpa/company-20160228.1509")
 ;; (require 'company)
 ;; (add-hook 'after-init-hook 'global-company-mode)
 ;; ;; customize company color
 ;; (require 'color)
 ;; (let ((bg (face-attribute 'default :background)))
 ;;   (custom-set-faces
-;;    `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+;;    `(company-tooltip ((t (:inherit default :background ,
+;;                                    (color-lighten-name bg 2)))))
 ;;    `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
 ;;    `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
 ;;    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
 ;;    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
 
-;; company-irony for C/C++
+
+;; irony for C/C++
 ;; (add-to-list 'load-path "~/.emacs.d/elpa/irony-20160203.1207/")
 ;; (require 'irony)
 ;; (add-hook 'c++-mode-hook 'irony-mode)
 ;; (add-hook 'c-mode-hook 'irony-mode)
-
 ;; company irony backend for c++
 ;; (eval-after-load 'company
 ;;   '(add-to-list 'company-backends 'company-irony))
 
 ;; company-jedi for python auto-complete
-;; (defun my/python-mode-hook ()
+;; (defun my-python-mode-hook ()
 ;;   (add-to-list 'company-backends 'company-jedi))
-;; (add-hook 'python-mode-hook 'my/python-mode-hook)
+;; (add-hook 'python-mode-hook 'my-python-mode-hook)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  auto-complete  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; requires popup
 (require 'auto-complete)
 (require 'auto-complete-config)
@@ -183,8 +265,10 @@
 ;; auto-complete-c-header
 (defun my-ac-c-header-init ()
    (require 'auto-complete-c-headers)
-   (add-to-list 'ac-sources 'ac-source-c-headers)
-   (add-to-list 'achead:include-directories '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
+   (add-to-list 'ac-sources
+                'ac-source-c-headers)
+   (add-to-list 'achead:include-directories
+                '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
 (add-hook 'c++-mode-hook 'my-ac-c-header-init)
 (add-hook 'c-mode-hook 'my-ac-c-header-init)
 
@@ -246,8 +330,6 @@
             (local-set-key (kbd "C-c C-c")
                            #'my-comment-or-uncomment-line-or-region)))
 
-
-
 ;; Python
 
 ;; elpy
@@ -278,9 +360,8 @@
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 
-;; IDE like
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  emacs code browser  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; ecb, emacs code browser
 (add-to-list 'load-path "~/.emacs.d/elpa/ecb")
 (require 'ecb)
 ;(require 'ecb-autoloads)
@@ -313,7 +394,10 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
+    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4"
+     "b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f"
+     "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e"
+     default)))
  '(ecb-options-version "2.50")
  '(fci-rule-color "#073642")
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
