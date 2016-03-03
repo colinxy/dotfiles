@@ -13,6 +13,7 @@ alias ll='ls -alF'
 alias grep='grep --color'
 alias more='more -R'
 alias less='less -R'
+alias tree='tree -C'
 
 # emacs
 alias emacs='emacs -nw'

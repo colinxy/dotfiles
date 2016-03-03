@@ -37,7 +37,7 @@
 (setq-default indent-tabs-mode nil)
 ;; (setq-default tab-width 4)
 (global-set-key (kbd "RET") 'newline-and-indent)
-(global-unset-key (kbd "C-m"))
+;; (global-unset-key (kbd "C-m"))
 (global-unset-key (kbd "C-o"))
 
 ;; show line number and column number
@@ -54,8 +54,11 @@
 ;; auto insert pair
 ;; M-( ; insert ()
 (global-set-key (kbd "M-[") 'insert-pair)  ; insert []
-;; (global-set-key (kbd "M-{") 'insert-pair)  ; insert {}  ; conflict keybinding
+;; (global-set-key (kbd "M-{") 'insert-pair) ; insert {} ; conflict keybinding
 (global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
+
+;; dired
+(setq delete-by-moving-to-trash t)
 
 ;; package archive
 (require 'package)
@@ -94,14 +97,12 @@
   (interactive)
   (split-window-right)
   (windmove-right)
-  (ido-find-file)
-  )
+  (ido-find-file))
 (defun my-split-window-right-switch-buffer ()
   (interactive)
   (split-window-right)
   (windmove-right)
-  (ido-switch-buffer)
-  )
+  (ido-switch-buffer))
 ;; C-x 3   to split right
 ;; C-x C-3 to split right and open file
 (if window-system
@@ -119,14 +120,12 @@
   (interactive)
   (split-window-below)
   (windmove-down)
-  (ido-find-file)
-  )
+  (ido-find-file))
 (defun my-split-window-below-switch-buffer ()
   (interactive)
   (split-window-below)
   (windmove-down)
-  (ido-switch-buffer)
-  )
+  (ido-switch-buffer))
 ;; C-x 2   to split below
 ;; C-x C-2 to split below and open file
 (if window-system
@@ -142,10 +141,13 @@
 
 ;; move between windows
 ;; only works for gui
-(global-set-key (kbd "M-<up>") 'windmove-up)
-(global-set-key (kbd "M-<down>") 'windmove-down)
-(global-set-key (kbd "M-<left>") 'windmove-left)
-(global-set-key (kbd "M-<right>") 'windmove-right)
+(when (eq system-type 'darwin)
+  (progn
+    (setq mac-command-modifier 'super)
+    (global-set-key (kbd "s-<up>") 'windmove-up)
+    (global-set-key (kbd "s-<down>") 'windmove-down)
+    (global-set-key (kbd "s-<left>") 'windmove-left)
+    (global-set-key (kbd "s-<right>") 'windmove-right)))
 
 
 ;; mutiple cursor
