@@ -23,16 +23,6 @@
 ;; (load-file "~/.emacs.d/elpa/smooth-scrolling/smooth-scrolling.el")
 ;; (require 'smooth-scrolling)
 
-;; delete trailing white space
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; enable code folding
-(add-hook 'prog-mode-hook #'hs-minor-mode)
-;; highlight TODO FIXME (s) (make sure it is highlighted)
-(add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20140421.922/")
-(require 'fic-mode)
-(add-hook 'prog-mode-hook `turn-on-fic-mode)
-
 ;; indentation support, do not indent with tabs
 (setq-default indent-tabs-mode nil)
 ;; (setq-default tab-width 4)
@@ -54,8 +44,10 @@
 ;; auto insert pair
 ;; M-( ; insert ()
 (global-set-key (kbd "M-[") 'insert-pair)  ; insert []
-;; (global-set-key (kbd "M-{") 'insert-pair) ; insert {} ; conflict keybinding
 (global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
+
+;; delete trailing white space
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; dired
 (setq delete-by-moving-to-trash t)
@@ -88,7 +80,9 @@
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized)) ; alternative
   ;; toggle-frame-fullscreen binded with <f11> (default)
   ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
-  (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen))
+  (when (eq system-type 'darwin)        ; conflicts with mac command
+    (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen))
+  )
 
 
 ;; window management
@@ -143,11 +137,11 @@
 ;; only works for gui
 (when (eq system-type 'darwin)
   (progn
-    (setq mac-command-modifier 'super)
-    (global-set-key (kbd "s-<up>") 'windmove-up)
-    (global-set-key (kbd "s-<down>") 'windmove-down)
-    (global-set-key (kbd "s-<left>") 'windmove-left)
-    (global-set-key (kbd "s-<right>") 'windmove-right)))
+    (setq mac-command-modifier 'super)))
+(global-set-key (kbd "s-<up>") 'windmove-up)
+(global-set-key (kbd "s-<down>") 'windmove-down)
+(global-set-key (kbd "s-<left>") 'windmove-left)
+(global-set-key (kbd "s-<right>") 'windmove-right)
 
 
 ;; mutiple cursor
@@ -287,7 +281,14 @@
 ;; (ac-set-trigger-key "<tab>")
 
 
-;;; language support
+;;; programmin support
+
+;; enable code folding
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+;; highlight TODO FIXME (s) (make sure it is highlighted)
+(add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20140421.922/")
+(require 'fic-mode)
+(add-hook 'prog-mode-hook `turn-on-fic-mode)
 
 ;; general
 (defun my-select-current-line ()
