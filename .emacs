@@ -154,12 +154,28 @@
 (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
+;; org-mode
+(setq org-src-fontify-natively t)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;  themes and convenience  ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; loading fic-mode before solarized theme will get a better look
+;; highlight TODO FIXME (s) (make sure it is highlighted)
+;; (add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20140421.922/")
+;; (require 'fic-mode)
+;; (add-hook 'prog-mode-hook `turn-on-fic-mode)
 
 ;; emacs themes
 (if window-system
     ;; gui
     (progn
+      ;; loading fic-mode before solarized theme will get a better look
+      ;; highlight TODO FIXME (s) (make sure it is highlighted)
+      (add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20140421.922/")
+      (require 'fic-mode)
+      (turn-on-fic-mode)
+
       ;; theme for solarized
       ;; (setq custom-safe-themes t)
       ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
@@ -285,10 +301,6 @@
 
 ;; enable code folding
 (add-hook 'prog-mode-hook #'hs-minor-mode)
-;; highlight TODO FIXME (s) (make sure it is highlighted)
-(add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20140421.922/")
-(require 'fic-mode)
-(add-hook 'prog-mode-hook `turn-on-fic-mode)
 
 ;; general
 (defun my-select-current-line ()
