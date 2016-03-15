@@ -27,8 +27,13 @@
 (setq-default indent-tabs-mode nil)
 ;; (setq-default tab-width 4)
 (global-set-key (kbd "RET") 'newline-and-indent)
+
+;; same keys are easy to mispress
 ;; (global-unset-key (kbd "C-m"))
 (global-unset-key (kbd "C-o"))
+(global-unset-key (kbd "C-x C-w"))
+;; TODO try enable it only when a region is selected
+;; (global-unset-key (kbd "C-w"))
 
 ;; show line number and column number
 ;; (global-linum-mode 1)
@@ -48,9 +53,6 @@
 
 ;; delete trailing white space
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; dired
-(setq delete-by-moving-to-trash t)
 
 ;; package archive
 (require 'package)
@@ -154,40 +156,48 @@
 (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; dired-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq delete-by-moving-to-trash t)
+
+;; dired file search
+(eval-after-load "dired"
+  '(progn
+     (define-key dired-mode-map (kbd "C-s")
+       'dired-isearch-filenames)
+     (define-key dired-mode-map (kbd "C-M-s")
+       'dired-isearch-filenames-regexp)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; org-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; org-mode
 (setq org-src-fontify-natively t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;  themes and convenience  ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; loading fic-mode before solarized theme will get a better look
-;; highlight TODO FIXME (s) (make sure it is highlighted)
-;; (add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20140421.922/")
-;; (require 'fic-mode)
-;; (add-hook 'prog-mode-hook `turn-on-fic-mode)
-
 ;; emacs themes
 (if window-system
     ;; gui
     (progn
-      ;; loading fic-mode before solarized theme will get a better look
-      ;; highlight TODO FIXME (s) (make sure it is highlighted)
-      (add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20140421.922/")
-      (require 'fic-mode)
-      (turn-on-fic-mode)
-
       ;; theme for solarized
       ;; (setq custom-safe-themes t)
       ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
       (add-to-list 'custom-theme-load-path
                    "~/.emacs.d/elpa/solarized-theme-20160106.15/")
       (load-theme 'solarized-dark t)
+      ;; for modeline
       (setq x-underline-at-descent-line t)
       ;; (setq solarized-termcolors 256)
       )
   ;; terminal
   (load-theme 'tango-dark t))
 
+;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
+(add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20160209.1011/")
+(require 'fic-mode)
+(add-hook 'prog-mode-hook 'fic-mode)
 
 ;; shell integration
 ;; M-x eshell
@@ -196,6 +206,12 @@
 ;; M-x ansi-term
 ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
+;; exec-path-from-shell: consistent with shell in Mac OS X
+(when (memq window-system '(mac ns))
+  (progn
+    (add-to-list 'load-path "~/.emacs.d/elpa/exec-path-from-shell-1.10")
+    (exec-path-from-shell-initialize))
+  )
 
 ;;;; modeline
 
@@ -379,7 +395,8 @@
 
 (add-to-list 'load-path "~/.emacs.d/elpa/ecb")
 (require 'ecb)
-;(require 'ecb-autoloads)
+;; do not autoload
+;; (require 'ecb-autoloads)
 (setq ecb-layout-name "left6")
 (setq ecb-show-sources-in-directories-buffer 'always)
 (setq ecb-show-tip-of-the-day 0)
@@ -409,12 +426,10 @@
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
-    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4"
-     "b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f"
-     "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e"
-     default)))
+    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
  '(ecb-options-version "2.50")
  '(fci-rule-color "#073642")
+ '(fic-highlighted-words (quote ("FIXME" "TODO" "BUG" "CHECKME")))
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-tail-colors
    (quote
