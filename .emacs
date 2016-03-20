@@ -1,11 +1,17 @@
+;;; .emacs --- My emacs configuration
 
-;; install emacs with cocoa on Mac OSX
-;; brew install emacs --with-cocoa
-
+;;; Commentary:
+;;
+;; Flycheck made me do this
+;;
+;; install Emacs with cocoa on Mac OSX
+;; $ brew install Emacs --with-cocoa
+;;
 ;; TODO
 ;; 1. reorganize packages with use-package
-;; 2. set up flycheck
-;; 3. restructure the entire init-file with org-babel
+;; 2. restructure the entire init-file with org-babel
+;;
+;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  basic config  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -13,7 +19,7 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message "colinxy")
 
-;; follow symbolic links
+;; version control follow symbolic links
 (setq vc-follow-symlinks t)
 
 ;; backup files
@@ -23,24 +29,28 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; smooth scrolling
-(setq redisplay-dont-pause t
-      scroll-margin 1
+;; keyboard
+(setq scroll-margin 1
       scroll-step 1
       scroll-conservatively 10000
       scroll-preserve-screen-position 1)
+;; mouse
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ; one line at a time
+;; (setq mouse-wheel-progressive-speed nil) ; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse t)       ; scroll window under mouse
 
 ;; indentation support, do not indent with tabs
 (setq-default indent-tabs-mode nil)
 ;; (setq-default tab-width 4)
 (global-set-key (kbd "RET") 'newline-and-indent)
 
-;; same keys are easy to mispress
+;; some keys are easy to mispress
 ;; (global-unset-key (kbd "C-m"))
 (global-unset-key (kbd "C-o"))
 (global-unset-key (kbd "C-x C-w"))
 ;; C-w is only enabled when a region is selected
 (defun my-kill-region ()
-  "cuts only when a region is selected"
+  "Cuts only when a region is selected."
   (interactive)
   (when mark-active
     (kill-region (region-beginning) (region-end))))
@@ -65,14 +75,24 @@
 
 ;; package archive
 (require 'package)
+(setq package-enable-at-startup nil)
 (setq package-archives
       '(("elpa" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
         ("marmalade" . "http://marmalade-repo.org/packages/")
         ("melpa" . "http://melpa.milkbox.net/packages/")
         ("melpa-stable" . "https://stable.melpa.org/packages/")))
-;; melpa stable
 (package-initialize)
+
+;; reference
+;; http://cachestocaches.com/2015/8/getting-started-use-package/
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (package-install 'use-package))
+
+(require 'use-package)
+(require 'diminish)
+(require 'bind-key)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;  windows and moving  ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -83,15 +103,17 @@
   ;; (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
-  ;; The value is in 1/10pt, so 100 will give you 10pt
-  (set-face-attribute 'default nil :height 140)
+
+  ;; set font
+  (set-face-attribute 'default nil
+                      :font "Monaco 14")
 
   ;; for Mac OS X >= 10.7
   ;; toggle-frame-maximized binded with M-<f10>
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
   ;; toggle-frame-fullscreen binded with <f11> (default)
   ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
-  ;; <f11> conflicts with mac command
+  ;; <f11> conflicts with mac command, bind it to M-<f11>
   (when (eq system-type 'darwin)
     (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen))
   )
@@ -158,7 +180,6 @@
 ;; mutiple cursor
 ;; Shift key does not work for terminal
 ;; load path handled by package.el
-;; (add-to-list 'load-path "~/.emacs.d/elpa/multiple-cursors-1.3.0/")
 (require 'multiple-cursors)
 ;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
@@ -187,26 +208,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;  themes and convenience  ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; emacs themes
-(if window-system
-    ;; gui
-    (progn
-      ;; theme for solarized
-      ;; (setq custom-safe-themes t)
-      ;; load theme handled by package.el
-      ;; (add-to-list 'custom-theme-load-path
-      ;;              "~/.emacs.d/elpa/solarized-theme-20160106.15/")
-      (load-theme 'solarized-dark t)
-      ;; for modeline
-      (setq x-underline-at-descent-line t)
-      ;; (setq solarized-termcolors 256)
-      )
-  ;; terminal
-  (load-theme 'tango-dark t))
-
 ;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
 ;; load path handled by package.el
-;; (add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20160209.1011/")
 (require 'fic-mode)
 (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
 (add-hook 'prog-mode-hook 'fic-mode)
@@ -222,11 +225,53 @@
 (when (memq window-system '(mac ns))
   (progn
     ;; load path handled by package.el
-    ;; (add-to-list 'load-path "~/.emacs.d/elpa/exec-path-from-shell-1.10")
     (exec-path-from-shell-initialize))
   )
 
-;;;; modeline
+;; emacs themes
+(if window-system
+    ;; gui
+    (progn
+      ;; theme for solarized
+      ;; (setq custom-safe-themes t)
+      ;; load theme handled by package.el
+      ;; (add-to-list 'custom-theme-load-path
+      ;;              "~/.emacs.d/elpa/solarized-theme-20160106.15/")
+      ;; for modeline
+      (setq x-underline-at-descent-line t) ; modeline underline
+      (setq solarized-high-contrast-mode-line t)
+      (setq solarized-distinct-fringe-background t)
+      (setq solarized-use-more-italic t)
+      (setq solarized-distinct-fringe-background t)
+      (setq solarized-use-variable-pitch t)
+      (setq solarized-emphasize-indicators t)
+      ;; (setq solarized-termcolors 256)
+      (load-theme 'solarized-dark t)
+      )
+  ;; terminal
+  (load-theme 'tango-dark t))
+
+;;; modeline
+
+;; powerline
+;; load path handled by package.el
+;; mac specific, see https://github.com/milkypostman/powerline/issues/54
+(setq ns-use-srgb-colorspace nil)
+;; powerline color stolen from
+;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
+(require 'powerline)
+;; (set-face-attribute 'mode-line nil
+;;                     :foreground "Black"
+;;                     :background "DarkOrange"
+;;                     )
+(setq powerline-color1 "#073642")
+(setq powerline-color2 "#002b36")
+(set-face-attribute 'mode-line nil
+                    :foreground "#fdf6e3"
+                    :background "#2aa198"
+                    :box nil)
+(powerline-default-theme)
+(setq powerline-default-separator 'wave)
 
 ;; smart mode line
 ;; (setq sml/shorten-directory t)
@@ -235,15 +280,6 @@
 ;; (setq sml/no-confirm-load-theme t)
 ;; (setq sml/name-width 40)  ; path-length
 ;; (sml/setup)
-
-;; powerline
-;; load path handled by package.el
-;; (add-to-list 'load-path "~/.emacs.d/elpa/powerline/")
-;; mac specific, see https://github.com/milkypostman/powerline/issues/54
-(setq ns-use-srgb-colorspace nil)
-(require 'powerline)
-(powerline-default-theme)
-(setq powerline-default-separator 'wave)
 
 
 ;; enable interactively do things (ido)
@@ -261,15 +297,22 @@
 ;; set snippet directory
 (setq yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
 ;; global
-(yas-global-mode 1)
+;; (yas-global-mode 1)
 ;; minor
-;; (yas-reload-all)
-;; (add-hook 'prog-mode-hook #'yas-minor-mode)
+(yas-reload-all)
+(add-hook 'prog-mode-hook #'yas-minor-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  Flycheck  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-flycheck-mode)
+
+(require 'flycheck-color-mode-line)
+;; (eval-after-load "flycheck"
+;;   '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  company-mode  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (add-to-list 'load-path "~/.emacs.d/elpa/company-20160228.1509")
 ;; (require 'company)
 ;; (add-hook 'after-init-hook 'global-company-mode)
 ;; ;; customize company color
@@ -285,7 +328,6 @@
 
 
 ;; irony for C/C++
-;; (add-to-list 'load-path "~/.emacs.d/elpa/irony-20160203.1207/")
 ;; (require 'irony)
 ;; (add-hook 'c++-mode-hook 'irony-mode)
 ;; (add-hook 'c-mode-hook 'irony-mode)
@@ -318,7 +360,6 @@
 
 ;; enable auto-complete-clang
 ;; load path handled by package.el
-;; (add-to-list 'load-path "~/.emacs.d/elpa/auto-complete-clang-20140409.52/")
 (require 'auto-complete-clang)
 
 ;; make yasnippet work with auto-complete
@@ -330,14 +371,14 @@
 ;; (ac-set-trigger-key "<tab>")
 
 
-;;; programming support
+;;; programming language support
 
 ;; enable code folding
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 
 ;; general
 (defun my-select-current-line ()
-  "handy function for selection current line"
+  "Handy function for selection current line."
   (interactive)
   (move-beginning-of-line nil)
   (set-mark-command nil)
@@ -360,7 +401,7 @@
 
 ;; comment or uncomment line
 (defun my-comment-or-uncomment-line-or-region ()
-  "comment or uncomment current line."
+  "Comment or uncomment current line."
   (interactive)
   (let (beg end)
     (if (region-active-p)
@@ -370,14 +411,17 @@
   ;; (next-line)
   )
 ;; override default binding for C-c C-c
-(add-hook 'c-mode-hook
-          (lambda ()
-            (local-set-key (kbd "C-c C-c")
-                           #'my-comment-or-uncomment-line-or-region)))
-(add-hook 'c++-mode-hook
-          (lambda ()
-            (local-set-key (kbd "C-c C-c")
-                           #'my-comment-or-uncomment-line-or-region)))
+(eval-after-load 'c-mode
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-c C-c")
+                             #'my-comment-or-uncomment-line-or-region)))
+  )
+(eval-after-load 'c++-mode
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-c C-c")
+                             #'my-comment-or-uncomment-line-or-region))))
 
 ;; Python
 
@@ -492,3 +536,6 @@
  '(company-tooltip ((t (:inherit default :background "#003340"))))
  '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
  '(company-tooltip-selection ((t (:inherit font-lock-function-name-face)))))
+
+(provide '.emacs)
+;;; .emacs ends here
