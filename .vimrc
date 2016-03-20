@@ -34,8 +34,10 @@ set laststatus=2
 
 
 imap jk <Esc>
-set tm=300
-
+set tm=500
+nmap <C-v> :vsplit<CR>
+nmap <C-l> :wincmd l<CR>
+nmap <C-h> :wincmd h<CR>
 
 " set number
 
@@ -58,4 +60,4 @@ set expandtab
 set incsearch
 set hlsearch
 
-" set foldenble
+" set foldenable

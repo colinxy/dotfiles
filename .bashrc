@@ -4,7 +4,7 @@ set -o emacs
 
 # command prompt
 # export PS1="\u:\w \$ "
-# export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
+export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     alias ls='ls -G'

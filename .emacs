@@ -1,9 +1,17 @@
 
+;; install emacs with cocoa on Mac OSX
+;; brew install emacs --with-cocoa
+
+;; TODO
+;; 1. reorganize packages with use-package
+;; 2. set up flycheck
+;; 3. restructure the entire init-file with org-babel
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  basic config  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; disable start-up message
 (setq inhibit-startup-message t
-      inhibit-startup-echo-area-message t)
+      inhibit-startup-echo-area-message "colinxy")
 
 ;; follow symbolic links
 (setq vc-follow-symlinks t)
@@ -20,8 +28,6 @@
       scroll-step 1
       scroll-conservatively 10000
       scroll-preserve-screen-position 1)
-;; (load-file "~/.emacs.d/elpa/smooth-scrolling/smooth-scrolling.el")
-;; (require 'smooth-scrolling)
 
 ;; indentation support, do not indent with tabs
 (setq-default indent-tabs-mode nil)
@@ -32,19 +38,22 @@
 ;; (global-unset-key (kbd "C-m"))
 (global-unset-key (kbd "C-o"))
 (global-unset-key (kbd "C-x C-w"))
-;; TODO try enable it only when a region is selected
-;; (global-unset-key (kbd "C-w"))
+;; C-w is only enabled when a region is selected
+(defun my-kill-region ()
+  "cuts only when a region is selected"
+  (interactive)
+  (when mark-active
+    (kill-region (region-beginning) (region-end))))
+(global-set-key (kbd "C-w") 'my-kill-region)
 
 ;; show line number and column number
-;; (global-linum-mode 1)
-;; personal costumized internally, changed current line indicator
-;; (add-to-list 'load-path "~/.emacs.d/elpa/linum-relative-20160117.2200/")
-;; (require 'linum-relative)
-;; (linum-relative-on)
+;; (global-linum-mode 1)  ; show line number of the left
 (setq column-number-mode t)
 (show-paren-mode 1)
 (when window-system
-  (add-hook 'prog-mode-hook 'hl-line-mode))
+  (global-hl-line-mode))
+;; do not blink cursor
+(blink-cursor-mode nil)
 
 ;; auto insert pair
 ;; M-( ; insert ()
@@ -56,13 +65,13 @@
 
 ;; package archive
 (require 'package)
-(setq package-archives '(("elpa" . "http://tromey.com/elpa/")
-                         ("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+(setq package-archives
+      '(("elpa" . "http://tromey.com/elpa/")
+        ("gnu" . "http://elpa.gnu.org/packages/")
+        ("marmalade" . "http://marmalade-repo.org/packages/")
+        ("melpa" . "http://melpa.milkbox.net/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")))
 ;; melpa stable
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
 
 
@@ -79,10 +88,11 @@
 
   ;; for Mac OS X >= 10.7
   ;; toggle-frame-maximized binded with M-<f10>
-  ;; (add-to-list 'default-frame-alist '(fullscreen . maximized)) ; alternative
+  ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
   ;; toggle-frame-fullscreen binded with <f11> (default)
   ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
-  (when (eq system-type 'darwin)        ; conflicts with mac command
+  ;; <f11> conflicts with mac command
+  (when (eq system-type 'darwin)
     (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen))
   )
 
@@ -138,8 +148,7 @@
 ;; move between windows
 ;; only works for gui
 (when (eq system-type 'darwin)
-  (progn
-    (setq mac-command-modifier 'super)))
+  (setq mac-command-modifier 'super))
 (global-set-key (kbd "s-<up>") 'windmove-up)
 (global-set-key (kbd "s-<down>") 'windmove-down)
 (global-set-key (kbd "s-<left>") 'windmove-left)
@@ -148,12 +157,13 @@
 
 ;; mutiple cursor
 ;; Shift key does not work for terminal
-(add-to-list 'load-path "~/.emacs.d/elpa/multiple-cursors-1.3.0/")
+;; load path handled by package.el
+;; (add-to-list 'load-path "~/.emacs.d/elpa/multiple-cursors-1.3.0/")
 (require 'multiple-cursors)
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
+;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; dired-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -183,9 +193,9 @@
     (progn
       ;; theme for solarized
       ;; (setq custom-safe-themes t)
-      ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-      (add-to-list 'custom-theme-load-path
-                   "~/.emacs.d/elpa/solarized-theme-20160106.15/")
+      ;; load theme handled by package.el
+      ;; (add-to-list 'custom-theme-load-path
+      ;;              "~/.emacs.d/elpa/solarized-theme-20160106.15/")
       (load-theme 'solarized-dark t)
       ;; for modeline
       (setq x-underline-at-descent-line t)
@@ -195,8 +205,10 @@
   (load-theme 'tango-dark t))
 
 ;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
-(add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20160209.1011/")
+;; load path handled by package.el
+;; (add-to-list 'load-path "~/.emacs.d/elpa/fic-mode-20160209.1011/")
 (require 'fic-mode)
+(setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
 (add-hook 'prog-mode-hook 'fic-mode)
 
 ;; shell integration
@@ -209,7 +221,8 @@
 ;; exec-path-from-shell: consistent with shell in Mac OS X
 (when (memq window-system '(mac ns))
   (progn
-    (add-to-list 'load-path "~/.emacs.d/elpa/exec-path-from-shell-1.10")
+    ;; load path handled by package.el
+    ;; (add-to-list 'load-path "~/.emacs.d/elpa/exec-path-from-shell-1.10")
     (exec-path-from-shell-initialize))
   )
 
@@ -224,11 +237,13 @@
 ;; (sml/setup)
 
 ;; powerline
-(add-to-list 'load-path "~/.emacs.d/elpa/powerline/")
-;; see https://github.com/milkypostman/powerline/issues/54
+;; load path handled by package.el
+;; (add-to-list 'load-path "~/.emacs.d/elpa/powerline/")
+;; mac specific, see https://github.com/milkypostman/powerline/issues/54
 (setq ns-use-srgb-colorspace nil)
 (require 'powerline)
 (powerline-default-theme)
+(setq powerline-default-separator 'wave)
 
 
 ;; enable interactively do things (ido)
@@ -239,7 +254,8 @@
 
 
 ;; enable YASnippet
-(add-to-list 'load-path "~/.emacs.d/elpa/yasnippet-20160131.948")
+;; laod path handled by package.el
+;; (add-to-list 'load-path "~/.emacs.d/elpa/yasnippet-20160131.948")
 (require 'yasnippet)
 ;; (require 'yasnippet-bundle)
 ;; set snippet directory
@@ -301,7 +317,8 @@
 (add-hook 'c-mode-hook 'my-ac-c-header-init)
 
 ;; enable auto-complete-clang
-(add-to-list 'load-path "~/.emacs.d/elpa/auto-complete-clang-20140409.52/")
+;; load path handled by package.el
+;; (add-to-list 'load-path "~/.emacs.d/elpa/auto-complete-clang-20140409.52/")
 (require 'auto-complete-clang)
 
 ;; make yasnippet work with auto-complete
@@ -313,7 +330,7 @@
 ;; (ac-set-trigger-key "<tab>")
 
 
-;;; programmin support
+;;; programming support
 
 ;; enable code folding
 (add-hook 'prog-mode-hook #'hs-minor-mode)
@@ -334,7 +351,8 @@
 
 ;; indentation
 (require 'cc-mode)
-(setq-default c-basic-offset 4 c-default-style "k&r")
+(setq-default c-basic-offset 4
+              c-default-style "k&r")
 ;; (add-hook 'c-mode-hook (lambda () (setq comment-start "/* "
 ;;                                         comment-end   " */")))
 ;; (add-hook 'c++-mode-hook (lambda () (setq comment-start "/* "
@@ -423,13 +441,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(column-number-mode t)
+
  '(custom-safe-themes
    (quote
     ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
  '(ecb-options-version "2.50")
  '(fci-rule-color "#073642")
- '(fic-highlighted-words (quote ("FIXME" "TODO" "BUG" "CHECKME")))
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-tail-colors
    (quote
@@ -441,7 +458,6 @@
      ("#8B2C02" . 70)
      ("#93115C" . 85)
      ("#073642" . 100))))
- '(powerline-default-separator (quote wave))
  '(solarized-distinct-fringe-background nil)
  '(vc-annotate-background "#93a1a1")
  '(vc-annotate-color-map
@@ -465,6 +481,7 @@
      (340 . "#69B7F0")
      (360 . "#d33682"))))
  '(vc-annotate-very-old-color "#93115C"))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
