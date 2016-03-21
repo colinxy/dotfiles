@@ -65,8 +65,13 @@
 ;; do not blink cursor
 (blink-cursor-mode nil)
 
+;; consider CamelCase to be 2 words
+(subword-mode)
+
 ;; auto insert pair
 ;; M-( ; insert ()
+;; (global-set-key (kbd "M-(") 'insert-pair)
+;; (setq parens-require-spaces nil)
 (global-set-key (kbd "M-[") 'insert-pair)  ; insert []
 (global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
 
@@ -204,6 +209,7 @@
 
 ;; org-mode
 (setq org-src-fontify-natively t)
+(setq org-src-tab-acts-natively t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;  themes and convenience  ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -219,7 +225,8 @@
 ;; M-x shell
 ;; M-x term
 ;; M-x ansi-term
-;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(require 'comint)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 ;; exec-path-from-shell: consistent with shell in Mac OS X
 (when (memq window-system '(mac ns))
@@ -237,7 +244,6 @@
       ;; load theme handled by package.el
       ;; (add-to-list 'custom-theme-load-path
       ;;              "~/.emacs.d/elpa/solarized-theme-20160106.15/")
-      ;; for modeline
       (setq x-underline-at-descent-line t) ; modeline underline
       (setq solarized-high-contrast-mode-line t)
       (setq solarized-distinct-fringe-background t)
@@ -375,7 +381,6 @@
 
 ;; enable code folding
 (add-hook 'prog-mode-hook #'hs-minor-mode)
-
 ;; general
 (defun my-select-current-line ()
   "Handy function for selection current line."
@@ -425,12 +430,18 @@
 
 ;; Python
 
-;; elpy
-(elpy-enable)
-
-;; autopep8
+;; elpy and autopep8
 (require 'py-autopep8)
-(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+(eval-after-load 'python-mode
+  (progn
+    (setq parens-require-spaces nil)
+    ;; autopep8
+    (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+    ;; elpy
+    (setq elpy-rpc-python-command "python3")
+    (setq elpy-rpc-backend "jedi")
+    (elpy-enable)
+    (elpy-use-ipython)))
 
 
 ;; javascript
@@ -451,9 +462,10 @@
 (add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+;; (add-hook 'markdown-mode-hook 'flyspell-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  emacs code browser  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;  emacs code browser  ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "~/.emacs.d/elpa/ecb")
 (require 'ecb)
