@@ -13,7 +13,10 @@
 ;;
 ;;; Code:
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  basic config  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;----------------;;
+;;; basic config ;;;
+;;----------------;;
 
 ;; disable start-up message
 (setq inhibit-startup-message t
@@ -39,6 +42,11 @@
 ;; (setq mouse-wheel-progressive-speed nil) ; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse t)       ; scroll window under mouse
 
+;; do not blink cursor
+(blink-cursor-mode -1)
+;; make cursor blink as few as possible
+;; (setq blink-cursor-blinks 1)
+
 ;; indentation support, do not indent with tabs
 (setq-default indent-tabs-mode nil)
 ;; (setq-default tab-width 4)
@@ -62,8 +70,6 @@
 (show-paren-mode 1)
 (when window-system
   (global-hl-line-mode))
-;; do not blink cursor
-(blink-cursor-mode nil)
 
 ;; consider CamelCase to be 2 words
 (subword-mode)
@@ -95,16 +101,18 @@
 ;;   (package-refresh-contents)
 ;;   (package-install 'use-package))
 
-(require 'use-package)
-(require 'diminish)
-(require 'bind-key)
+;; (require 'use-package)
+;; (require 'diminish)
+;; (require 'bind-key)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;  windows and moving  ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------;;
+;;; windows and moving ;;;
+;;----------------------;;
 
 ;; for gui window
 (when window-system
-  (setq frame-title-format '(buffer-file-name "%f" ("%b")))
+  (setq frame-title-format "%b")
   ;; (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
@@ -127,12 +135,12 @@
 ;; window management
 
 (defun my-split-window-right-open-file ()
-  (interactive)
+  ;; (interactive)
   (split-window-right)
   (windmove-right)
   (ido-find-file))
 (defun my-split-window-right-switch-buffer ()
-  (interactive)
+  ;; (interactive)
   (split-window-right)
   (windmove-right)
   (ido-switch-buffer))
@@ -150,12 +158,12 @@
   (global-set-key (kbd "C-x M-3 b") 'my-split-window-right-switch-buffer))
 
 (defun my-split-window-below-open-file ()
-  (interactive)
+  ;; (interactive)
   (split-window-below)
   (windmove-down)
   (ido-find-file))
 (defun my-split-window-below-switch-buffer ()
-  (interactive)
+  ;; (interactive)
   (split-window-below)
   (windmove-down)
   (ido-switch-buffer))
@@ -192,7 +200,9 @@
 ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; dired-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------;;
+;;; dired-mode ;;;
+;;--------------;;
 
 (setq delete-by-moving-to-trash t)
 
@@ -204,15 +214,31 @@
      (define-key dired-mode-map (kbd "C-M-s")
        'dired-isearch-filenames-regexp)))
 
+;; BSD ls does not support --dired
+(when (not (eq system-type 'gnu/linux))
+  (require 'ls-lisp)
+  (setq ls-lisp-use-insert-directory-program nil))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; org-mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq dired-listing-switches "-alh")
+
+;; (require 'dired+)
+
+
+;;------------;;
+;;; org-mode ;;;
+;;------------;;
 
 ;; org-mode
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;  themes and convenience  ;;;;;;;;;;;;;;;;;;;;;;;;;
+;;--------------------------;;
+;;; themes and convenience ;;;
+;;--------------------------;;
+
+;; for continuous scroll in pdf
+(setq doc-view-continuous t)
 
 ;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
 ;; load path handled by package.el
@@ -247,11 +273,11 @@
       (setq x-underline-at-descent-line t) ; modeline underline
       (setq solarized-high-contrast-mode-line t)
       (setq solarized-distinct-fringe-background t)
+      (setq solarized-distinct-doc-face t)
       (setq solarized-use-more-italic t)
-      (setq solarized-distinct-fringe-background t)
       (setq solarized-use-variable-pitch t)
       (setq solarized-emphasize-indicators t)
-      ;; (setq solarized-termcolors 256)
+
       (load-theme 'solarized-dark t)
       )
   ;; terminal
@@ -266,16 +292,16 @@
 ;; powerline color stolen from
 ;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
 (require 'powerline)
-;; (set-face-attribute 'mode-line nil
-;;                     :foreground "Black"
-;;                     :background "DarkOrange"
-;;                     )
-(setq powerline-color1 "#073642")
-(setq powerline-color2 "#002b36")
 (set-face-attribute 'mode-line nil
+                    :underline nil
+                    :overline nil
                     :foreground "#fdf6e3"
                     :background "#2aa198"
-                    :box nil)
+                    :box nil
+                    )
+(set-face-attribute 'mode-line-inactive nil
+                    :foreground "#fdf6e3")
+;; (setq mode-line-in-non-selected-windows nil) ;do not use mode-line-inactive
 (powerline-default-theme)
 (setq powerline-default-separator 'wave)
 
@@ -309,15 +335,22 @@
 (add-hook 'prog-mode-hook #'yas-minor-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  Flycheck  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(global-flycheck-mode)
+;;------------;;
+;;; Flycheck ;;;
+;;------------;;
 
-(require 'flycheck-color-mode-line)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(add-hook 'c++-mode-hook
+          (lambda () (setq flycheck-gcc-language-standard "c++11")))
+
+;; (require 'flycheck-color-mode-line)
 ;; (eval-after-load "flycheck"
 ;;   '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  company-mode  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------;;
+;;; company-mode ;;;
+;;----------------;;
 
 ;; (require 'company)
 ;; (add-hook 'after-init-hook 'global-company-mode)
@@ -347,7 +380,9 @@
 ;; (add-hook 'python-mode-hook 'my-python-mode-hook)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  auto-complete  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------;;
+;;; auto-complete ;;;
+;;-----------------;;
 
 ;; requires popup
 (require 'auto-complete)
@@ -465,7 +500,9 @@
 ;; (add-hook 'markdown-mode-hook 'flyspell-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;  emacs code browser  ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------;;
+;;; emacs code browser ;;;
+;;----------------------;;
 
 (add-to-list 'load-path "~/.emacs.d/elpa/ecb")
 (require 'ecb)
@@ -514,7 +551,6 @@
      ("#8B2C02" . 70)
      ("#93115C" . 85)
      ("#073642" . 100))))
- '(solarized-distinct-fringe-background nil)
  '(vc-annotate-background "#93a1a1")
  '(vc-annotate-color-map
    (quote

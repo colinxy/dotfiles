@@ -38,6 +38,7 @@ set tm=500
 nmap <C-v> :vsplit<CR>
 nmap <C-l> :wincmd l<CR>
 nmap <C-h> :wincmd h<CR>
+set mouse=nicr
 
 " set number
 
