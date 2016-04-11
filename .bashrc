@@ -30,7 +30,7 @@ fi
 
 # emacs
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    alias em='open -a emacs'
+    alias em='open -a emacs --args --chdir $PWD'
 else
     function em { `which emacs` "$@" & }
 fi
@@ -44,6 +44,7 @@ alias ect='emacsclient -t'
 
 # git version control
 alias git-lazy='git add . && git commit -m'
+alias git-master='git push origin master'
 alias git-visual='git log --graph --decorate --oneline'
 
 # C++
@@ -51,3 +52,13 @@ CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare -Werror=return-type \
     -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer'
 
 export CXXFLAGS
+
+# LISP
+# readline wrapper
+alias scheme='rlwrap scheme'
+alias sbcl='rlwrap sbcl'
+
+function clisp-run {
+    clisp -q -c $1
+    time clisp -q -on-error abort -x "(progn (load \"${1%%.*}\") (quit))"
+}

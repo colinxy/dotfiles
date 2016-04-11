@@ -70,6 +70,8 @@
 (show-paren-mode 1)
 (when window-system
   (global-hl-line-mode))
+;; (setq line-number-display-limit-width 5) ; line number in mode line
+;; line-number-mode-hook
 
 ;; consider CamelCase to be 2 words
 (subword-mode)
@@ -110,25 +112,29 @@
 ;;; windows and moving ;;;
 ;;----------------------;;
 
-;; for gui window
-(when window-system
-  (setq frame-title-format "%b")
-  ;; (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
+;; for window
+(if window-system
+    ;; gui
+    (progn
+      (setq frame-title-format "%b")
+      ;; (menu-bar-mode -1)
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1)
 
-  ;; set font
-  (set-face-attribute 'default nil
-                      :font "Monaco 14")
+      ;; set font
+      (set-face-attribute 'default nil
+                          :font "Monaco 14")
 
-  ;; for Mac OS X >= 10.7
-  ;; toggle-frame-maximized binded with M-<f10>
-  ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
-  ;; toggle-frame-fullscreen binded with <f11> (default)
-  ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
-  ;; <f11> conflicts with mac command, bind it to M-<f11>
-  (when (eq system-type 'darwin)
-    (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen))
+      ;; for Mac OS X >= 10.7
+      ;; toggle-frame-maximized binded with M-<f10>
+      ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+      ;; toggle-frame-fullscreen binded with <f11> (default)
+      ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
+      ;; <f11> conflicts with mac command, bind it to M-<f11>
+      (when (eq system-type 'darwin)
+        (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)))
+  ;; terminal
+  (menu-bar-mode -1)
   )
 
 
@@ -200,10 +206,21 @@
 ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
+;; speedbar
+(require 'speedbar)
+(setq speedbar-use-images nil)
+(setq speedbar-show-unknown-files t)
+;; (setq speedbar-initial-expansion-list-name "buffers")
+(setq speedbar-default-position 'left)
+(global-set-key (kbd "M-s M-s")
+                'speedbar)
+
+
 ;;--------------;;
 ;;; dired-mode ;;;
 ;;--------------;;
 
+(require 'dired)
 (setq delete-by-moving-to-trash t)
 
 ;; dired file search
@@ -229,8 +246,12 @@
 ;;------------;;
 
 ;; org-mode
+(require 'org)
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
+
+;; use x_{i^2} for subscript, x^{i_2} for superscript
+(setq org-use-sub-superscripts nil)
 
 
 ;;--------------------------;;
@@ -238,6 +259,7 @@
 ;;--------------------------;;
 
 ;; for continuous scroll in pdf
+(require 'doc-view)
 (setq doc-view-continuous t)
 
 ;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
@@ -318,7 +340,7 @@
 (require 'ido)
 (ido-mode 1)
 (setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
+(ido-everywhere t)
 
 
 ;; enable YASnippet
@@ -339,6 +361,7 @@
 ;;; Flycheck ;;;
 ;;------------;;
 
+(require 'flycheck)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (add-hook 'c++-mode-hook
           (lambda () (setq flycheck-gcc-language-standard "c++11")))
@@ -463,6 +486,40 @@
               (local-set-key (kbd "C-c C-c")
                              #'my-comment-or-uncomment-line-or-region))))
 
+;; C/C++ #if 0 comment
+;; http://stackoverflow.com/q/4549015/5478848
+(defun my-c-mode-font-lock-if0 (limit)
+  "Show if 0 as comment."
+  (save-restriction
+    (widen)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((depth 0) str start start-depth)
+        (while (re-search-forward "^\\s-*#\\s-*\\(if\\|else\\|endif\\)" limit 'move)
+          (setq str (match-string 1))
+          (if (string= str "if")
+              (progn
+                (setq depth (1+ depth))
+                (when (and (null start) (looking-at "\\s-+0"))
+                  (setq start (match-end 0)
+                        start-depth depth)))
+            (when (and start (= depth start-depth))
+              (c-put-font-lock-face start (match-beginning 0) 'font-lock-comment-face)
+              (setq start nil))
+            (when (string= str "endif")
+              (setq depth (1- depth)))))
+        (when (and start (> depth 0))
+          (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
+  nil)
+
+(defun my-c-mode-common-hook ()
+  (font-lock-add-keywords
+   nil
+   '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))) 'add-to-end))
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+
 ;; Python
 
 ;; elpy and autopep8
@@ -477,6 +534,10 @@
     (setq elpy-rpc-backend "jedi")
     (elpy-enable)
     (elpy-use-ipython)))
+
+
+;; common lisp
+(setq inferior-lisp-program (shell-command-to-string "which clisp"))
 
 
 ;; javascript
@@ -534,7 +595,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-
  '(custom-safe-themes
    (quote
     ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
@@ -551,6 +611,15 @@
      ("#8B2C02" . 70)
      ("#93115C" . 85)
      ("#073642" . 100))))
+ '(speedbar-frame-parameters
+   (quote
+    ((minibuffer)
+     (width . 30)
+     (border-width . 0)
+     (menu-bar-lines . 0)
+     (tool-bar-lines . 0)
+     (unsplittable . t)
+     (left-fringe . 0))))
  '(vc-annotate-background "#93a1a1")
  '(vc-annotate-color-map
    (quote
