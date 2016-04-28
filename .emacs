@@ -66,7 +66,7 @@
 
 ;; show line number and column number
 ;; (global-linum-mode 1)  ; show line number of the left
-(setq column-number-mode t)
+(column-number-mode t)
 (show-paren-mode 1)
 (when window-system
   (global-hl-line-mode))
@@ -196,16 +196,6 @@
 (global-set-key (kbd "s-<right>") 'windmove-right)
 
 
-;; mutiple cursor
-;; Shift key does not work for terminal
-;; load path handled by package.el
-(require 'multiple-cursors)
-;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C-.") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
-;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
-
-
 ;; speedbar
 (require 'speedbar)
 (setq speedbar-use-images nil)
@@ -221,7 +211,7 @@
 ;;--------------;;
 
 (require 'dired)
-(setq delete-by-moving-to-trash t)
+;; (setq delete-by-moving-to-trash t)
 
 ;; dired file search
 (eval-after-load "dired"
@@ -255,8 +245,14 @@
 
 
 ;;--------------------------;;
-;;; themes and convenience ;;;
+;;; convenience and themes ;;;
 ;;--------------------------;;
+
+;; enable interactively do things (ido)
+(require 'ido)
+(ido-mode 1)
+(setq ido-enable-flex-matching t)
+(ido-everywhere t)
 
 ;; for continuous scroll in pdf
 (require 'doc-view)
@@ -283,6 +279,15 @@
     (exec-path-from-shell-initialize))
   )
 
+;; mutiple cursor
+;; Shift key does not work for terminal
+;; load path handled by package.el
+(require 'multiple-cursors)
+;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C-.") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
+
 ;; emacs themes
 (if window-system
     ;; gui
@@ -290,8 +295,6 @@
       ;; theme for solarized
       ;; (setq custom-safe-themes t)
       ;; load theme handled by package.el
-      ;; (add-to-list 'custom-theme-load-path
-      ;;              "~/.emacs.d/elpa/solarized-theme-20160106.15/")
       (setq x-underline-at-descent-line t) ; modeline underline
       (setq solarized-high-contrast-mode-line t)
       (setq solarized-distinct-fringe-background t)
@@ -334,13 +337,6 @@
 ;; (setq sml/no-confirm-load-theme t)
 ;; (setq sml/name-width 40)  ; path-length
 ;; (sml/setup)
-
-
-;; enable interactively do things (ido)
-(require 'ido)
-(ido-mode 1)
-(setq ido-enable-flex-matching t)
-(ido-everywhere t)
 
 
 ;; enable YASnippet

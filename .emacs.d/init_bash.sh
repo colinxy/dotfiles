@@ -1,5 +1,5 @@
-if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-fi
+# if [ -f ~/.bashrc ]; then
+#     . ~/.bashrc
+# fi
 
-export PS1=' $ '
+# export PS1=' $ '

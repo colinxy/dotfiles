@@ -1,3 +1,5 @@
+#! /bin/sh
+
 if type pip &>/dev/null
 then
     echo pip installed, ... exiting
