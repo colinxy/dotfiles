@@ -64,6 +64,9 @@
     (kill-region (region-beginning) (region-end))))
 (global-set-key (kbd "C-w") 'my-kill-region)
 
+;; M-g as goto-line
+(define-key esc-map "g" 'goto-line)
+
 ;; show line number and column number
 ;; (global-linum-mode 1)  ; show line number of the left
 (column-number-mode t)
@@ -74,7 +77,8 @@
 ;; line-number-mode-hook
 
 ;; consider CamelCase to be 2 words
-(subword-mode)
+;; minor mode, bind it to a mode hook
+;; (subword-mode)
 
 ;; auto insert pair
 ;; M-( ; insert ()
@@ -200,7 +204,7 @@
 (require 'speedbar)
 (setq speedbar-use-images nil)
 (setq speedbar-show-unknown-files t)
-;; (setq speedbar-initial-expansion-list-name "buffers")
+(setq speedbar-initial-expansion-list-name "buffers")
 (setq speedbar-default-position 'left)
 (global-set-key (kbd "M-s M-s")
                 'speedbar)
@@ -241,7 +245,7 @@
 (setq org-src-tab-acts-natively t)
 
 ;; use x_{i^2} for subscript, x^{i_2} for superscript
-(setq org-use-sub-superscripts nil)
+(setq org-use-sub-superscripts '{})
 
 
 ;;--------------------------;;
@@ -259,7 +263,6 @@
 (setq doc-view-continuous t)
 
 ;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
-;; load path handled by package.el
 (require 'fic-mode)
 (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
 (add-hook 'prog-mode-hook 'fic-mode)
@@ -269,19 +272,20 @@
 ;; M-x shell
 ;; M-x term
 ;; M-x ansi-term
+(require 'term)
+;; for term-mode, explicit shell name
+(setq explicit-shell-file-name "/usr/local/bin/bash")
 (require 'comint)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 ;; exec-path-from-shell: consistent with shell in Mac OS X
 (when (memq window-system '(mac ns))
   (progn
-    ;; load path handled by package.el
     (exec-path-from-shell-initialize))
   )
 
 ;; mutiple cursor
 ;; Shift key does not work for terminal
-;; load path handled by package.el
 (require 'multiple-cursors)
 ;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
@@ -311,7 +315,6 @@
 ;;; modeline
 
 ;; powerline
-;; load path handled by package.el
 ;; mac specific, see https://github.com/milkypostman/powerline/issues/54
 (setq ns-use-srgb-colorspace nil)
 ;; powerline color stolen from
@@ -409,18 +412,14 @@
 (ac-config-default)
 
 ;; auto-complete-c-header
+(require 'auto-complete-c-headers)
 (defun my-ac-c-header-init ()
-   (require 'auto-complete-c-headers)
    (add-to-list 'ac-sources
                 'ac-source-c-headers)
    (add-to-list 'achead:include-directories
                 '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
 (add-hook 'c++-mode-hook 'my-ac-c-header-init)
 (add-hook 'c-mode-hook 'my-ac-c-header-init)
-
-;; enable auto-complete-clang
-;; load path handled by package.el
-(require 'auto-complete-clang)
 
 ;; make yasnippet work with auto-complete
 ;; prefer yasnippet to auto-complete
@@ -448,6 +447,8 @@
 
 ;; treat .h as cpp header file
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+;; subword mode, treat CamelCase as 2 words
+(add-hook 'c++-mode-hook 'subword-mode)
 
 ;; indentation
 (require 'cc-mode)
@@ -520,6 +521,7 @@
 
 ;; elpy and autopep8
 (require 'py-autopep8)
+(require 'elpy)
 (eval-after-load 'python-mode
   (progn
     (setq parens-require-spaces nil)
@@ -533,18 +535,40 @@
 
 
 ;; common lisp
-(setq inferior-lisp-program (shell-command-to-string "which clisp"))
+(require 'slime)
+(setq inferior-lisp-program "/usr/local/bin/clisp")
 
 
-;; javascript
+;; javascript & HTML & CSS
 
-;; indentation level
-(setq js-indent-level 2)
+(require 'js2-mode)
+(setq js-indent-level 2)                ;indentation level
+(add-hook 'js-mode-hook 'js2-minor-mode)
+(add-hook 'js-mode-hook 'subword-mode)
+
+;; edit HTML in web-mode
+(require 'web-mode)
+;; indentation
+(setq web-mode-markup-indent-offset 2)
+(setq web-mode-css-indent-offset 2)
+(setq web-mode-code-indent-offset 2)
+;; web dev extra
+(setq web-mode-enable-auto-pairing t)
+(setq web-mode-enable-css-colorization t)
+;; keybinding within current tag
+(define-key web-mode-map (kbd "M-n")
+  'web-mode-tag-next)
+(define-key web-mode-map (kbd "M-p")
+  'web-mode-tag-previous)
+(add-hook 'web-mode-hook 'subword-mode) ;treat CamelCase as 2 words
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
 
 
 ;; Markdown
 
 ;; markdown mode
+(require 'markdown-mode)
 (add-to-list 'load-path "~/.emacs.d/elpa/markdown-mode-20160121.528/")
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing markdown files" t)

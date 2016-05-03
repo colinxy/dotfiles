@@ -6,9 +6,17 @@ set -o emacs
 # export PS1="\u:\w \$ "
 export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
 
+# customize for mac
 if [[ "$OSTYPE" == "darwin"* ]]; then
     export LSCOLORS=GxFxCxDxBxegedabagaced
     alias ls='ls -G'
+
+    # programable completion
+    MY_BASH_COMPLETION="$(brew --prefix)"/etc/bash_completion
+    if [ -f "$MY_BASH_COMPLETION" ]; then
+        # shellcheck source=/usr/local/etc/bash_completion
+        . "$MY_BASH_COMPLETION"
+    fi
 else
     alias ls='ls --color=auto'
 fi
@@ -16,6 +24,7 @@ fi
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
+alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
 alias la='ls -a'
@@ -44,13 +53,13 @@ alias emacs='emacs -nw'
 export EDITOR='emacsclient -t'
 export ALTERNATE_EDITOR=''
 
-# function ect {
-#     emacsclient -q -t "$@" # &>/dev/null
-# }
+function ect {
+    emacsclient -q -t "$@"   # &>/dev/null
+}
+alias em-proc='pgrep -lf [eE]macs'
+alias kill-em-daemon='emacsclient -e "(kill-emacs)"'
 
-# function ec {
-#    emacsclient -c "$@" &
-# }
+# function ec { emacsclient -c "$@" & }
 
 # git version control
 alias git-lazy='git add . && git commit -m'
@@ -77,3 +86,6 @@ function clisp-run {
     clisp -q -c "$1"
     time clisp -q -on-error abort -x "(progn (load \"${1%%.*}\") (quit))"
 }
+
+# web
+alias server='python -m SimpleHTTPServer'
