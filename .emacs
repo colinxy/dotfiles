@@ -126,8 +126,14 @@
       (scroll-bar-mode -1)
 
       ;; set font
-      (set-face-attribute 'default nil
-                          :font "Monaco 14")
+      (cond
+       ((member "DejaVu Sans Mono" (font-family-list))
+        (set-face-attribute 'default nil
+                            :font "DejaVu Sans Mono 14"))
+       ((member "Monaco" (font-family-list))
+        (set-face-attribute 'default nil
+                            :font "Monaco 14")))
+
 
       ;; for Mac OS X >= 10.7
       ;; toggle-frame-maximized binded with M-<f10>
@@ -192,12 +198,22 @@
 
 ;; move between windows
 ;; only works for gui
-(when (eq system-type 'darwin)
-  (setq mac-command-modifier 'super))
-(global-set-key (kbd "s-<up>") 'windmove-up)
-(global-set-key (kbd "s-<down>") 'windmove-down)
-(global-set-key (kbd "s-<left>") 'windmove-left)
-(global-set-key (kbd "s-<right>") 'windmove-right)
+(cond ((eq system-type 'darwin)
+       (setq mac-command-modifier 'super)
+       (global-set-key (kbd "s-<up>") 'windmove-up)
+       (global-set-key (kbd "s-<down>") 'windmove-down)
+       (global-set-key (kbd "s-<left>") 'windmove-left)
+       (global-set-key (kbd "s-<right>") 'windmove-right))
+      ((eq system-type 'gnu/linux)
+       (global-set-key (kbd "C-<up>") 'windmove-up)
+       (global-set-key (kbd "C-<down>") 'windmove-down)
+       (global-set-key (kbd "C-<left>") 'windmove-left)
+       (global-set-key (kbd "C-<right>") 'windmove-right)))
+
+;; (global-set-key (kbd "s-<up>") 'windmove-up)
+;; (global-set-key (kbd "s-<down>") 'windmove-down)
+;; (global-set-key (kbd "s-<left>") 'windmove-left)
+;; (global-set-key (kbd "s-<right>") 'windmove-right)
 
 
 ;; speedbar
@@ -411,9 +427,17 @@
 (require 'auto-complete-config)
 (ac-config-default)
 
+;; disable auto-complete for python-mode
+;; conflicts with elpy (which use company)
+(defadvice auto-complete-mode (around disable-auto-complete-for-python)
+  "Disable auto-complete for 'python-mode'."
+  (unless (eq major-mode 'python-mode) ad-do-it))
+(ad-activate 'auto-complete-mode)
+
 ;; auto-complete-c-header
 (require 'auto-complete-c-headers)
 (defun my-ac-c-header-init ()
+  "Init header files completion for C/C++."
    (add-to-list 'ac-sources
                 'ac-source-c-headers)
    (add-to-list 'achead:include-directories
