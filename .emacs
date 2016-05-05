@@ -129,11 +129,10 @@
       (cond
        ((member "DejaVu Sans Mono" (font-family-list))
         (set-face-attribute 'default nil
-                            :font "DejaVu Sans Mono 14"))
+                            :font "DejaVu Sans Mono"))
        ((member "Monaco" (font-family-list))
         (set-face-attribute 'default nil
                             :font "Monaco 14")))
-
 
       ;; for Mac OS X >= 10.7
       ;; toggle-frame-maximized binded with M-<f10>
@@ -278,11 +277,6 @@
 (require 'doc-view)
 (setq doc-view-continuous t)
 
-;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
-(require 'fic-mode)
-(setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
-(add-hook 'prog-mode-hook 'fic-mode)
-
 ;; shell integration
 ;; M-x eshell
 ;; M-x shell
@@ -307,6 +301,11 @@
 (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
 ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
+
+;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
+(require 'fic-mode)
+(setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
+(add-hook 'prog-mode-hook 'fic-mode)
 
 ;; emacs themes
 (if window-system
@@ -341,8 +340,7 @@
                     :overline nil
                     :foreground "#fdf6e3"
                     :background "#2aa198"
-                    :box nil
-                    )
+                    :box nil)
 (set-face-attribute 'mode-line-inactive nil
                     :foreground "#fdf6e3")
 ;; (setq mode-line-in-non-selected-windows nil) ;do not use mode-line-inactive
@@ -435,15 +433,17 @@
 (ad-activate 'auto-complete-mode)
 
 ;; auto-complete-c-header
-(require 'auto-complete-c-headers)
-(defun my-ac-c-header-init ()
-  "Init header files completion for C/C++."
-   (add-to-list 'ac-sources
-                'ac-source-c-headers)
-   (add-to-list 'achead:include-directories
-                '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
-(add-hook 'c++-mode-hook 'my-ac-c-header-init)
-(add-hook 'c-mode-hook 'my-ac-c-header-init)
+(when (eq system-type 'darwin)
+  (require 'auto-complete-c-headers)
+  (defun my-ac-c-header-init ()
+    "Init header files completion for C/C++."
+    (add-to-list 'ac-sources
+                 'ac-source-c-headers)
+    (add-to-list 'achead:include-directories
+                 '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
+  (add-hook 'c++-mode-hook 'my-ac-c-header-init)
+  (add-hook 'c-mode-hook 'my-ac-c-header-init))
+
 
 ;; make yasnippet work with auto-complete
 ;; prefer yasnippet to auto-complete
@@ -510,7 +510,7 @@
 ;; C/C++ #if 0 comment
 ;; http://stackoverflow.com/q/4549015/5478848
 (defun my-c-mode-font-lock-if0 (limit)
-  "Show if 0 as comment."
+  "Show directive #if 0 as comment."
   (save-restriction
     (widen)
     (save-excursion
