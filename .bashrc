@@ -6,17 +6,10 @@ set -o emacs
 # export PS1="\u:\w \$ "
 export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
 
-# customize for mac
+# ls color flag
 if [[ "$OSTYPE" == "darwin"* ]]; then
     export LSCOLORS=GxFxCxDxBxegedabagaced
     alias ls='ls -G'
-
-    # programable completion
-    MY_BASH_COMPLETION="$(brew --prefix)"/etc/bash_completion
-    if [ -f "$MY_BASH_COMPLETION" ]; then
-        # shellcheck source=/usr/local/etc/bash_completion
-        . "$MY_BASH_COMPLETION"
-    fi
 else
     alias ls='ls --color=auto'
 fi
@@ -33,6 +26,15 @@ alias grep='egrep --color'
 alias more='more -R'
 alias less='less -R'
 alias tree='tree -C'
+
+# programable completion
+MY_BASH_COMPLETION=/etc/bash_completion
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    MY_BASH_COMPLETION="$(brew --prefix)${MY_BASH_COMPLETION}"
+fi
+if [ -f "$MY_BASH_COMPLETION" ]; then
+    . "$MY_BASH_COMPLETION"
+fi
 
 # vim color hightlighter as less
 if [ -f /usr/share/vim/vim74/macros/less.vim ]; then
@@ -78,7 +80,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 # LISP
-# readline wrapper
+# repl readline wrapper
 alias scheme='rlwrap scheme'
 alias sbcl-repl='rlwrap sbcl'
 
