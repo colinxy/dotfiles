@@ -11,9 +11,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     export LSCOLORS=GxFxCxDxBxegedabagaced
     alias ls='ls -G'
 else
+    # export LS_COLORS=
     alias ls='ls --color=auto'
 fi
-
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -51,7 +51,6 @@ else
 fi
 
 alias emacs='emacs -nw'
-
 export EDITOR='emacsclient -t'
 export ALTERNATE_EDITOR=''
 
@@ -65,10 +64,11 @@ alias kill-em-daemon='emacsclient -e "(kill-emacs)"'
 
 # git version control
 alias git-lazy='git add . && git commit -m'
-alias git-master='git push origin master'
-alias git-visual='git log --graph --decorate --oneline'
+alias git-master='git push origin -u'
+alias git-log='git log --graph --decorate --oneline'
 
 # C++
+# from Smallberg
 CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare -Werror=return-type -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer'
 
 export CXXFLAGS
@@ -91,3 +91,14 @@ function clisp-run {
 
 # web
 alias server='python -m SimpleHTTPServer'
+
+# network
+alias dig='dig +noall +answer'  # DNS
+# disk usage
+alias du='du -hs'
+
+# python virtual environment
+[ -r /usr/local/opt/autoenv/activate.sh ] && . /usr/local/opt/autoenv/activate.sh
+
+# personal accounts
+[[ -f ~/.accounts ]] && . ~/.accounts

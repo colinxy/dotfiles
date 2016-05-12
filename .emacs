@@ -5,7 +5,7 @@
 ;; Flycheck made me do this
 ;;
 ;; install Emacs with cocoa on Mac OSX
-;; $ brew install Emacs --with-cocoa
+;; $ brew install Emacs --with-cocoa --with-librsvg --with-gnutls --with-imagemagick
 ;;
 ;; TODO
 ;; 1. reorganize packages with use-package
@@ -21,6 +21,21 @@
 ;; disable start-up message
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message "colinxy")
+
+(defun read-lines-from-file (file)
+  "Read all lines of FILE into list."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (split-string (buffer-string) "\n" t)))
+(defun get-string-from-file (file)
+  "Read all lines of FILE into string."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (buffer-string)))
+
+(when (file-exists-p "~/TODO.org")
+  (setq initial-scratch-message
+	(get-string-from-file "~/TODO.org")))
 
 ;; version control follow symbolic links
 (setq vc-follow-symlinks t)
@@ -117,13 +132,13 @@
 ;;----------------------;;
 
 ;; for window
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 (if window-system
     ;; gui
     (progn
       (setq frame-title-format "%b")
       ;; (menu-bar-mode -1)
-      (tool-bar-mode -1)
-      (scroll-bar-mode -1)
 
       ;; set font
       (cond
@@ -209,11 +224,6 @@
        (global-set-key (kbd "C-<left>") 'windmove-left)
        (global-set-key (kbd "C-<right>") 'windmove-right)))
 
-;; (global-set-key (kbd "s-<up>") 'windmove-up)
-;; (global-set-key (kbd "s-<down>") 'windmove-down)
-;; (global-set-key (kbd "s-<left>") 'windmove-left)
-;; (global-set-key (kbd "s-<right>") 'windmove-right)
-
 
 ;; speedbar
 (require 'speedbar)
@@ -284,15 +294,14 @@
 ;; M-x ansi-term
 (require 'term)
 ;; for term-mode, explicit shell name
-(setq explicit-shell-file-name "/usr/local/bin/bash")
+;; (setq explicit-shell-file-name "/usr/local/bin/bash")
 (require 'comint)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 ;; exec-path-from-shell: consistent with shell in Mac OS X
 (when (memq window-system '(mac ns))
   (progn
-    (exec-path-from-shell-initialize))
-  )
+    (exec-path-from-shell-initialize)))
 
 ;; mutiple cursor
 ;; Shift key does not work for terminal
@@ -313,8 +322,9 @@
     (progn
       ;; theme for solarized
       ;; (setq custom-safe-themes t)
-      ;; load theme handled by package.el
       (setq x-underline-at-descent-line t) ; modeline underline
+
+      (require 'solarized)
       (setq solarized-high-contrast-mode-line t)
       (setq solarized-distinct-fringe-background t)
       (setq solarized-distinct-doc-face t)
@@ -322,8 +332,7 @@
       (setq solarized-use-variable-pitch t)
       (setq solarized-emphasize-indicators t)
 
-      (load-theme 'solarized-dark t)
-      )
+      (load-theme 'solarized-dark t))
   ;; terminal
   (load-theme 'tango-dark t))
 
@@ -543,6 +552,7 @@
 
 ;; Python
 
+(setq-default python-indent-offset 4)
 ;; elpy and autopep8
 (require 'py-autopep8)
 (require 'elpy)
@@ -599,7 +609,7 @@
 (setq markdown-command
       "pandoc -f markdown -t html -s --mathjax --highlight-style=pygments")
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
+;; (add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 ;; (add-hook 'markdown-mode-hook 'flyspell-mode)
@@ -609,28 +619,28 @@
 ;;; emacs code browser ;;;
 ;;----------------------;;
 
-(add-to-list 'load-path "~/.emacs.d/elpa/ecb")
-(require 'ecb)
-;; do not autoload
-;; (require 'ecb-autoloads)
-(setq ecb-layout-name "left6")
-(setq ecb-show-sources-in-directories-buffer 'always)
-(setq ecb-show-tip-of-the-day 0)
-(setq ecb-tip-of-the-day nil)
-;; adjust layout left/right
-;; adjust left column: sources/methods/history
-(setq ecb-layout-window-sizes
-      (quote (("left6"
-               (ecb-sources-buffer-name 0.15 . 0.5)
-               (ecb-history-buffer-name 0.15 . 0.1)
-               (ecb-methods-buffer-name 0.15 . 0.4)))))
-(setq ecb-auto-update-methods-after-save t)
-;; navigating
-;; [C-c . g h] : Go to history
-;; [C-c . g m] : Go to methods
-;; [C-c . g s] : Go to sources:
-;; [C-c . g d] : Go to directories
-;; [C-c . g 1] : Main buffer
+;; (add-to-list 'load-path "~/.emacs.d/elpa/ecb")
+;; (require 'ecb)
+;; ;; do not autoload
+;; ;; (require 'ecb-autoloads)
+;; (setq ecb-layout-name "left6")
+;; (setq ecb-show-sources-in-directories-buffer 'always)
+;; (setq ecb-show-tip-of-the-day 0)
+;; (setq ecb-tip-of-the-day nil)
+;; ;; adjust layout left/right
+;; ;; adjust left column: sources/methods/history
+;; (setq ecb-layout-window-sizes
+;;       (quote (("left6"
+;;                (ecb-sources-buffer-name 0.15 . 0.5)
+;;                (ecb-history-buffer-name 0.15 . 0.1)
+;;                (ecb-methods-buffer-name 0.15 . 0.4)))))
+;; (setq ecb-auto-update-methods-after-save t)
+;; ;; navigating
+;; ;; [C-c . g h] : Go to history
+;; ;; [C-c . g m] : Go to methods
+;; ;; [C-c . g s] : Go to sources:
+;; ;; [C-c . g d] : Go to directories
+;; ;; [C-c . g 1] : Main buffer
 
 
 
@@ -655,6 +665,8 @@
      ("#8B2C02" . 70)
      ("#93115C" . 85)
      ("#073642" . 100))))
+ '(smtpmail-smtp-server "smtp.gmail.com")
+ '(smtpmail-smtp-service 25)
  '(speedbar-frame-parameters
    (quote
     ((minibuffer)
