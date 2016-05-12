@@ -43,7 +43,7 @@
 
 (setq gnus-use-full-window nil)
 (setq gnus-permanently-visible-groups "INBOX")
-;; gnus always show messages, when if read
+;; gnus always show messages, even when no unread messages
 (setq gnus-parameters
       '((".*"
          (display . all)
@@ -71,5 +71,11 @@
        "%1{%B%}"
        "%s\n"))
 (setq gnus-summary-display-arrow t)
+;; use q to quit article
+(add-hook 'gnus-article-mode-hook
+          (lambda ()
+            (progn
+              (define-key gnus-article-mode-map (kbd "q") 'delete-window))))
+
 
 ;;; .gnus.el ends here
