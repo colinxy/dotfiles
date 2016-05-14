@@ -93,7 +93,10 @@
 
 ;; consider CamelCase to be 2 words
 ;; minor mode, bind it to a mode hook
-;; (subword-mode)
+
+;; modifier key
+(when (eq system-type 'darwin)
+  (setq mac-command-modifier 'super))
 
 ;; auto insert pair
 ;; M-( ; insert ()
@@ -213,7 +216,6 @@
 ;; move between windows
 ;; only works for gui
 (cond ((eq system-type 'darwin)
-       (setq mac-command-modifier 'super)
        (global-set-key (kbd "s-<up>") 'windmove-up)
        (global-set-key (kbd "s-<down>") 'windmove-down)
        (global-set-key (kbd "s-<left>") 'windmove-left)
@@ -296,7 +298,26 @@
 ;; for term-mode, explicit shell name
 ;; (setq explicit-shell-file-name "/usr/local/bin/bash")
 (require 'comint)
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-hook 'term-mode-hook
+          (lambda ()
+            (ansi-color-for-comint-mode-on)
+            (define-key term-raw-map (kbd "C-y") 'term-paste)
+            (define-key term-raw-map (kbd "M-(")
+              (lambda ()
+                (interactive)
+                (term-send-raw-string "()")
+                (term-send-left)))
+            (define-key term-raw-map (kbd "M-\"")
+              (lambda ()
+                (interactive)
+                (term-send-raw-string "\"\"")
+                (term-send-left)))))
+
+;; http://emacs.stackexchange.com/a/337/12003
+(defun my-expose-global-bindng-in-mode-map (binding mode-map)
+  "Expose global BINDING in MODE-MAP."
+  (define-key mode-map binding
+    (lookup-key (current-global-map) binding)))
 
 ;; exec-path-from-shell: consistent with shell in Mac OS X
 (when (memq window-system '(mac ns))

@@ -64,7 +64,7 @@ alias kill-em-daemon='emacsclient -e "(kill-emacs)"'
 
 # git version control
 alias git-lazy='git add . && git commit -m'
-alias git-master='git push origin -u'
+alias git-push='git push origin -u'
 alias git-log='git log --graph --decorate --oneline'
 
 # C++
@@ -90,6 +90,7 @@ function clisp-run {
 }
 
 # web
+# equivalent: python3 -m http.server
 alias server='python -m SimpleHTTPServer'
 
 # network

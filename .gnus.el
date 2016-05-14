@@ -12,7 +12,7 @@
 ;;; Code:
 
 (setq user-mail-address	"colinxy@linux.ucla.edu"
-      user-full-name	"Xinyu Colin Yang")
+      user-full-name	"Colin Yang")
 
 (require 'gnus)
 (require 'starttls)
@@ -28,6 +28,12 @@
                (nnimap-server-port 993)
                (nnimap-stream ssl)
                (nnir-search-engine imap)))
+
+(setq gnus-secondary-select-methods
+      '((nntp "news.eternal-september.org")
+        ;; (nntp "news.gmane.org")
+        ))
+
 
 ;; (setq gnus-select-method '(nnimap "gmail"
 ;;                                   (nnimap-address "imap.gmail.com")
@@ -77,5 +83,9 @@
             (progn
               (define-key gnus-article-mode-map (kbd "q") 'delete-window))))
 
+(add-hook 'kill-emacs-hook
+          (lambda ()
+            (when (fboundp 'gnus-group-exit)
+              (gnus-group-exit))))
 
 ;;; .gnus.el ends here
