@@ -4,6 +4,7 @@
 .emacs.d/eshell/
 .emacs.d/url/
 .emacs.d/games/
+.emacs.d/image-dired
 
 .emacs.d/ac-comphist.dat
 .emacs.d/ido.last

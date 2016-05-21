@@ -1,0 +1,21 @@
+
+* Install pip
+
+** Method 1
+
+#+BEGIN_SRC sh
+
+  wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
+  python ez_setup.py --user > /dev/null
+  easy_install --user pip
+
+#+END_SRC
+
+** Method 2
+
+#+BEGIN_SRC sh
+
+  wget https://bootstrap.pypa.io/get-pip.py
+  python get-pip.py --user
+
+#+END_SRC

@@ -29,9 +29,10 @@
                (nnimap-stream ssl)
                (nnir-search-engine imap)))
 
+;; news
 (setq gnus-secondary-select-methods
       '((nntp "news.eternal-september.org")
-        ;; (nntp "news.gmane.org")
+        (nntp "news.gmane.org")
         ))
 
 
@@ -45,7 +46,7 @@
       smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
 
-;;; gnus customization
+;;; gnus customization, look and feel
 
 (setq gnus-use-full-window nil)
 (setq gnus-permanently-visible-groups "INBOX")
@@ -56,6 +57,10 @@
          (gnus-use-scoring nil))))
 (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+;; (define-key gnus-group-mode-map (kbd "RET") (lambda ()
+;;                                               (interactive)
+;;                                               (gnus-topic-select-group 50)))
+
 ;; tree view in summary buffer
 (when window-system
   (setq gnus-sum-thread-tree-indent "  ")
@@ -83,9 +88,10 @@
             (progn
               (define-key gnus-article-mode-map (kbd "q") 'delete-window))))
 
+;; peaceful exit
 (add-hook 'kill-emacs-hook
           (lambda ()
-            (when (fboundp 'gnus-group-exit)
+            (when (boundp 'gnus-group-exit) ;boundp, not fboundp
               (gnus-group-exit))))
 
 ;;; .gnus.el ends here

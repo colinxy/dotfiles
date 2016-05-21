@@ -27,14 +27,12 @@ alias more='more -R'
 alias less='less -R'
 alias tree='tree -C'
 
-# programable completion
+# programmable completion
 MY_BASH_COMPLETION=/etc/bash_completion
 if [[ "$OSTYPE" == "darwin"* ]]; then
     MY_BASH_COMPLETION="$(brew --prefix)${MY_BASH_COMPLETION}"
 fi
-if [ -f "$MY_BASH_COMPLETION" ]; then
-    . "$MY_BASH_COMPLETION"
-fi
+[ -f "$MY_BASH_COMPLETION" ] && . "$MY_BASH_COMPLETION"
 
 # vim color hightlighter as less
 if [ -f /usr/share/vim/vim74/macros/less.vim ]; then
@@ -66,6 +64,13 @@ alias kill-em-daemon='emacsclient -e "(kill-emacs)"'
 alias git-lazy='git add . && git commit -m'
 alias git-push='git push origin -u'
 alias git-log='git log --graph --decorate --oneline'
+# diff
+alias diff='diff -u'
+# useful diff switches
+# -E  --ignore-tab-expansion
+# -Z  --ignore-trailing-space
+# -b  --ignore-space-change
+# -w  --ignore-all-space
 
 # C++
 # from Smallberg
@@ -97,9 +102,22 @@ alias server='python -m SimpleHTTPServer'
 alias dig='dig +noall +answer'  # DNS
 # disk usage
 alias du='du -hs'
+alias df='df -h'
 
 # python virtual environment
 [ -r /usr/local/opt/autoenv/activate.sh ] && . /usr/local/opt/autoenv/activate.sh
 
 # personal accounts
 [[ -f ~/.accounts ]] && . ~/.accounts
+
+
+# pip completion --bash
+# pip bash completion start
+_pip_completion()
+{
+    COMPREPLY=( $( COMP_WORDS="${COMP_WORDS[*]}" \
+                   COMP_CWORD=$COMP_CWORD \
+                   PIP_AUTO_COMPLETE=1 $1 ) )
+}
+complete -o default -F _pip_completion pip
+# pip bash completion end

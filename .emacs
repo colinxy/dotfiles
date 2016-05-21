@@ -216,6 +216,7 @@
 ;; move between windows
 ;; only works for gui
 (cond ((eq system-type 'darwin)
+       (global-unset-key (kbd "s-q"))
        (global-set-key (kbd "s-<up>") 'windmove-up)
        (global-set-key (kbd "s-<down>") 'windmove-down)
        (global-set-key (kbd "s-<left>") 'windmove-left)
@@ -312,6 +313,9 @@
                 (interactive)
                 (term-send-raw-string "\"\"")
                 (term-send-left)))))
+(global-set-key (kbd "M-t") (lambda ()
+                              (interactive)
+                              (ansi-term "/bin/bash")))
 
 ;; http://emacs.stackexchange.com/a/337/12003
 (defun my-expose-global-bindng-in-mode-map (binding mode-map)
@@ -573,12 +577,12 @@
 
 ;; Python
 
-(setq-default python-indent-offset 4)
 ;; elpy and autopep8
 (require 'py-autopep8)
 (require 'elpy)
 (eval-after-load 'python-mode
   (progn
+    (setq-default python-indent-offset 4)
     (setq parens-require-spaces nil)
     ;; autopep8
     (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
