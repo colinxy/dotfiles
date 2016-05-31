@@ -1,4 +1,6 @@
 
+* Setup working environment
+
 * Install pip
 
 ** Method 1

@@ -41,7 +41,13 @@
 (setq vc-follow-symlinks t)
 
 ;; backup files
-(setq backup-directory-alist `(("." . "~/.saves")))
+(setq backup-directory-alist `(("." . "~/.saves"))
+      backup-by-copying t
+      delete-old-versions t
+      version-control t)
+(add-to-list 'auto-mode-alist
+             '("\\.\\(vcf\\|gpg\\)$" . sensitive-minor-mode))
+
 
 ;; substitute y-or-n-p with yes-or-no-p
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -92,7 +98,7 @@
 ;; line-number-mode-hook
 
 ;; consider CamelCase to be 2 words
-;; minor mode, bind it to a mode hook
+;; subword minor mode, bind it to a mode hook
 
 ;; modifier key
 (when (eq system-type 'darwin)
@@ -107,27 +113,8 @@
 
 ;; delete trailing white space
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; package archive
-(require 'package)
-(setq package-enable-at-startup nil)
-(setq package-archives
-      '(("elpa" . "http://tromey.com/elpa/")
-        ("gnu" . "http://elpa.gnu.org/packages/")
-        ("marmalade" . "http://marmalade-repo.org/packages/")
-        ("melpa" . "http://melpa.milkbox.net/packages/")
-        ("melpa-stable" . "https://stable.melpa.org/packages/")))
-(package-initialize)
-
-;; reference
-;; http://cachestocaches.com/2015/8/getting-started-use-package/
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package))
-
-;; (require 'use-package)
-;; (require 'diminish)
-;; (require 'bind-key)
+;; final newline
+(setq require-final-newline t)
 
 
 ;;----------------------;;
@@ -161,8 +148,7 @@
       (when (eq system-type 'darwin)
         (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)))
   ;; terminal
-  (menu-bar-mode -1)
-  )
+  (menu-bar-mode -1))
 
 
 ;; window management
@@ -228,12 +214,44 @@
        (global-set-key (kbd "C-<right>") 'windmove-right)))
 
 
-;; speedbar
+;;-------------------;;
+;;; package manager ;;;
+;;-------------------;;
+
+;; package archive
+(unless (require 'package nil t)
+  (load "~/.emacs.d/elpa/package.el"))
+(setq package-enable-at-startup nil)
+(setq package-archives
+      '(("elpa" . "http://tromey.com/elpa/")
+        ("gnu" . "http://elpa.gnu.org/packages/")
+        ("marmalade" . "http://marmalade-repo.org/packages/")
+        ("melpa" . "http://melpa.milkbox.net/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")))
+(package-initialize)
+
+;; reference
+;; http://cachestocaches.com/2015/8/getting-started-use-package/
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (package-install 'use-package))
+
+;; (require 'use-package)
+;; (require 'diminish)
+;; (require 'bind-key)
+
+
+;;--------------;;
+;;;  speedbar  ;;;
+;;--------------;;
+
 (require 'speedbar)
 (setq speedbar-use-images nil)
 (setq speedbar-show-unknown-files t)
 (setq speedbar-initial-expansion-list-name "buffers")
 (setq speedbar-default-position 'left)
+(eval-after-load 'speedbar
+  '(add-to-list 'speedbar-frame-parameters '(width . 30)))
 (global-set-key (kbd "M-s M-s")
                 'speedbar)
 
@@ -246,7 +264,7 @@
 ;; (setq delete-by-moving-to-trash t)
 
 ;; dired file search
-(eval-after-load "dired"
+(eval-after-load 'dired
   '(progn
      (define-key dired-mode-map (kbd "C-s")
        'dired-isearch-filenames)
@@ -259,8 +277,6 @@
   (setq ls-lisp-use-insert-directory-program nil))
 
 (setq dired-listing-switches "-alh")
-
-;; (require 'dired+)
 
 
 ;;------------;;
@@ -325,21 +341,22 @@
 
 ;; exec-path-from-shell: consistent with shell in Mac OS X
 (when (memq window-system '(mac ns))
-  (progn
-    (exec-path-from-shell-initialize)))
+  ;; (require 'exec-path-from-shell)
+  (exec-path-from-shell-initialize))
 
 ;; mutiple cursor
 ;; Shift key does not work for terminal
-(require 'multiple-cursors)
-;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C-.") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
-;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
+(when (require 'multiple-cursors nil t)
+  ;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
+  ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
+  )
 
 ;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
-(require 'fic-mode)
-(setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
-(add-hook 'prog-mode-hook 'fic-mode)
+(when (require 'fic-mode nil t)
+  (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
+  (add-hook 'prog-mode-hook 'fic-mode))
 
 ;; emacs themes
 (if window-system
@@ -577,12 +594,15 @@
 
 ;; Python
 
+;; TODO : organize to make more prominant use of gud (grand unified debugger)
+(require 'gud)
 ;; elpy and autopep8
 (require 'py-autopep8)
 (require 'elpy)
 (eval-after-load 'python-mode
   (progn
     (setq-default python-indent-offset 4)
+    (setq gud-pdb-command-name "python -m pdb ")
     (setq parens-require-spaces nil)
     ;; autopep8
     (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
@@ -595,7 +615,9 @@
 
 ;; common lisp
 (require 'slime)
-(setq inferior-lisp-program "/usr/local/bin/clisp")
+(speedbar-add-supported-extension ".lisp")
+(setq inferior-lisp-program "/usr/local/bin/clisp"
+      lisp-indent-function 'common-lisp-indent-function)
 
 
 ;; javascript & HTML & CSS
@@ -690,17 +712,6 @@
      ("#8B2C02" . 70)
      ("#93115C" . 85)
      ("#073642" . 100))))
- '(smtpmail-smtp-server "smtp.gmail.com")
- '(smtpmail-smtp-service 25)
- '(speedbar-frame-parameters
-   (quote
-    ((minibuffer)
-     (width . 30)
-     (border-width . 0)
-     (menu-bar-lines . 0)
-     (tool-bar-lines . 0)
-     (unsplittable . t)
-     (left-fringe . 0))))
  '(vc-annotate-background "#93a1a1")
  '(vc-annotate-color-map
    (quote

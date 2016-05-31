@@ -4,7 +4,11 @@ set -o emacs
 
 # command prompt
 # export PS1="\u:\w \$ "
-export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
+if [ ${#HOSTNAME} -le 15 ]; then
+    export PS1='\[\033[01;32m\]\u@\h:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
+else
+    export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
+fi
 
 # ls color flag
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -49,7 +53,8 @@ else
 fi
 
 alias emacs='emacs -nw'
-export EDITOR='emacsclient -t'
+# export EDITOR='emacsclient -t'
+export EDITOR='vim'
 export ALTERNATE_EDITOR=''
 
 function ect {
