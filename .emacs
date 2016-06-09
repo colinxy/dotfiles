@@ -8,8 +8,10 @@
 ;; $ brew install Emacs --with-cocoa --with-librsvg --with-gnutls --with-imagemagick
 ;;
 ;; TODO
-;; 1. reorganize packages with use-package
-;; 2. restructure the entire init-file with org-babel
+;; 1. reorganize packages with use-package (on hold)
+;; 2. restructure the entire init-file with org-babel (on hold)
+;; 3. autoload
+;; 4. fix require loading for optional modules
 ;;
 ;;; Code:
 
@@ -120,6 +122,8 @@
 ;;----------------------;;
 ;;; windows and moving ;;;
 ;;----------------------;;
+
+;; (setq split-width-threshold 80) ;split horizontally if at least 80 columns
 
 ;; for window
 (tool-bar-mode -1)
@@ -256,9 +260,9 @@
                 'speedbar)
 
 
-;;--------------;;
-;;; dired-mode ;;;
-;;--------------;;
+;;-------------;;
+;;;   dired   ;;;
+;;-------------;;
 
 (require 'dired)
 ;; (setq delete-by-moving-to-trash t)
@@ -288,7 +292,9 @@
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
 
-;; use x_{i^2} for subscript, x^{i_2} for superscript
+;; from *Help*, but not working
+;; If you set this variable to the symbol `{}', the braces are
+;; *required* in order to trigger interpretations as sub/superscript.
 (setq org-use-sub-superscripts '{})
 
 
@@ -329,9 +335,9 @@
                 (interactive)
                 (term-send-raw-string "\"\"")
                 (term-send-left)))))
-(global-set-key (kbd "M-t") (lambda ()
-                              (interactive)
-                              (ansi-term "/bin/bash")))
+(global-set-key (kbd "M-t")
+                (lambda () (interactive)
+                        (ansi-term "/bin/bash")))
 
 ;; http://emacs.stackexchange.com/a/337/12003
 (defun my-expose-global-bindng-in-mode-map (binding mode-map)
@@ -381,22 +387,24 @@
 ;;; modeline
 
 ;; powerline
-;; mac specific, see https://github.com/milkypostman/powerline/issues/54
-(setq ns-use-srgb-colorspace nil)
-;; powerline color stolen from
-;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
-(require 'powerline)
-(set-face-attribute 'mode-line nil
-                    :underline nil
-                    :overline nil
-                    :foreground "#fdf6e3"
-                    :background "#2aa198"
-                    :box nil)
-(set-face-attribute 'mode-line-inactive nil
-                    :foreground "#fdf6e3")
-;; (setq mode-line-in-non-selected-windows nil) ;do not use mode-line-inactive
-(powerline-default-theme)
-(setq powerline-default-separator 'wave)
+
+(when (require 'powerline nil t)
+  ;; mac specific, see https://github.com/milkypostman/powerline/issues/54
+  (when (eq system-type 'darwin)
+    (setq ns-use-srgb-colorspace nil))
+  ;; powerline color
+  ;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
+  (set-face-attribute 'mode-line nil
+                      :underline nil
+                      :overline nil
+                      :foreground "#fdf6e3"
+                      :background "#2aa198"
+                      :box nil)
+  (set-face-attribute 'mode-line-inactive nil
+                      :foreground "#fdf6e3")
+  ;; (setq mode-line-in-non-selected-windows nil) ;do not use mode-line-inactive
+  (powerline-default-theme)
+  (setq powerline-default-separator 'wave))
 
 ;; smart mode line
 ;; (setq sml/shorten-directory t)
@@ -408,31 +416,46 @@
 
 
 ;; enable YASnippet
-;; laod path handled by package.el
-;; (add-to-list 'load-path "~/.emacs.d/elpa/yasnippet-20160131.948")
-(require 'yasnippet)
-;; (require 'yasnippet-bundle)
-;; set snippet directory
-(setq yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
-;; global
-;; (yas-global-mode 1)
-;; minor
-(yas-reload-all)
-(add-hook 'prog-mode-hook #'yas-minor-mode)
+(when (require 'yasnippet nil t)
+  ;; (require 'yasnippet-bundle)
+  ;; set snippet directory
+  (setq yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
+  ;; global
+  ;; (yas-global-mode 1)
+  ;; minor
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook #'yas-minor-mode))
 
 
 ;;------------;;
 ;;; Flycheck ;;;
 ;;------------;;
 
-(require 'flycheck)
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(add-hook 'c++-mode-hook
-          (lambda () (setq flycheck-gcc-language-standard "c++11")))
+(when (require 'flycheck nil t)
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  ;; TODO : flycheck gcc standard not working
+  (add-hook 'c++-mode-hook
+            (lambda () (setq flycheck-gcc-language-standard "c++11"))))
 
 ;; (require 'flycheck-color-mode-line)
 ;; (eval-after-load "flycheck"
 ;;   '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+
+
+;;; programming language support
+
+;; enable code folding
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+;; gud (grand unified debugger)
+(require 'gud)
+;; general
+(defun my-select-current-line ()
+  "Handy function for selection current line."
+  (interactive)
+  (move-beginning-of-line nil)
+  (set-mark-command nil)
+  (move-end-of-line nil)
+  (setq deactivate-mark nil))
 
 
 ;;----------------;;
@@ -491,7 +514,7 @@
     (add-to-list 'ac-sources
                  'ac-source-c-headers)
     (add-to-list 'achead:include-directories
-                 '"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
+                 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
   (add-hook 'c++-mode-hook 'my-ac-c-header-init)
   (add-hook 'c-mode-hook 'my-ac-c-header-init))
 
@@ -504,19 +527,6 @@
 ;; (ac-set-trigger-key "TAB")
 ;; (ac-set-trigger-key "<tab>")
 
-
-;;; programming language support
-
-;; enable code folding
-(add-hook 'prog-mode-hook #'hs-minor-mode)
-;; general
-(defun my-select-current-line ()
-  "Handy function for selection current line."
-  (interactive)
-  (move-beginning-of-line nil)
-  (set-mark-command nil)
-  (move-end-of-line nil)
-  (setq deactivate-mark nil))
 
 ;; C/C++
 
@@ -550,8 +560,7 @@
   (add-hook 'c-mode-hook
             (lambda ()
               (local-set-key (kbd "C-c C-c")
-                             #'my-comment-or-uncomment-line-or-region)))
-  )
+                             #'my-comment-or-uncomment-line-or-region))))
 (eval-after-load 'c++-mode
   (add-hook 'c++-mode-hook
             (lambda ()
@@ -584,81 +593,74 @@
           (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
   nil)
 
-(defun my-c-mode-common-hook ()
-  (font-lock-add-keywords
-   nil
-   '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))) 'add-to-end))
-
-(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(add-hook 'c-mode-common-hook
+          #'(lambda ()
+              (font-lock-add-keywords
+               nil
+               '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend)))
+               'add-to-end)))
 
 
 ;; Python
-
-;; TODO : organize to make more prominant use of gud (grand unified debugger)
-(require 'gud)
-;; elpy and autopep8
-(require 'py-autopep8)
-(require 'elpy)
-(eval-after-load 'python-mode
-  (progn
+(eval-after-load 'python
+  '(progn
     (setq-default python-indent-offset 4)
-    (setq gud-pdb-command-name "python -m pdb ")
+    (setq gud-pdb-command-name "python -m pdb ") ;grand unified debugger
     (setq parens-require-spaces nil)
     ;; autopep8
-    (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+    (when (require 'py-autopep8 nil t)
+      (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
     ;; elpy
-    (setq elpy-rpc-python-command "python3")
-    (setq elpy-rpc-backend "jedi")
-    (elpy-enable)
-    (elpy-use-ipython)))
+    (when (require 'elpy nil t)
+      (setq elpy-rpc-python-command "python3")
+      (setq elpy-rpc-backend "jedi")
+      (elpy-enable)
+      (elpy-use-ipython))))
 
 
 ;; common lisp
 (require 'slime)
 (speedbar-add-supported-extension ".lisp")
-(setq inferior-lisp-program "/usr/local/bin/clisp"
+(setq inferior-lisp-program "/usr/local/bin/sbcl"
       lisp-indent-function 'common-lisp-indent-function)
 
 
 ;; javascript & HTML & CSS
 
-(require 'js2-mode)
-(setq js-indent-level 2)                ;indentation level
 (add-hook 'js-mode-hook 'js2-minor-mode)
-(add-hook 'js-mode-hook 'subword-mode)
+(eval-after-load 'js2-mode
+  '(progn
+    (setq js-indent-level 2)                ;indentation level
+    (setq parens-require-spaces nil)
+    (add-hook 'js-mode-hook 'subword-mode)))
 
 ;; edit HTML in web-mode
-(require 'web-mode)
-;; indentation
-(setq web-mode-markup-indent-offset 2)
-(setq web-mode-css-indent-offset 2)
-(setq web-mode-code-indent-offset 2)
-;; web dev extra
-(setq web-mode-enable-auto-pairing t)
-(setq web-mode-enable-css-colorization t)
-;; keybinding within current tag
-(define-key web-mode-map (kbd "M-n")
-  'web-mode-tag-next)
-(define-key web-mode-map (kbd "M-p")
-  'web-mode-tag-previous)
-(add-hook 'web-mode-hook 'subword-mode) ;treat CamelCase as 2 words
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+(eval-after-load 'web-mode
+  '(progn (add-hook 'web-mode-hook 'subword-mode)
+    ;; indentation
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    ;; web dev extra
+    (setq web-mode-enable-auto-pairing t)
+    (setq web-mode-enable-css-colorization t)
+    ;; keybinding within current tag
+    (define-key web-mode-map (kbd "M-n") 'web-mode-tag-next)
+    (define-key web-mode-map (kbd "M-p") 'web-mode-tag-previous)))
 
 
 ;; Markdown
 
 ;; markdown mode
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 (require 'markdown-mode)
-(add-to-list 'load-path "~/.emacs.d/elpa/markdown-mode-20160121.528/")
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing markdown files" t)
 (setq markdown-command
       "pandoc -f markdown -t html -s --mathjax --highlight-style=pygments")
-(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-;; (add-to-list 'auto-mode-alist '("\\.txt\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 ;; (add-hook 'markdown-mode-hook 'flyspell-mode)
 
 

@@ -78,7 +78,6 @@ alias diff='diff -u'
 # -w  --ignore-all-space
 
 # C++
-# from Smallberg
 CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare -Werror=return-type -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer'
 
 export CXXFLAGS
@@ -113,7 +112,7 @@ alias df='df -h'
 [ -r /usr/local/opt/autoenv/activate.sh ] && . /usr/local/opt/autoenv/activate.sh
 
 # personal accounts
-[[ -f ~/.accounts ]] && . ~/.accounts
+[ -f ~/.accounts ] && . ~/.accounts
 
 
 # pip completion --bash
@@ -125,4 +124,5 @@ _pip_completion()
                    PIP_AUTO_COMPLETE=1 $1 ) )
 }
 complete -o default -F _pip_completion pip
+complete -o default -F _pip_completion pip3
 # pip bash completion end
