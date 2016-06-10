@@ -234,7 +234,6 @@
         ("melpa-stable" . "https://stable.melpa.org/packages/")))
 (package-initialize)
 
-;; reference
 ;; http://cachestocaches.com/2015/8/getting-started-use-package/
 ;; (unless (package-installed-p 'use-package)
 ;;   (package-refresh-contents)
@@ -619,7 +618,8 @@
 
 
 ;; common lisp
-(require 'slime)
+;; TODO : not a working setup
+(require 'slime nil t)
 (speedbar-add-supported-extension ".lisp")
 (setq inferior-lisp-program "/usr/local/bin/sbcl"
       lisp-indent-function 'common-lisp-indent-function)
