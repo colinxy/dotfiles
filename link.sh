@@ -1,10 +1,5 @@
 
-# backup
-[ -f ~/.bashrc ] && mv ~/.bashrc ~/.bashrc.bak
-[ -f ~/.emacs ] && mv ~/.emacs ~/.emacs.bak
-[ -f ~/.vimrc ] && mv ~/.vimrc ~/.vimrc.bak
-
-# create symbolic link
-ln -s "$PWD"/.bashrc ~/.bashrc
-ln -s "$PWD"/.emacs ~/.emacs
-ln -s "$PWD"/.vimrc ~/.vimrc
+# backup and create symbolic link
+[ -f ~/.bashrc ] && mv ~/.bashrc ~/.bashrc.bak && ln -s "$PWD"/.bashrc ~/.bashrc
+[ -f ~/.emacs ] && mv ~/.emacs ~/.emacs.bak && ln -s "$PWD"/.emacs ~/.emacs
+[ -f ~/.vimrc ] && mv ~/.vimrc ~/.vimrc.bak && ln -s "$PWD"/.vimrc ~/.vimrc

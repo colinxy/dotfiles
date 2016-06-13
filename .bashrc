@@ -61,14 +61,13 @@ function ect {
     emacsclient -q -t "$@"   # &>/dev/null
 }
 alias em-proc='pgrep -lf [eE]macs'
-alias kill-em-daemon='emacsclient -e "(kill-emacs)"'
-
+alias kill-em-daemon='emacsclient -e "(save-buffers-kill-emacs)"'
 # function ec { emacsclient -c "$@" & }
 
 # git version control
-alias git-lazy='git add . && git commit -m'
 alias git-push='git push origin -u'
-alias git-log='git log --graph --decorate --oneline'
+alias git-log='git log --oneline --decorate --graph --all'
+
 # diff
 alias diff='diff -u'
 # useful diff switches
@@ -113,7 +112,6 @@ alias df='df -h'
 
 # personal accounts
 [ -f ~/.accounts ] && . ~/.accounts
-
 
 # pip completion --bash
 # pip bash completion start

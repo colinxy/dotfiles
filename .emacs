@@ -123,7 +123,7 @@
 ;;; windows and moving ;;;
 ;;----------------------;;
 
-;; (setq split-width-threshold 80) ;split horizontally if at least 80 columns
+(setq split-width-threshold 150) ;split horizontally if at least <> columns
 
 ;; for window
 (tool-bar-mode -1)
@@ -607,8 +607,8 @@
     (setq gud-pdb-command-name "python -m pdb ") ;grand unified debugger
     (setq parens-require-spaces nil)
     ;; autopep8
-    (when (require 'py-autopep8 nil t)
-      (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+    ;; (when (require 'py-autopep8 nil t)
+    ;;   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
     ;; elpy
     (when (require 'elpy nil t)
       (setq elpy-rpc-python-command "python3")
@@ -618,11 +618,14 @@
 
 
 ;; common lisp
-;; TODO : not a working setup
-(require 'slime nil t)
-(speedbar-add-supported-extension ".lisp")
-(setq inferior-lisp-program "/usr/local/bin/sbcl"
-      lisp-indent-function 'common-lisp-indent-function)
+(eval-after-load 'lisp-mode
+  '(progn
+    (speedbar-add-supported-extension ".lisp")
+    (setq inferior-lisp-program "/usr/local/bin/sbcl"
+          lisp-indent-function 'common-lisp-indent-function)
+    (when (require 'slime nil t)
+      (setq slime-startup-animation t)  ;TODO somehow not working
+      (slime-setup '(slime-fancy)))))
 
 
 ;; javascript & HTML & CSS
