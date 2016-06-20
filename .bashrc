@@ -10,6 +10,8 @@ else
     export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
 fi
 
+[ -d ~/.local/bin ] && PATH=$PATH:~/.local/bin
+
 # ls color flag
 if [[ "$OSTYPE" == "darwin"* ]]; then
     export LSCOLORS=GxFxCxDxBxegedabagaced

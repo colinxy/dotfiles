@@ -667,33 +667,5 @@
 ;; (add-hook 'markdown-mode-hook 'flyspell-mode)
 
 
-;;----------------------;;
-;;; emacs code browser ;;;
-;;----------------------;;
-
-;; (add-to-list 'load-path "~/.emacs.d/elpa/ecb")
-;; (require 'ecb)
-;; ;; do not autoload
-;; ;; (require 'ecb-autoloads)
-;; (setq ecb-layout-name "left6")
-;; (setq ecb-show-sources-in-directories-buffer 'always)
-;; (setq ecb-show-tip-of-the-day 0)
-;; (setq ecb-tip-of-the-day nil)
-;; ;; adjust layout left/right
-;; ;; adjust left column: sources/methods/history
-;; (setq ecb-layout-window-sizes
-;;       (quote (("left6"
-;;                (ecb-sources-buffer-name 0.15 . 0.5)
-;;                (ecb-history-buffer-name 0.15 . 0.1)
-;;                (ecb-methods-buffer-name 0.15 . 0.4)))))
-;; (setq ecb-auto-update-methods-after-save t)
-;; ;; navigating
-;; ;; [C-c . g h] : Go to history
-;; ;; [C-c . g m] : Go to methods
-;; ;; [C-c . g s] : Go to sources:
-;; ;; [C-c . g d] : Go to directories
-;; ;; [C-c . g 1] : Main buffer
-
-
 (provide '.emacs)
 ;;; .emacs ends here

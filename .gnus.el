@@ -44,6 +44,7 @@
 ;; linux.ucla.edu smtp
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
 
 ;;; gnus customization, look and feel
