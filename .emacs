@@ -43,12 +43,10 @@
 (setq vc-follow-symlinks t)
 
 ;; backup files
-(setq backup-directory-alist `(("." . "~/.saves"))
+(setq backup-directory-alist '(("." . "~/.saves"))
       backup-by-copying t
       delete-old-versions t
       version-control t)
-(add-to-list 'auto-mode-alist
-             '("\\.\\(vcf\\|gpg\\)$" . sensitive-minor-mode))
 
 
 ;; substitute y-or-n-p with yes-or-no-p
@@ -98,6 +96,9 @@
   (global-hl-line-mode))
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
 ;; line-number-mode-hook
+
+;; use DEL to delete selected text
+(delete-selection-mode 1)
 
 ;; consider CamelCase to be 2 words
 ;; subword minor mode, bind it to a mode hook
@@ -248,13 +249,16 @@
 ;;;  speedbar  ;;;
 ;;--------------;;
 
-(require 'speedbar)
-(setq speedbar-use-images nil)
-(setq speedbar-show-unknown-files t)
-(setq speedbar-initial-expansion-list-name "buffers")
-(setq speedbar-default-position 'left)
+;; (require 'speedbar)
+
 (eval-after-load 'speedbar
-  '(add-to-list 'speedbar-frame-parameters '(width . 30)))
+  '(progn
+     (add-to-list 'speedbar-frame-parameters '(width . 30))
+     (setq speedbar-use-images nil)
+     (setq speedbar-show-unknown-files t)
+     (setq speedbar-initial-expansion-list-name "buffers")
+     (setq speedbar-default-position 'left)
+     (speedbar-add-supported-extension ".lisp")))
 (global-set-key (kbd "M-s M-s")
                 'speedbar)
 
@@ -336,7 +340,7 @@
                 (term-send-left)))))
 (global-set-key (kbd "M-t")
                 (lambda () (interactive)
-                        (ansi-term "/bin/bash")))
+                  (ansi-term "/bin/bash")))
 
 ;; http://emacs.stackexchange.com/a/337/12003
 (defun my-expose-global-bindng-in-mode-map (binding mode-map)
@@ -444,10 +448,10 @@
 ;;; programming language support
 
 ;; enable code folding
-(add-hook 'prog-mode-hook #'hs-minor-mode)
+;; (add-hook 'prog-mode-hook #'hs-minor-mode)
 ;; gud (grand unified debugger)
 (require 'gud)
-;; general
+
 (defun my-select-current-line ()
   "Handy function for selection current line."
   (interactive)
@@ -603,29 +607,28 @@
 ;; Python
 (eval-after-load 'python
   '(progn
-    (setq-default python-indent-offset 4)
-    (setq gud-pdb-command-name "python -m pdb ") ;grand unified debugger
-    (setq parens-require-spaces nil)
-    ;; autopep8
-    ;; (when (require 'py-autopep8 nil t)
-    ;;   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
-    ;; elpy
-    (when (require 'elpy nil t)
-      (setq elpy-rpc-python-command "python3")
-      (setq elpy-rpc-backend "jedi")
-      (elpy-enable)
-      (elpy-use-ipython))))
+     (setq-default python-indent-offset 4)
+     (setq gud-pdb-command-name "python -m pdb ") ;grand unified debugger
+     (setq parens-require-spaces nil)
+     ;; autopep8
+     ;; (when (require 'py-autopep8 nil t)
+     ;;   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+     ;; elpy
+     (when (require 'elpy nil t)
+       (setq elpy-rpc-python-command "python3")
+       (setq elpy-rpc-backend "jedi")
+       (elpy-enable)
+       (elpy-use-ipython))))
 
 
 ;; common lisp
 (eval-after-load 'lisp-mode
   '(progn
-    (speedbar-add-supported-extension ".lisp")
-    (setq inferior-lisp-program "/usr/local/bin/sbcl"
-          lisp-indent-function 'common-lisp-indent-function)
-    (when (require 'slime nil t)
-      (setq slime-startup-animation t)  ;TODO somehow not working
-      (slime-setup '(slime-fancy)))))
+     (setq inferior-lisp-program "/usr/local/bin/sbcl"
+           lisp-indent-function 'common-lisp-indent-function)
+     (when (require 'slime nil t)
+       (setq slime-startup-animation t)  ;TODO somehow not working
+       (slime-setup '(slime-fancy)))))
 
 
 ;; javascript & HTML & CSS
@@ -633,25 +636,28 @@
 (add-hook 'js-mode-hook 'js2-minor-mode)
 (eval-after-load 'js2-mode
   '(progn
-    (setq js-indent-level 2)                ;indentation level
-    (setq parens-require-spaces nil)
-    (add-hook 'js-mode-hook 'subword-mode)))
+     (setq js-indent-level 2)                ;indentation level
+     (setq parens-require-spaces nil)
+     (add-hook 'js-mode-hook 'subword-mode)))
 
 ;; edit HTML in web-mode
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.scss\\'" . web-mode))
 (eval-after-load 'web-mode
-  '(progn (add-hook 'web-mode-hook 'subword-mode)
-    ;; indentation
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-css-indent-offset 2)
-    (setq web-mode-code-indent-offset 2)
-    ;; web dev extra
-    (setq web-mode-enable-auto-pairing t)
-    (setq web-mode-enable-css-colorization t)
-    ;; keybinding within current tag
-    (define-key web-mode-map (kbd "M-n") 'web-mode-tag-next)
-    (define-key web-mode-map (kbd "M-p") 'web-mode-tag-previous)))
+  '(progn
+     (add-hook 'web-mode-hook 'subword-mode)
+     ;; indentation
+     (setq web-mode-markup-indent-offset 2)
+     (setq web-mode-css-indent-offset 2)
+     (setq web-mode-code-indent-offset 2)
+     ;; web dev extra
+     (setq web-mode-enable-auto-pairing t)
+     (setq web-mode-enable-css-colorization t)
+     ;; keybinding within current tag
+     (define-key web-mode-map (kbd "M-n") 'web-mode-tag-next)
+     (define-key web-mode-map (kbd "M-p") 'web-mode-tag-previous)))
 
 
 ;; Markdown

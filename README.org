@@ -1,9 +1,9 @@
 
 * Setup working environment
 
-* Install pip
+** Install pip
 
-** Method 1
+*** Method 1
 
 #+BEGIN_SRC sh
 
@@ -13,11 +13,35 @@
 
 #+END_SRC
 
-** Method 2
+*** Method 2
 
 #+BEGIN_SRC sh
 
   wget https://bootstrap.pypa.io/get-pip.py
   python get-pip.py --user
+
+#+END_SRC
+
+
+** Additional python package for emacs elpy to work properly
+
+#+BEGIN_SRC sh
+
+  # if use python instead of ipython, remove (elpy-use-ipython) from .emacs
+  pip install --user ipython
+  # for elpy completion and error detection
+  pip install --user jedi importmagic flake8
+
+#+END_SRC
+
+
+** gdb-dashboard
+
+ - nice gdb interface
+ - https://github.com/cyrus-and/gdb-dashboard
+
+#+BEGIN_SRC sh
+
+  wget -P ~ git.io/.gdbinit
 
 #+END_SRC
