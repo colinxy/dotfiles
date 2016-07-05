@@ -62,11 +62,13 @@
 (define-key esc-map "g" 'goto-line)
 
 ;; show line number and column number
+(require 'linum)
 (global-linum-mode 1)  ; show line number of the left
 (column-number-mode t)
 (show-paren-mode 1)
-(when window-system
-  (global-hl-line-mode))
+(if window-system
+    (global-hl-line-mode)
+  (setq linum-format "%d "))
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
 ;; line-number-mode-hook
 
@@ -93,7 +95,8 @@
 (scroll-bar-mode -1)
 
 ;; tango-dark is a good theme
-(load-theme 'tango-dark t)
+(when (not window-system)
+  (load-theme 'tango-dark t))
 
 ;; move between windows
 ;; only works for gui
