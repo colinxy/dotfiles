@@ -118,5 +118,28 @@
 (setq-default python-indent-offset 4)
 
 
+(require 'term)
+;; for term-mode, explicit shell name
+;; (setq explicit-shell-file-name "/usr/local/bin/bash")
+(require 'comint)
+(add-hook 'term-mode-hook
+          (lambda ()
+            (ansi-color-for-comint-mode-on)
+            (define-key term-raw-map (kbd "C-y") 'term-paste)
+            (define-key term-raw-map (kbd "M-(")
+              (lambda ()
+                (interactive)
+                (term-send-raw-string "()")
+                (term-send-left)))
+            (define-key term-raw-map (kbd "M-\"")
+              (lambda ()
+                (interactive)
+                (term-send-raw-string "\"\"")
+                (term-send-left)))))
+(global-set-key (kbd "M-t")
+                (lambda () (interactive)
+                  (ansi-term "/bin/bash")))
+
+
 (provide '.emacs.min)
 ;;; .emacs ends here
