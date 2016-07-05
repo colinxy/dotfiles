@@ -110,7 +110,7 @@
 ;; auto insert pair
 ;; M-( ; insert ()
 ;; (global-set-key (kbd "M-(") 'insert-pair)
-;; (setq parens-require-spaces nil)
+(setq parens-require-spaces nil)
 (global-set-key (kbd "M-[") 'insert-pair)  ; insert []
 (global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
 
@@ -537,6 +537,8 @@
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 ;; subword mode, treat CamelCase as 2 words
 (add-hook 'c++-mode-hook 'subword-mode)
+;; do not indent namespace
+(c-set-offset 'innamespace 0)
 
 ;; indentation
 (require 'cc-mode)
@@ -609,7 +611,6 @@
   '(progn
      (setq-default python-indent-offset 4)
      (setq gud-pdb-command-name "python -m pdb ") ;grand unified debugger
-     (setq parens-require-spaces nil)
      ;; autopep8
      ;; (when (require 'py-autopep8 nil t)
      ;;   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
@@ -637,7 +638,6 @@
 (eval-after-load 'js2-mode
   '(progn
      (setq js-indent-level 2)                ;indentation level
-     (setq parens-require-spaces nil)
      (add-hook 'js-mode-hook 'subword-mode)))
 
 ;; edit HTML in web-mode

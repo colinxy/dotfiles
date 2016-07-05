@@ -1,0 +1,120 @@
+;;; .emacs.min --- minimal emacs config
+
+;;; Commentary:
+;;
+;; run Emacs as
+;; \emacs --nw -q --load .emacs.min
+
+;;; Code:
+
+;; disable start-up message
+(setq inhibit-startup-message t
+      inhibit-startup-echo-area-message "colinxy")
+
+
+;; version control follow symbolic links
+(setq vc-follow-symlinks t)
+
+;; backup files
+(setq backup-directory-alist '(("." . "~/.saves"))
+      backup-by-copying t
+      delete-old-versions t
+      version-control t)
+
+
+;; substitute y-or-n-p with yes-or-no-p
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; smooth scrolling
+;; keyboard
+(setq scroll-margin 1
+      scroll-step 1
+      scroll-conservatively 10000
+      scroll-preserve-screen-position 1)
+;; mouse
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ; one line at a time
+;; (setq mouse-wheel-progressive-speed nil) ; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse t)       ; scroll window under mouse
+
+;; do not blink cursor
+(blink-cursor-mode -1)
+;; make cursor blink as few as possible
+;; (setq blink-cursor-blinks 1)
+
+;; indentation support, do not indent with tabs
+(setq-default indent-tabs-mode nil)
+;; (setq-default tab-width 4)
+(global-set-key (kbd "RET") 'newline-and-indent)
+
+;; some keys are easy to mispress
+;; (global-unset-key (kbd "C-m"))
+(global-unset-key (kbd "C-o"))
+(global-unset-key (kbd "C-x C-w"))
+;; C-w is only enabled when a region is selected
+(defun my-kill-region ()
+  "Cuts only when a region is selected."
+  (interactive)
+  (when mark-active
+    (kill-region (region-beginning) (region-end))))
+(global-set-key (kbd "C-w") 'my-kill-region)
+
+;; M-g as goto-line
+(define-key esc-map "g" 'goto-line)
+
+;; show line number and column number
+(global-linum-mode 1)  ; show line number of the left
+(column-number-mode t)
+(show-paren-mode 1)
+(when window-system
+  (global-hl-line-mode))
+;; (setq line-number-display-limit-width 5) ; line number in mode line
+;; line-number-mode-hook
+
+;; use DEL to delete selected text
+(delete-selection-mode 1)
+
+;; consider CamelCase to be 2 words
+;; subword minor mode, bind it to a mode hook
+
+;; modifier key
+(when (eq system-type 'darwin)
+  (setq mac-command-modifier 'super))
+
+;; delete trailing white space
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; final newline
+(setq require-final-newline t)
+
+
+(setq split-width-threshold 150) ;split horizontally if at least <> columns
+
+;; no tool bar, no scroll bar
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+
+
+;; move between windows
+;; only works for gui
+(cond ((eq system-type 'darwin)
+       (global-unset-key (kbd "s-q"))
+       (global-set-key (kbd "s-<up>") 'windmove-up)
+       (global-set-key (kbd "s-<down>") 'windmove-down)
+       (global-set-key (kbd "s-<left>") 'windmove-left)
+       (global-set-key (kbd "s-<right>") 'windmove-right))
+      ((eq system-type 'gnu/linux)
+       (global-set-key (kbd "C-<up>") 'windmove-up)
+       (global-set-key (kbd "C-<down>") 'windmove-down)
+       (global-set-key (kbd "C-<left>") 'windmove-left)
+       (global-set-key (kbd "C-<right>") 'windmove-right)))
+
+
+;; c/c++
+(setq-default c-basic-offset 4
+              c-default-style "k&r")
+
+;; python
+(setq-default python-indent-offset 4)
+
+
+(provide '.emacs.min)
+;;; .emacs ends here

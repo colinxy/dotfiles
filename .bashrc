@@ -10,7 +10,7 @@ else
     export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
 fi
 
-# [ -d ~/.local/bin ] && PATH=~/.local/bin:$PATH
+[ -d ~/.local/bin ] && PATH=~/.local/bin:$PATH
 
 # ls color flag
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -49,9 +49,11 @@ fi
 
 # emacs
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    alias em='open -a emacs --args --chdir $PWD'
+    alias em='open -a emacs --new --args --chdir $PWD'
+    alias edit='open -a emacs --new --args --chdir $PWD -q --load ~/.emacs.min'
 else
     function em { $(which emacs) "$@" 2>/dev/null & }
+    alias edit='\emacs -q --load ~/.emacs.min &>/dev/null &'
 fi
 
 alias emacs='emacs -nw'
