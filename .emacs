@@ -74,7 +74,6 @@
 (global-set-key (kbd "RET") 'newline-and-indent)
 
 ;; some keys are easy to mispress
-;; (global-unset-key (kbd "C-m"))
 (global-unset-key (kbd "C-o"))
 (global-unset-key (kbd "C-x C-w"))
 ;; C-w is only enabled when a region is selected
@@ -219,6 +218,14 @@
        (global-set-key (kbd "C-<right>") 'windmove-right)))
 
 
+;;; before packages loads
+
+;; web-mode
+(setq web-mode-enable-current-element-highlight t)
+(setq web-mode-enable-current-column-highlight t)
+
+
+
 ;;-------------------;;
 ;;; package manager ;;;
 ;;-------------------;;
@@ -291,14 +298,14 @@
 ;;------------;;
 
 ;; org-mode
-(require 'org)
-(setq org-src-fontify-natively t)
-(setq org-src-tab-acts-natively t)
-
-;; from *Help*, but not working
-;; If you set this variable to the symbol `{}', the braces are
-;; *required* in order to trigger interpretations as sub/superscript.
-(setq org-use-sub-superscripts '{})
+;; (eval-after-load 'org-mode
+;;   '(progn
+;;      (setq org-src-fontify-natively t)
+;;      (setq org-src-tab-acts-natively t)
+;;      ;; from *Help*, but not working
+;;      ;; If you set this variable to the symbol `{}', the braces are
+;;      ;; *required* in order to trigger interpretations as sub/superscript.
+;;      (setq org-use-sub-superscripts '{})))
 
 
 ;;--------------------------;;
@@ -312,18 +319,18 @@
 (ido-everywhere t)
 
 ;; for continuous scroll in pdf
-(require 'doc-view)
-(setq doc-view-continuous t)
+;; (require 'doc-view)
+;; (setq doc-view-continuous t)
 
 ;; shell integration
 ;; M-x eshell
 ;; M-x shell
 ;; M-x term
 ;; M-x ansi-term
-(require 'term)
+;; (require 'term)
 ;; for term-mode, explicit shell name
 ;; (setq explicit-shell-file-name "/usr/local/bin/bash")
-(require 'comint)
+;; (require 'comint)
 (add-hook 'term-mode-hook
           (lambda ()
             (ansi-color-for-comint-mode-on)
@@ -538,10 +545,10 @@
 ;; subword mode, treat CamelCase as 2 words
 (add-hook 'c++-mode-hook 'subword-mode)
 ;; do not indent namespace
-(c-set-offset 'innamespace 0)
+;; (c-set-offset 'innamespace 0)
 
 ;; indentation
-(require 'cc-mode)
+;; (require 'cc-mode)
 (setq-default c-basic-offset 4
               c-default-style "k&r")
 ;; (add-hook 'c-mode-hook (lambda () (setq comment-start "/* "
@@ -623,13 +630,15 @@
 
 
 ;; common lisp
-(eval-after-load 'lisp-mode
+;; TODO : make it mode local
+;; (setq lisp-indent-function 'common-lisp-indent-function)
+;; (setq slime-startup-animation t)  ;TODO somehow not working
+
+;; TODO : not working
+(eval-after-load 'slime-mode
   '(progn
-     (setq inferior-lisp-program "/usr/local/bin/sbcl"
-           lisp-indent-function 'common-lisp-indent-function)
-     (when (require 'slime nil t)
-       (setq slime-startup-animation t)  ;TODO somehow not working
-       (slime-setup '(slime-fancy)))))
+     (setq inferior-lisp-program "/usr/local/bin/sbcl")
+     (slime-setup '(slime-fancy))))
 
 
 ;; javascript & HTML & CSS
@@ -645,12 +654,13 @@
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.scss\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (eval-after-load 'web-mode
   '(progn
      (add-hook 'web-mode-hook 'subword-mode)
      ;; indentation
      (setq web-mode-markup-indent-offset 2)
-     (setq web-mode-css-indent-offset 2)
+     ;(setq web-mode-css-indent-offset 2)
      (setq web-mode-code-indent-offset 2)
      ;; web dev extra
      (setq web-mode-enable-auto-pairing t)
@@ -665,9 +675,7 @@
 ;; markdown mode
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-(require 'markdown-mode)
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing markdown files" t)
+;; (require 'markdown-mode)
 (setq markdown-command
       "pandoc -f markdown -t html -s --mathjax --highlight-style=pygments")
 ;; (add-hook 'markdown-mode-hook 'flyspell-mode)

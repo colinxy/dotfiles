@@ -47,7 +47,6 @@
 (global-set-key (kbd "RET") 'newline-and-indent)
 
 ;; some keys are easy to mispress
-;; (global-unset-key (kbd "C-m"))
 (global-unset-key (kbd "C-o"))
 (global-unset-key (kbd "C-x C-w"))
 ;; C-w is only enabled when a region is selected
@@ -96,6 +95,7 @@
 
 ;; tango-dark is a good theme
 (when (not window-system)
+  (menu-bar-mode -1)
   (load-theme 'tango-dark t))
 
 ;; move between windows

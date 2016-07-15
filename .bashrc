@@ -23,7 +23,7 @@ fi
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-alias rm='rm -i'
+alias rm='rm -iv'
 alias mv='mv -i'
 alias cp='cp -i'
 alias la='ls -A'
@@ -53,7 +53,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     alias edit='open -a emacs --new --args --chdir $PWD -q --load ~/.emacs.min'
 else
     function em { $(which emacs) "$@" 2>/dev/null & }
-    alias edit='\emacs -q --load ~/.emacs.min &>/dev/null &'
+    # alias edit='\emacs -q --load ~/.emacs.min &>/dev/null &'
 fi
 
 alias emacs='emacs -nw'

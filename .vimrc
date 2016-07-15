@@ -60,5 +60,8 @@ set expandtab
 " incremental highlight search
 set incsearch
 set hlsearch
+set ignorecase
+set smartcase
+set nowrapscan
 
 " set foldenable
