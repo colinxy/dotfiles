@@ -10,8 +10,7 @@
 ;; TODO
 ;; 1. reorganize packages with use-package (on hold)
 ;; 2. restructure the entire init-file with org-babel (on hold)
-;; 3. autoload
-;; 4. fix require loading for optional modules
+;; 3. fix require loading for optional modules
 ;;
 ;;; Code:
 
@@ -48,7 +47,6 @@
       delete-old-versions t
       version-control t)
 
-
 ;; substitute y-or-n-p with yes-or-no-p
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -84,8 +82,7 @@
     (kill-region (region-beginning) (region-end))))
 (global-set-key (kbd "C-w") 'my-kill-region)
 
-;; M-g as goto-line
-(define-key esc-map "g" 'goto-line)
+;; (define-key esc-map "g" 'goto-line)
 
 ;; show line number and column number
 ;; (global-linum-mode 1)  ; show line number of the left
@@ -157,52 +154,6 @@
 
 ;; window management
 
-(defun my-split-window-right-open-file ()
-  (interactive)
-  (split-window-right)
-  (windmove-right)
-  (ido-find-file))
-(defun my-split-window-right-switch-buffer ()
-  (interactive)
-  (split-window-right)
-  (windmove-right)
-  (ido-switch-buffer))
-;; C-x 3   to split right
-;; C-x C-3 to split right and open file
-(if window-system
-    ;; gui
-    (global-set-key (kbd "C-x C-3 f") 'my-split-window-right-open-file)
-  ;; terminal
-  (global-set-key (kbd "C-x M-3 f") 'my-split-window-right-open-file))
-(if window-system
-    ;; gui
-    (global-set-key (kbd "C-x C-3 b") 'my-split-window-right-switch-buffer)
-  ;; terminal
-  (global-set-key (kbd "C-x M-3 b") 'my-split-window-right-switch-buffer))
-
-(defun my-split-window-below-open-file ()
-  (interactive)
-  (split-window-below)
-  (windmove-down)
-  (ido-find-file))
-(defun my-split-window-below-switch-buffer ()
-  (interactive)
-  (split-window-below)
-  (windmove-down)
-  (ido-switch-buffer))
-;; C-x 2   to split below
-;; C-x C-2 to split below and open file
-(if window-system
-    ;; gui
-    (global-set-key (kbd "C-x C-2 f") 'my-split-window-below-open-file)
-  ;; terminal
-  (global-set-key (kbd "C-x M-2 f") 'my-split-window-below-open-file))
-(if window-system
-    ;; gui
-    (global-set-key (kbd "C-x C-2 b") 'my-split-window-below-switch-buffer)
-  ;; terminal
-  (global-set-key (kbd "C-x M-2 b") 'my-split-window-below-switch-buffer))
-
 ;; move between windows
 ;; only works for gui
 (cond ((eq system-type 'darwin)
@@ -218,12 +169,12 @@
        (global-set-key (kbd "C-<right>") 'windmove-right)))
 
 
+
 ;;; before packages loads
 
 ;; web-mode
 (setq web-mode-enable-current-element-highlight t)
 (setq web-mode-enable-current-column-highlight t)
-
 
 
 ;;-------------------;;
@@ -274,7 +225,7 @@
 ;;;   dired   ;;;
 ;;-------------;;
 
-(require 'dired)
+;; (require 'dired)
 ;; (setq delete-by-moving-to-trash t)
 
 ;; dired file search
@@ -442,14 +393,7 @@
 ;;------------;;
 
 (when (require 'flycheck nil t)
-  (add-hook 'after-init-hook #'global-flycheck-mode)
-  ;; TODO : flycheck gcc standard not working
-  (add-hook 'c++-mode-hook
-            (lambda () (setq flycheck-gcc-language-standard "c++11"))))
-
-;; (require 'flycheck-color-mode-line)
-;; (eval-after-load "flycheck"
-;;   '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 
 
 ;;; programming language support
@@ -468,45 +412,11 @@
   (setq deactivate-mark nil))
 
 
-;;----------------;;
-;;; company-mode ;;;
-;;----------------;;
-
-;; (require 'company)
-;; (add-hook 'after-init-hook 'global-company-mode)
-;; ;; customize company color
-;; (require 'color)
-;; (let ((bg (face-attribute 'default :background)))
-;;   (custom-set-faces
-;;    `(company-tooltip ((t (:inherit default :background ,
-;;                                    (color-lighten-name bg 2)))))
-;;    `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-;;    `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-;;    `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-;;    `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
-
-
-;; irony for C/C++
-;; (require 'irony)
-;; (add-hook 'c++-mode-hook 'irony-mode)
-;; (add-hook 'c-mode-hook 'irony-mode)
-;; company irony backend for c++
-;; (eval-after-load 'company
-;;   '(add-to-list 'company-backends 'company-irony))
-
-;; company-jedi for python auto-complete
-;; (defun my-python-mode-hook ()
-;;   (add-to-list 'company-backends 'company-jedi))
-;; (add-hook 'python-mode-hook 'my-python-mode-hook)
-
-
 ;;-----------------;;
 ;;; auto-complete ;;;
 ;;-----------------;;
 
 ;; requires popup
-(require 'auto-complete)
-(require 'auto-complete-config)
 (ac-config-default)
 
 ;; disable auto-complete for python-mode
@@ -529,15 +439,6 @@
   (add-hook 'c-mode-hook 'my-ac-c-header-init))
 
 
-;; make yasnippet work with auto-complete
-;; prefer yasnippet to auto-complete
-;; set the trigger key so that it can work together with yasnippet on tab key
-;; if the word exists in yasnippet, pressing tab will cause yasnippet to
-;; activate, otherwise, auto-complete will
-;; (ac-set-trigger-key "TAB")
-;; (ac-set-trigger-key "<tab>")
-
-
 ;; C/C++
 
 ;; treat .h as cpp header file
@@ -551,33 +452,6 @@
 ;; (require 'cc-mode)
 (setq-default c-basic-offset 4
               c-default-style "k&r")
-;; (add-hook 'c-mode-hook (lambda () (setq comment-start "/* "
-;;                                         comment-end   " */")))
-;; (add-hook 'c++-mode-hook (lambda () (setq comment-start "/* "
-;;                                           comment-end   " */")))
-
-;; comment or uncomment line
-(defun my-comment-or-uncomment-line-or-region ()
-  "Comment or uncomment current line."
-  (interactive)
-  (let (beg end)
-    (if (region-active-p)
-        (setq beg (region-beginning) end (region-end))
-      (setq beg (line-beginning-position) end (line-end-position)))
-    (comment-or-uncomment-region beg end))
-  ;; (next-line)
-  )
-;; override default binding for C-c C-c
-(eval-after-load 'c-mode
-  (add-hook 'c-mode-hook
-            (lambda ()
-              (local-set-key (kbd "C-c C-c")
-                             #'my-comment-or-uncomment-line-or-region))))
-(eval-after-load 'c++-mode
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (local-set-key (kbd "C-c C-c")
-                             #'my-comment-or-uncomment-line-or-region))))
 
 ;; C/C++ #if 0 comment
 ;; http://stackoverflow.com/q/4549015/5478848
@@ -605,12 +479,12 @@
           (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
   nil)
 
-(add-hook 'c-mode-common-hook
-          #'(lambda ()
-              (font-lock-add-keywords
-               nil
-               '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend)))
-               'add-to-end)))
+;; (add-hook 'c-mode-common-hook
+;;           #'(lambda ()
+;;               (font-lock-add-keywords
+;;                nil
+;;                '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend)))
+;;                'add-to-end)))
 
 
 ;; Python
@@ -630,12 +504,9 @@
 
 
 ;; common lisp
-;; TODO : make it mode local
+;; slime handles indent correctly
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
-;; (setq slime-startup-animation t)  ;TODO somehow not working
-
-;; TODO : not working
-(eval-after-load 'slime-mode
+(eval-after-load 'lisp-mode
   '(progn
      (setq inferior-lisp-program "/usr/local/bin/sbcl")
      (slime-setup '(slime-fancy))))

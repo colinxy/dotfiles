@@ -11,7 +11,6 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message "colinxy")
 
-
 ;; version control follow symbolic links
 (setq vc-follow-symlinks t)
 
@@ -20,7 +19,6 @@
       backup-by-copying t
       delete-old-versions t
       version-control t)
-
 
 ;; substitute y-or-n-p with yes-or-no-p
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -61,7 +59,7 @@
 (define-key esc-map "g" 'goto-line)
 
 ;; show line number and column number
-(require 'linum)
+;; (require 'linum)
 (global-linum-mode 1)  ; show line number of the left
 (column-number-mode t)
 (show-paren-mode 1)
@@ -74,18 +72,17 @@
 ;; use DEL to delete selected text
 (delete-selection-mode 1)
 
-;; consider CamelCase to be 2 words
-;; subword minor mode, bind it to a mode hook
-
-;; modifier key
-(when (eq system-type 'darwin)
-  (setq mac-command-modifier 'super))
+;; auto insert pair
+;; M-( ; insert ()
+;; (global-set-key (kbd "M-(") 'insert-pair)
+(setq parens-require-spaces nil)
+(global-set-key (kbd "M-[") 'insert-pair)  ; insert []
+(global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
 
 ;; delete trailing white space
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 ;; final newline
 (setq require-final-newline t)
-
 
 (setq split-width-threshold 150) ;split horizontally if at least <> columns
 
@@ -97,6 +94,10 @@
 (when (not window-system)
   (menu-bar-mode -1)
   (load-theme 'tango-dark t))
+
+;; modifier key
+(when (eq system-type 'darwin)
+  (setq mac-command-modifier 'super))
 
 ;; move between windows
 ;; only works for gui
@@ -121,10 +122,8 @@
 (setq-default python-indent-offset 4)
 
 
-(require 'term)
-;; for term-mode, explicit shell name
-;; (setq explicit-shell-file-name "/usr/local/bin/bash")
-(require 'comint)
+;; (require 'term)
+;; (require 'comint)
 (add-hook 'term-mode-hook
           (lambda ()
             (ansi-color-for-comint-mode-on)
