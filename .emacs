@@ -23,20 +23,13 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message "colinxy")
 
-(defun read-lines-from-file (file)
-  "Read all lines of FILE into list."
-  (with-temp-buffer
-    (insert-file-contents file)
-    (split-string (buffer-string) "\n" t)))
-(defun get-string-from-file (file)
+(defun file-to-string (file)
   "Read all lines of FILE into string."
   (with-temp-buffer
     (insert-file-contents file)
     (buffer-string)))
 
-(when (file-exists-p "~/TODO.org")
-  (setq initial-scratch-message
-	(get-string-from-file "~/TODO.org")))
+(setq initial-buffer-choice "~/TODO.org")
 
 ;; version control follow symbolic links
 (setq vc-follow-symlinks t)
