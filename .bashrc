@@ -10,8 +10,6 @@ else
     export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
 fi
 
-[ -d ~/.local/bin ] && PATH=~/.local/bin:$PATH
-
 # ls color flag
 if [[ "$OSTYPE" == "darwin"* ]]; then
     export LSCOLORS=GxFxCxDxBxegedabagaced
@@ -59,7 +57,7 @@ fi
 alias emacs='emacs -nw'
 # export EDITOR='emacsclient -t'
 export EDITOR='vim'
-export ALTERNATE_EDITOR=''
+# export ALTERNATE_EDITOR=''
 
 function ect {
     emacsclient -q -t "$@"   # &>/dev/null
@@ -100,6 +98,9 @@ function clisp-run {
     clisp -q -c "$1"
     time clisp -q -on-error abort -x "(progn (load \"${1%%.*}\") (quit))"
 }
+
+# highlight
+alias highlight='pygmentize -g -f terminal256 -O style=native'
 
 # web
 # equivalent: python3 -m http.server

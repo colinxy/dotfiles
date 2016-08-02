@@ -29,7 +29,7 @@
     (insert-file-contents file)
     (buffer-string)))
 
-(setq initial-buffer-choice "~/TODO.org")
+;; (setq initial-buffer-choice "~/TODO.org")
 
 ;; version control follow symbolic links
 (setq vc-follow-symlinks t)
@@ -102,6 +102,9 @@
 (setq parens-require-spaces nil)
 (global-set-key (kbd "M-[") 'insert-pair)  ; insert []
 (global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
+
+;; upcase region
+(put 'upcase-region 'disabled nil)
 
 ;; delete trailing white space
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
