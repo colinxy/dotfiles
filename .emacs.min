@@ -3,7 +3,7 @@
 ;;; Commentary:
 ;;
 ;; run Emacs as
-;; \emacs --nw -q --load .emacs.min
+;; \emacs -nw -q --load .emacs.min
 
 ;;; Code:
 

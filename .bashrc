@@ -4,11 +4,6 @@ set -o emacs
 
 # command prompt
 # export PS1="\u:\w \$ "
-if [ ${#HOSTNAME} -le 15 ]; then
-    export PS1='\[\033[01;32m\]\u@\h:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
-else
-    export PS1='\[\033[01;32m\]\u:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
-fi
 
 # ls color flag
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -83,12 +78,6 @@ CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare -Werror=return-type -fsanit
 
 export CXXFLAGS
 
-# linux utilities on Mac OSX
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    alias ldd='otool -L'
-    alias objdump='otool -tV'
-fi
-
 # LISP
 # repl readline wrapper
 alias scheme='rlwrap scheme'
@@ -99,12 +88,20 @@ function clisp-run {
     time clisp -q -on-error abort -x "(progn (load \"${1%%.*}\") (quit))"
 }
 
+# linux utilities on Mac OSX
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    alias ldd='otool -L'
+    alias objdump='otool -tV'
+fi
+alias mktemp='mktemp -t tmp'
+
 # highlight
 alias highlight='pygmentize -g -f terminal256 -O style=native'
 
 # web
 # equivalent: python3 -m http.server
-alias server='python -m SimpleHTTPServer'
+alias serve='python -m SimpleHTTPServer'
+export IP_PATTERN='[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
 
 # network
 alias dig='dig +noall +answer'  # DNS

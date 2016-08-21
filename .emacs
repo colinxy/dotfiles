@@ -268,6 +268,8 @@
 ;; for continuous scroll in pdf
 ;; (require 'doc-view)
 ;; (setq doc-view-continuous t)
+(eval-after-load 'dired
+  '(setq doc-view-continuous t))
 
 ;; shell integration
 ;; M-x eshell
