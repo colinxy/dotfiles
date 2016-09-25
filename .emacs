@@ -40,6 +40,11 @@
       delete-old-versions t
       version-control t)
 
+;; Easy PG setup
+;; it used to work with emacs 24.5 and gnupg 1.x without any setup
+;; now upgraded to emacs 25.1 and gnupg 2.1
+(setf epa-pinentry-mode 'loopback)
+
 ;; substitute y-or-n-p with yes-or-no-p
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -58,6 +63,9 @@
 (blink-cursor-mode -1)
 ;; make cursor blink as few as possible
 ;; (setq blink-cursor-blinks 1)
+
+;; auto revert
+(global-auto-revert-mode)
 
 ;; indentation support, do not indent with tabs
 (setq-default indent-tabs-mode nil)
@@ -105,6 +113,7 @@
 
 ;; upcase region
 (put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
 
 ;; delete trailing white space
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -245,14 +254,19 @@
 ;;------------;;
 
 ;; org-mode
-;; (eval-after-load 'org-mode
-;;   '(progn
-;;      (setq org-src-fontify-natively t)
-;;      (setq org-src-tab-acts-natively t)
-;;      ;; from *Help*, but not working
-;;      ;; If you set this variable to the symbol `{}', the braces are
-;;      ;; *required* in order to trigger interpretations as sub/superscript.
-;;      (setq org-use-sub-superscripts '{})))
+(eval-after-load 'org
+  '(progn
+     (setq org-src-fontify-natively t)
+     (setq org-src-tab-acts-natively t)
+     ;; from *Help*, but not working
+     ;; If you set this variable to the symbol `{}', the braces are
+     ;; *required* in order to trigger interpretations as sub/superscript.
+     (setq org-use-sub-superscripts '{})
+     ;; org agenda
+     (global-set-key (kbd "C-c l") 'org-store-link)
+     (global-set-key (kbd "C-c a") 'org-agenda)
+     (global-set-key (kbd "C-c c") 'org-capture)
+     (global-set-key (kbd "C-c b") 'org-iswitchb)))
 
 
 ;;--------------------------;;
@@ -265,11 +279,9 @@
 (setq ido-enable-flex-matching t)
 (ido-everywhere t)
 
-;; for continuous scroll in pdf
-;; (require 'doc-view)
-;; (setq doc-view-continuous t)
-(eval-after-load 'dired
-  '(setq doc-view-continuous t))
+;; use pdf-view instead of doc-view
+(setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
+(pdf-tools-install)
 
 ;; shell integration
 ;; M-x eshell
@@ -447,7 +459,6 @@
 ;; (c-set-offset 'innamespace 0)
 
 ;; indentation
-;; (require 'cc-mode)
 (setq-default c-basic-offset 4
               c-default-style "k&r")
 
@@ -501,7 +512,22 @@
        (elpy-use-ipython))))
 
 
+;; Ruby
+;; robe-mode: code navigation
+;; inf-ruby:  repl integration
+;; M-x inf-ruby (or C-c C-s) to start ruby process
+;; then C-c C-l to load current ruby file
+(add-hook 'ruby-mode-hook 'robe-mode)
+(add-hook 'ruby-mode-hook 'smartparens-strict-mode)
+(add-hook 'ruby-mode-hook 'eldoc-mode)
+(add-hook 'robe-mode-hook 'ac-robe-setup)
+(eval-after-load 'ruby
+  '(progn
+     (inf-ruby-console-auto)))
+
+
 ;; common lisp
+;; M-x slime
 ;; slime handles indent correctly
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
 (eval-after-load 'lisp-mode
@@ -509,14 +535,29 @@
      (setq inferior-lisp-program "/usr/local/bin/sbcl")
      (slime-setup '(slime-fancy))))
 
+;; scheme
+;; M-x run-geiser
+(setq geiser-active-implementations '(racket))
+
+
+;; ocaml
+;; tuareg, merlin (minor mode)
+;; if only interactive, M-x run-ocaml
+(let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
+  (when (and opam-share (file-directory-p opam-share))
+    (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
+    (autoload 'merlin-mode "merlin" nil t nil)
+    (add-hook 'tuareg-mode-hook 'merlin-mode t)))
+
 
 ;; javascript & HTML & CSS
 
-(add-hook 'js-mode-hook 'js2-minor-mode)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;; (add-hook 'js-mode-hook 'js2-minor-mode)
 (eval-after-load 'js2-mode
   '(progn
      (setq js-indent-level 2)                ;indentation level
-     (add-hook 'js-mode-hook 'subword-mode)))
+     (add-hook 'js2-mode-hook 'subword-mode)))
 
 ;; edit HTML in web-mode
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))

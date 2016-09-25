@@ -10,7 +10,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     export LSCOLORS=GxFxCxDxBxegedabagaced
     alias ls='ls -G'
 else
-    # export LS_COLORS=
     alias ls='ls --color=auto'
 fi
 alias ..='cd ..'
@@ -42,8 +41,8 @@ fi
 
 # emacs
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    alias em='open -a emacs --new --args --chdir $PWD'
-    alias edit='open -a emacs --new --args --chdir $PWD -q --load ~/.emacs.min'
+    alias em='open -a /Applications/Emacs.app --new --args --chdir $PWD'
+    alias edit='open -a /Applications/Emacs.app --new --args --chdir $PWD -q --load ~/.emacs.min'
 else
     function em { $(which emacs) "$@" 2>/dev/null & }
     # alias edit='\emacs -q --load ~/.emacs.min &>/dev/null &'
@@ -54,7 +53,7 @@ alias emacs='emacs -nw'
 export EDITOR='vim'
 # export ALTERNATE_EDITOR=''
 
-function ect {
+ect() {
     emacsclient -q -t "$@"   # &>/dev/null
 }
 alias em-proc='pgrep -lf [eE]macs'
@@ -74,9 +73,7 @@ alias diff='diff -u'
 # -w  --ignore-all-space
 
 # C++
-CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare -Werror=return-type -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer'
-
-export CXXFLAGS
+export CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare -Werror=return-type -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer'
 
 # LISP
 # repl readline wrapper
@@ -115,14 +112,9 @@ alias df='df -h'
 # personal accounts
 [ -f ~/.accounts ] && . ~/.accounts
 
-# pip completion --bash
-# pip bash completion start
-_pip_completion()
-{
-    COMPREPLY=( $( COMP_WORDS="${COMP_WORDS[*]}" \
-                   COMP_CWORD=$COMP_CWORD \
-                   PIP_AUTO_COMPLETE=1 $1 ) )
-}
-complete -o default -F _pip_completion pip
-complete -o default -F _pip_completion pip3
-# pip bash completion end
+# fun
+# history | awk '{a[$2]++} END {for(i in a){print a[i] " " i}}' | sort -rn | head
+# nc -v -l 8080 < afile
+# fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1)
+# nc -v -l 8080 < afile
+# telnet telehack.com
