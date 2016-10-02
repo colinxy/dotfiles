@@ -60,8 +60,28 @@ use =pip3= for python3 packages
 
 #+END_SRC
 
-To see the command composed by =xargs=,
+To see the command composed by =xargs= before executing it,
 use =xargs [xargs-options] echo [command]=.
+
+*** Note on Python Packages as Executable Scripts
+
+Most packages are available for both python2 and python3 under the same name,
+while at the same time, they are linked as an executable in =/usr/local/bin=.
+It is sometimes confusing whether you are using python 2 or 3 package if
+directly invoked from command line.
+
+Since I prefer python3 to python2, first upgrade python 2 packages,
+then upgrade python3 packages, so that python3 packages would overwrite
+python2 ones in =/usr/local/bin=.
+
+When trying to run a tool only under python 2/3, use the following.
+
+#+BEGIN_SRC sh
+
+  python  -m flake8
+  python3 -m flake8
+
+#+END_SRC
 
 
 * C/C++

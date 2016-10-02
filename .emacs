@@ -38,6 +38,8 @@
 (setq backup-directory-alist '(("." . "~/.saves"))
       backup-by-copying t
       delete-old-versions t
+      kept-new-versions 10
+      kept-old-versions 2
       version-control t)
 
 ;; Easy PG setup
@@ -547,7 +549,9 @@
   (when (and opam-share (file-directory-p opam-share))
     (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
     (autoload 'merlin-mode "merlin" nil t nil)
-    (add-hook 'tuareg-mode-hook 'merlin-mode t)))
+    (autoload 'utop-minor-mode "utop" "Minor mode for utop" t nil)
+    (add-hook 'tuareg-mode-hook 'merlin-mode t)
+    (add-hook 'tuareg-mode-hook 'utop-minor-mode)))
 
 
 ;; javascript & HTML & CSS
