@@ -69,7 +69,7 @@
 ;; auto revert
 (global-auto-revert-mode)
 
-;; indentation support, do not indent with tabs
+;; do not indent with tabs
 (setq-default indent-tabs-mode nil)
 ;; (setq-default tab-width 4)
 (global-set-key (kbd "RET") 'newline-and-indent)
@@ -176,12 +176,7 @@
        (global-set-key (kbd "C-<right>") 'windmove-right)))
 
 
-
 ;;; before packages loads
-
-;; web-mode
-(setq web-mode-enable-current-element-highlight t)
-(setq web-mode-enable-current-column-highlight t)
 
 
 ;;-------------------;;
@@ -388,16 +383,21 @@
 ;; (sml/setup)
 
 
-;; enable YASnippet
-(when (require 'yasnippet nil t)
-  ;; (require 'yasnippet-bundle)
-  ;; set snippet directory
-  (setq yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
-  ;; global
-  ;; (yas-global-mode 1)
-  ;; minor
-  (yas-reload-all)
-  (add-hook 'prog-mode-hook #'yas-minor-mode))
+;;; YASnippet
+;; let go of yasnippet for sometime
+;; (when (require 'yasnippet nil t)
+;;   ;; (require 'yasnippet-bundle)
+;;   ;; set snippet directory
+;;   (setq yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
+;;   ;; global
+;;   ;; (yas-global-mode 1)
+;;   ;; minor
+;;   (yas-reload-all)
+;;   (add-hook 'prog-mode-hook #'yas-minor-mode))
+
+
+;;; magit
+(global-set-key (kbd "C-x g") 'magit-status)
 
 
 ;;------------;;
@@ -520,7 +520,6 @@
 ;; M-x inf-ruby (or C-c C-s) to start ruby process
 ;; then C-c C-l to load current ruby file
 (add-hook 'ruby-mode-hook 'robe-mode)
-(add-hook 'ruby-mode-hook 'smartparens-strict-mode)
 (add-hook 'ruby-mode-hook 'eldoc-mode)
 (add-hook 'robe-mode-hook 'ac-robe-setup)
 (eval-after-load 'ruby
@@ -548,9 +547,12 @@
 (let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
   (when (and opam-share (file-directory-p opam-share))
     (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
+    (setq merlin-ac-setup 'easy)
     (autoload 'merlin-mode "merlin" nil t nil)
     (autoload 'utop-minor-mode "utop" "Minor mode for utop" t nil)
     (add-hook 'tuareg-mode-hook 'merlin-mode t)
+    ;; installed utop via opam
+    (setq utop-command "opam config exec -- utop -emacs")
     (add-hook 'tuareg-mode-hook 'utop-minor-mode)))
 
 
@@ -569,6 +571,7 @@
 (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.scss\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
 (eval-after-load 'web-mode
   '(progn
      (add-hook 'web-mode-hook 'subword-mode)
@@ -579,6 +582,11 @@
      ;; web dev extra
      (setq web-mode-enable-auto-pairing t)
      (setq web-mode-enable-css-colorization t)
+     ;; html entities
+     (setq web-mode-enable-html-entities-fontification t)
+     ;; highlight
+     (setq web-mode-enable-current-element-highlight t)
+     (setq web-mode-enable-current-column-highlight t)
      ;; keybinding within current tag
      (define-key web-mode-map (kbd "M-n") 'web-mode-tag-next)
      (define-key web-mode-map (kbd "M-p") 'web-mode-tag-previous)))

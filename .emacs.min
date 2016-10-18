@@ -3,7 +3,7 @@
 ;;; Commentary:
 ;;
 ;; run Emacs as
-;; \emacs -nw -q --load .emacs.min
+;; \emacs -nw -q --load ~/.emacs.min
 
 ;;; Code:
 
@@ -18,6 +18,8 @@
 (setq backup-directory-alist '(("." . "~/.saves"))
       backup-by-copying t
       delete-old-versions t
+      kept-new-versions 10
+      kept-old-versions 2
       version-control t)
 
 ;; substitute y-or-n-p with yes-or-no-p
@@ -39,7 +41,10 @@
 ;; make cursor blink as few as possible
 ;; (setq blink-cursor-blinks 1)
 
-;; indentation support, do not indent with tabs
+;; auto revert
+(global-auto-revert-mode)
+
+;; do not indent with tabs
 (setq-default indent-tabs-mode nil)
 ;; (setq-default tab-width 4)
 (global-set-key (kbd "RET") 'newline-and-indent)
@@ -54,9 +59,6 @@
   (when mark-active
     (kill-region (region-beginning) (region-end))))
 (global-set-key (kbd "C-w") 'my-kill-region)
-
-;; M-g as goto-line
-(define-key esc-map "g" 'goto-line)
 
 ;; show line number and column number
 ;; (require 'linum)
@@ -120,27 +122,6 @@
 
 ;; python
 (setq-default python-indent-offset 4)
-
-
-;; (require 'term)
-;; (require 'comint)
-(add-hook 'term-mode-hook
-          (lambda ()
-            (ansi-color-for-comint-mode-on)
-            (define-key term-raw-map (kbd "C-y") 'term-paste)
-            (define-key term-raw-map (kbd "M-(")
-              (lambda ()
-                (interactive)
-                (term-send-raw-string "()")
-                (term-send-left)))
-            (define-key term-raw-map (kbd "M-\"")
-              (lambda ()
-                (interactive)
-                (term-send-raw-string "\"\"")
-                (term-send-left)))))
-(global-set-key (kbd "M-t")
-                (lambda () (interactive)
-                  (ansi-term "/bin/bash")))
 
 
 (provide '.emacs.min)
