@@ -8,9 +8,10 @@
 ;; $ brew install Emacs --with-cocoa --with-librsvg --with-gnutls --with-imagemagick
 ;;
 ;; TODO
-;; 1. reorganize packages with use-package (on hold)
-;; 2. restructure the entire init-file with org-babel (on hold)
+;; 1. reorganize packages with use-package
+;; 2. restructure the entire init-file with org-babel
 ;; 3. fix require loading for optional modules
+;; 4. replace auto-complete with company
 ;;
 ;;; Code:
 
@@ -246,6 +247,12 @@
 (setq dired-listing-switches "-alh")
 
 
+;; neotree
+(when (eq system-type 'darwin)
+  (setq neo-theme (if window-system 'icons 'arrow))
+  (global-set-key (kbd "C-x C-d") 'neotree-toggle))
+
+
 ;;------------;;
 ;;; org-mode ;;;
 ;;------------;;
@@ -404,8 +411,10 @@
 ;;; Flycheck ;;;
 ;;------------;;
 
-(when (require 'flycheck nil t)
-  (add-hook 'after-init-hook #'global-flycheck-mode))
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(eval-after-load 'flycheck
+  '(progn
+     (add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
 
 
 ;;; programming language support
@@ -423,6 +432,12 @@
   (move-end-of-line nil)
   (setq deactivate-mark nil))
 
+;;---------------;;
+;;;   company   ;;;
+;;---------------;;
+
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-irony))
 
 ;;-----------------;;
 ;;; auto-complete ;;;
@@ -435,7 +450,10 @@
 ;; conflicts with elpy (which use company)
 (defadvice auto-complete-mode (around disable-auto-complete-for-python)
   "Disable auto-complete for 'python-mode'."
-  (unless (eq major-mode 'python-mode) ad-do-it))
+  (unless (or (eq major-mode 'python-mode)
+              (eq major-mode 'c-mode)
+              (eq major-mode 'c++-mode))
+    ad-do-it))
 (ad-activate 'auto-complete-mode)
 
 ;; auto-complete-c-header
@@ -463,6 +481,25 @@
 ;; indentation
 (setq-default c-basic-offset 4
               c-default-style "k&r")
+
+;; irony-mode
+;; requires libclang
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'irony-mode-hook 'irony-eldoc)
+(add-hook 'irony-mode-hook
+          (lambda ()
+            (define-key irony-mode-map [remap completion-at-point]
+              'irony-completion-at-point-async)
+            (define-key irony-mode-map [remap complete-symbol]
+              'irony-completion-at-point-async)))
+(add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+(setq irony-additional-clang-options '("-std=c++11"))
+
+;; use company-mode for C/C++
+(add-hook 'c++-mode-hook 'company-mode)
+(add-hook 'c-mode-hook 'company-mode)
+
 
 ;; C/C++ #if 0 comment
 ;; http://stackoverflow.com/q/4549015/5478848
