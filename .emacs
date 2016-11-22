@@ -46,7 +46,7 @@
 ;; Easy PG setup
 ;; it used to work with emacs 24.5 and gnupg 1.x without any setup
 ;; now upgraded to emacs 25.1 and gnupg 2.1
-(setf epa-pinentry-mode 'loopback)
+(setq epa-pinentry-mode 'loopback)
 
 ;; substitute y-or-n-p with yes-or-no-p
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -219,7 +219,8 @@
      (setq speedbar-show-unknown-files t)
      (setq speedbar-initial-expansion-list-name "buffers")
      (setq speedbar-default-position 'left)
-     (speedbar-add-supported-extension ".lisp")))
+     (speedbar-add-supported-extension ".lisp") ;common lisp
+     (speedbar-add-supported-extension ".ss"))) ;scheme
 (global-set-key (kbd "M-s M-s")
                 'speedbar)
 
@@ -283,9 +284,10 @@
 (setq ido-enable-flex-matching t)
 (ido-everywhere t)
 
-;; use pdf-view instead of doc-view
+;; pdf-tools binary (epdfinfo) installed from homebrew
+;; use pdf-tools instead of doc-view
 (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
-(pdf-tools-install)
+;; (pdf-tools-install)                     ;too slow, load on demand
 
 ;; shell integration
 ;; M-x eshell
@@ -361,33 +363,40 @@
 
 ;;; modeline
 
+(when (eq system-type 'darwin)
+  (setq ns-use-srgb-colorspace nil))
+(set-face-attribute 'mode-line nil
+                    :underline nil
+                    :overline nil
+                    :foreground "#fdf6e3"
+                    :background "#2aa198"
+                    :box nil)
+(set-face-attribute 'mode-line-inactive nil
+                    :underline nil
+                    :overline nil
+                    :foreground "#fdf6e3"
+                    :background "#1a655f"
+                    :box nil)
+
+;; spaceline
+;; depends on powerline
+(setq powerline-default-separator 'wave)
+(require 'spaceline-config)
+(spaceline-emacs-theme)
+(spaceline-toggle-flycheck-error)
+(spaceline-toggle-flycheck-warning)
+
 ;; powerline
 
-(when (require 'powerline nil t)
-  ;; mac specific, see https://github.com/milkypostman/powerline/issues/54
-  (when (eq system-type 'darwin)
-    (setq ns-use-srgb-colorspace nil))
-  ;; powerline color
-  ;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
-  (set-face-attribute 'mode-line nil
-                      :underline nil
-                      :overline nil
-                      :foreground "#fdf6e3"
-                      :background "#2aa198"
-                      :box nil)
-  (set-face-attribute 'mode-line-inactive nil
-                      :foreground "#fdf6e3")
-  ;; (setq mode-line-in-non-selected-windows nil) ;do not use mode-line-inactive
-  (powerline-default-theme)
-  (setq powerline-default-separator 'wave))
-
-;; smart mode line
-;; (setq sml/shorten-directory t)
-;; (setq sml/shorten-modes t)
-;; (setq sml/theme 'powerline)
-;; (setq sml/no-confirm-load-theme t)
-;; (setq sml/name-width 40)  ; path-length
-;; (sml/setup)
+;; (when (require 'powerline nil t)
+;;   ;; mac specific, see https://github.com/milkypostman/powerline/issues/54
+;;   (when (eq system-type 'darwin)
+;;     )
+;;   ;; powerline color
+;;   ;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
+;;   ;; (setq mode-line-in-non-selected-windows nil) ;do not use mode-line-inactive
+;;   (powerline-default-theme)
+;;   (setq powerline-default-separator 'wave))
 
 
 ;;; YASnippet
@@ -437,7 +446,8 @@
 ;;---------------;;
 
 (eval-after-load 'company
-  '(add-to-list 'company-backends 'company-irony))
+  '(add-to-list 'company-backends '(company-irony
+                                    company-irony-c-headers)))
 
 ;;-----------------;;
 ;;; auto-complete ;;;
@@ -457,16 +467,16 @@
 (ad-activate 'auto-complete-mode)
 
 ;; auto-complete-c-header
-(when (eq system-type 'darwin)
-  (require 'auto-complete-c-headers)
-  (defun my-ac-c-header-init ()
-    "Init header files completion for C/C++."
-    (add-to-list 'ac-sources
-                 'ac-source-c-headers)
-    (add-to-list 'achead:include-directories
-                 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
-  (add-hook 'c++-mode-hook 'my-ac-c-header-init)
-  (add-hook 'c-mode-hook 'my-ac-c-header-init))
+;; (when (eq system-type 'darwin)
+;;   (require 'auto-complete-c-headers)
+;;   (defun my-ac-c-header-init ()
+;;     "Init header files completion for C/C++."
+;;     (add-to-list 'ac-sources
+;;                  'ac-source-c-headers)
+;;     (add-to-list 'achead:include-directories
+;;                  "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
+;;   (add-hook 'c++-mode-hook 'my-ac-c-header-init)
+;;   (add-hook 'c-mode-hook 'my-ac-c-header-init))
 
 
 ;; C/C++
@@ -482,7 +492,14 @@
 (setq-default c-basic-offset 4
               c-default-style "k&r")
 
+;; use company-mode for C/C++
+(add-hook 'c++-mode-hook 'company-mode)
+(add-hook 'c-mode-hook 'company-mode)
+
 ;; irony-mode
+;; always use clang as compiler: brew install llvm --with-clang
+;; install-server compilation flags:
+;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX\=/Users/yxy/.emacs.d/irony/ /Users/yxy/.emacs.d/elpa/irony-20161106.830/server && cmake --build . --use-stderr --config Release --target install
 ;; requires libclang
 (add-hook 'c++-mode-hook 'irony-mode)
 (add-hook 'c-mode-hook 'irony-mode)
@@ -495,10 +512,6 @@
               'irony-completion-at-point-async)))
 (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
 (setq irony-additional-clang-options '("-std=c++11"))
-
-;; use company-mode for C/C++
-(add-hook 'c++-mode-hook 'company-mode)
-(add-hook 'c-mode-hook 'company-mode)
 
 
 ;; C/C++ #if 0 comment
@@ -539,16 +552,15 @@
 (eval-after-load 'python
   '(progn
      (setq-default python-indent-offset 4)
-     (setq gud-pdb-command-name "python -m pdb ") ;grand unified debugger
-     ;; autopep8
-     ;; (when (require 'py-autopep8 nil t)
-     ;;   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+     (setq gud-pdb-command-name "python3 -m pdb") ;grand unified debugger
      ;; elpy
      (when (require 'elpy nil t)
        (setq elpy-rpc-python-command "python3")
        (setq elpy-rpc-backend "jedi")
-       (elpy-enable)
-       (elpy-use-ipython))))
+       (elpy-use-ipython)
+       (elpy-enable))
+     (setq python-shell-interpreter "ipython3"
+           python-shell-interpreter-args "--simple-prompt --pprint -i")))
 
 
 ;; Ruby
@@ -564,7 +576,7 @@
      (inf-ruby-console-auto)))
 
 
-;; common lisp
+;; Common Lisp
 ;; M-x slime
 ;; slime handles indent correctly
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
@@ -573,12 +585,12 @@
      (setq inferior-lisp-program "/usr/local/bin/sbcl")
      (slime-setup '(slime-fancy))))
 
-;; scheme
+;; Scheme
 ;; M-x run-geiser
 (setq geiser-active-implementations '(racket))
 
 
-;; ocaml
+;; OCaml
 ;; tuareg, merlin (minor mode)
 ;; if only interactive, M-x run-ocaml
 (let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
@@ -593,7 +605,7 @@
     (add-hook 'tuareg-mode-hook 'utop-minor-mode)))
 
 
-;; javascript & HTML & CSS
+;; Javascript & HTML & CSS
 
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 ;; (add-hook 'js-mode-hook 'js2-minor-mode)
@@ -614,7 +626,7 @@
      (add-hook 'web-mode-hook 'subword-mode)
      ;; indentation
      (setq web-mode-markup-indent-offset 2)
-     ;(setq web-mode-css-indent-offset 2)
+     (setq web-mode-css-indent-offset 2)
      (setq web-mode-code-indent-offset 2)
      ;; web dev extra
      (setq web-mode-enable-auto-pairing t)

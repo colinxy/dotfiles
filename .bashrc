@@ -89,8 +89,8 @@ function clisp-run {
 if [[ "$OSTYPE" == "darwin"* ]]; then
     alias ldd='otool -L'
     alias objdump='otool -tV'
+    alias mktemp='mktemp -t tmp'
 fi
-alias mktemp='mktemp -t tmp'
 
 # highlight
 alias highlight='pygmentize -g -f terminal256 -O style=native'
