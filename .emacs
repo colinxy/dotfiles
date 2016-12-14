@@ -130,31 +130,28 @@
 ;; for window
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-(if window-system
-    ;; gui
-    (progn
-      (setq frame-title-format "%b")
-      ;; (menu-bar-mode -1)
+(if (not window-system)
+    ;; terminal
+    (menu-bar-mode -1)
 
-      ;; set font
-      (cond
-       ((member "DejaVu Sans Mono" (font-family-list))
-        (set-face-attribute 'default nil
-                            :font "DejaVu Sans Mono"))
-       ((member "Monaco" (font-family-list))
-        (set-face-attribute 'default nil
-                            :font "Monaco 14")))
-
-      ;; for Mac OS X >= 10.7
-      ;; toggle-frame-maximized binded with M-<f10>
-      ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
-      ;; toggle-frame-fullscreen binded with <f11> (default)
-      ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
-      ;; <f11> conflicts with mac command, bind it to M-<f11>
-      (when (eq system-type 'darwin)
-        (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)))
-  ;; terminal
-  (menu-bar-mode -1))
+  ;; gui
+  (setq frame-title-format "%b")
+  ;; set font
+  (cond
+   ((member "DejaVu Sans Mono" (font-family-list))
+    (set-face-attribute 'default nil
+                        :font "DejaVu Sans Mono"))
+   ((member "Monaco" (font-family-list))
+    (set-face-attribute 'default nil
+                        :font "Monaco 14")))
+  ;; for Mac OS X >= 10.7
+  ;; toggle-frame-maximized binded with M-<f10>
+  ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  ;; toggle-frame-fullscreen binded with <f11> (default)
+  ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
+  ;; <f11> conflicts with mac command, bind it to M-<f11>
+  (when (eq system-type 'darwin)
+    (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)))
 
 
 ;; window management
