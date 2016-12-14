@@ -9,9 +9,6 @@
 ;;
 ;; TODO
 ;; 1. reorganize packages with use-package
-;; 2. restructure the entire init-file with org-babel
-;; 3. fix require loading for optional modules
-;; 4. replace auto-complete with company
 ;;
 ;;; Code:
 
@@ -212,15 +209,15 @@
 
 ;; (require 'speedbar)
 
-(eval-after-load 'speedbar
-  '(progn
-     (add-to-list 'speedbar-frame-parameters '(width . 30))
-     (setq speedbar-use-images nil)
-     (setq speedbar-show-unknown-files t)
-     (setq speedbar-initial-expansion-list-name "buffers")
-     (setq speedbar-default-position 'left)
-     (speedbar-add-supported-extension ".lisp") ;common lisp
-     (speedbar-add-supported-extension ".ss"))) ;scheme
+(with-eval-after-load 'speedbar
+  (add-to-list 'speedbar-frame-parameters '(width . 30))
+  (setq speedbar-use-images nil)
+  (setq speedbar-show-unknown-files t)
+  (setq speedbar-initial-expansion-list-name "buffers")
+  (setq speedbar-default-position 'left)
+  (speedbar-add-supported-extension ".lisp") ;common lisp
+  (speedbar-add-supported-extension ".ss")   ;scheme
+  (speedbar-add-supported-extension ".ml"))  ;ocaml
 (global-set-key (kbd "M-s M-s")
                 'speedbar)
 
@@ -233,12 +230,11 @@
 ;; (setq delete-by-moving-to-trash t)
 
 ;; dired file search
-(eval-after-load 'dired
-  '(progn
-     (define-key dired-mode-map (kbd "C-s")
-       'dired-isearch-filenames)
-     (define-key dired-mode-map (kbd "C-M-s")
-       'dired-isearch-filenames-regexp)))
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "C-s")
+    'dired-isearch-filenames)
+  (define-key dired-mode-map (kbd "C-M-s")
+    'dired-isearch-filenames-regexp))
 
 ;; BSD ls does not support --dired
 (when (not (eq system-type 'gnu/linux))
@@ -259,19 +255,18 @@
 ;;------------;;
 
 ;; org-mode
-(eval-after-load 'org
-  '(progn
-     (setq org-src-fontify-natively t)
-     (setq org-src-tab-acts-natively t)
-     ;; from *Help*, but not working
-     ;; If you set this variable to the symbol `{}', the braces are
-     ;; *required* in order to trigger interpretations as sub/superscript.
-     (setq org-use-sub-superscripts '{})
-     ;; org agenda
-     (global-set-key (kbd "C-c l") 'org-store-link)
-     (global-set-key (kbd "C-c a") 'org-agenda)
-     (global-set-key (kbd "C-c c") 'org-capture)
-     (global-set-key (kbd "C-c b") 'org-iswitchb)))
+(with-eval-after-load 'org
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+  ;; from *Help*, but not working
+  ;; If you set this variable to the symbol `{}', the braces are
+  ;; *required* in order to trigger interpretations as sub/superscript.
+  (setq org-use-sub-superscripts '{})
+  ;; org agenda
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (global-set-key (kbd "C-c c") 'org-capture)
+  (global-set-key (kbd "C-c b") 'org-iswitchb))
 
 
 ;;--------------------------;;
@@ -283,6 +278,9 @@
 (ido-mode 1)
 (setq ido-enable-flex-matching t)
 (ido-everywhere t)
+
+;; imenu
+(setq imenu-auto-rescan 1)
 
 ;; pdf-tools binary (epdfinfo) installed from homebrew
 ;; use pdf-tools instead of doc-view
@@ -349,22 +347,22 @@
       ;; (setq custom-safe-themes t)
       (setq x-underline-at-descent-line t) ; modeline underline
 
-      (require 'solarized)
-      (setq solarized-high-contrast-mode-line t)
-      (setq solarized-distinct-fringe-background t)
-      (setq solarized-distinct-doc-face t)
-      (setq solarized-use-more-italic t)
-      (setq solarized-use-variable-pitch t)
-      (setq solarized-emphasize-indicators t)
-
+      (with-eval-after-load 'solarized
+        (setq solarized-high-contrast-mode-line t)
+        (setq solarized-distinct-fringe-background t)
+        (setq solarized-distinct-doc-face t)
+        (setq solarized-use-more-italic t)
+        (setq solarized-use-variable-pitch t)
+        (setq solarized-emphasize-indicators t))
       (load-theme 'solarized-dark t))
   ;; terminal
   (load-theme 'tango-dark t))
 
 ;;; modeline
-
+;; mac specific, see https://github.com/milkypostman/powerline/issues/54
 (when (eq system-type 'darwin)
   (setq ns-use-srgb-colorspace nil))
+;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
 (set-face-attribute 'mode-line nil
                     :underline nil
                     :overline nil
@@ -380,21 +378,17 @@
 
 ;; spaceline
 ;; depends on powerline
-(setq powerline-default-separator 'wave)
 (require 'spaceline-config)
+(setq powerline-default-separator (if window-system 'wave 'arrow))
 (spaceline-emacs-theme)
 (spaceline-toggle-flycheck-error)
 (spaceline-toggle-flycheck-warning)
 
+
 ;; powerline
 
 ;; (when (require 'powerline nil t)
-;;   ;; mac specific, see https://github.com/milkypostman/powerline/issues/54
-;;   (when (eq system-type 'darwin)
-;;     )
 ;;   ;; powerline color
-;;   ;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
-;;   ;; (setq mode-line-in-non-selected-windows nil) ;do not use mode-line-inactive
 ;;   (powerline-default-theme)
 ;;   (setq powerline-default-separator 'wave))
 
@@ -421,9 +415,8 @@
 ;;------------;;
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
-(eval-after-load 'flycheck
-  '(progn
-     (add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
+(with-eval-after-load 'flycheck
+  (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 
 
 ;;; programming language support
@@ -431,7 +424,7 @@
 ;; enable code folding
 ;; (add-hook 'prog-mode-hook #'hs-minor-mode)
 ;; gud (grand unified debugger)
-(require 'gud)
+;; (require 'gud)
 
 (defun my-select-current-line ()
   "Handy function for selection current line."
@@ -445,38 +438,30 @@
 ;;;   company   ;;;
 ;;---------------;;
 
-(eval-after-load 'company
-  '(add-to-list 'company-backends '(company-irony
-                                    company-irony-c-headers)))
+(with-eval-after-load 'company
+  (add-to-list 'company-backends '(company-irony
+                                   company-irony-c-headers
+                                   merlin-company-backend
+                                   company-robe)))
+(add-hook 'after-init-hook 'global-company-mode)
+
 
 ;;-----------------;;
 ;;; auto-complete ;;;
 ;;-----------------;;
 
 ;; requires popup
-(ac-config-default)
+;; (ac-config-default)
 
 ;; disable auto-complete for python-mode
 ;; conflicts with elpy (which use company)
-(defadvice auto-complete-mode (around disable-auto-complete-for-python)
-  "Disable auto-complete for 'python-mode'."
-  (unless (or (eq major-mode 'python-mode)
-              (eq major-mode 'c-mode)
-              (eq major-mode 'c++-mode))
-    ad-do-it))
-(ad-activate 'auto-complete-mode)
-
-;; auto-complete-c-header
-;; (when (eq system-type 'darwin)
-;;   (require 'auto-complete-c-headers)
-;;   (defun my-ac-c-header-init ()
-;;     "Init header files completion for C/C++."
-;;     (add-to-list 'ac-sources
-;;                  'ac-source-c-headers)
-;;     (add-to-list 'achead:include-directories
-;;                  "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"))
-;;   (add-hook 'c++-mode-hook 'my-ac-c-header-init)
-;;   (add-hook 'c-mode-hook 'my-ac-c-header-init))
+;; (defadvice auto-complete-mode (around disable-auto-complete-for-python)
+;;   "Disable auto-complete for 'python-mode'."
+;;   (unless (or (eq major-mode 'python-mode)
+;;               (eq major-mode 'c-mode)
+;;               (eq major-mode 'c++-mode))
+;;     ad-do-it))
+;; (ad-activate 'auto-complete-mode)
 
 
 ;; C/C++
@@ -549,18 +534,18 @@
 
 
 ;; Python
-(eval-after-load 'python
-  '(progn
-     (setq-default python-indent-offset 4)
-     (setq gud-pdb-command-name "python3 -m pdb") ;grand unified debugger
-     ;; elpy
-     (when (require 'elpy nil t)
-       (setq elpy-rpc-python-command "python3")
-       (setq elpy-rpc-backend "jedi")
-       (elpy-use-ipython)
-       (elpy-enable))
-     (setq python-shell-interpreter "ipython3"
-           python-shell-interpreter-args "--simple-prompt --pprint -i")))
+(with-eval-after-load 'python
+  (setq-default python-indent-offset 4)
+  (setq gud-pdb-command-name "python3 -m pdb") ;grand unified debugger
+  ;; elpy
+  (when (require 'elpy nil t)
+    (setq elpy-rpc-python-command "python3")
+    (setq elpy-rpc-backend "jedi")
+    (elpy-use-ipython)
+    (elpy-enable))
+  ;; problem with ipython 5 prompt
+  (setq python-shell-interpreter "ipython3"
+        python-shell-interpreter-args "--simple-prompt --pprint -i"))
 
 
 ;; Ruby
@@ -569,21 +554,19 @@
 ;; M-x inf-ruby (or C-c C-s) to start ruby process
 ;; then C-c C-l to load current ruby file
 (add-hook 'ruby-mode-hook 'robe-mode)
-(add-hook 'ruby-mode-hook 'eldoc-mode)
-(add-hook 'robe-mode-hook 'ac-robe-setup)
-(eval-after-load 'ruby
-  '(progn
-     (inf-ruby-console-auto)))
+(add-hook 'ruby-mode-hook 'subword-mode)
+;; (add-hook 'ruby-mode-hook 'eldoc-mode)
+(with-eval-after-load 'ruby
+  (inf-ruby-console-auto))
 
 
 ;; Common Lisp
 ;; M-x slime
 ;; slime handles indent correctly
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
-(eval-after-load 'lisp-mode
-  '(progn
-     (setq inferior-lisp-program "/usr/local/bin/sbcl")
-     (slime-setup '(slime-fancy))))
+(with-eval-after-load 'lisp-mode
+  (setq inferior-lisp-program "/usr/local/bin/sbcl")
+  (slime-setup '(slime-fancy)))
 
 ;; Scheme
 ;; M-x run-geiser
@@ -596,11 +579,12 @@
 (let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
   (when (and opam-share (file-directory-p opam-share))
     (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
-    (setq merlin-ac-setup 'easy)
     (autoload 'merlin-mode "merlin" nil t nil)
-    (autoload 'utop-minor-mode "utop" "Minor mode for utop" t nil)
+    ;; use tuareg
     (add-hook 'tuareg-mode-hook 'merlin-mode t)
+
     ;; installed utop via opam
+    (autoload 'utop-minor-mode "utop" "Minor mode for utop" t nil)
     (setq utop-command "opam config exec -- utop -emacs")
     (add-hook 'tuareg-mode-hook 'utop-minor-mode)))
 
@@ -609,36 +593,35 @@
 
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 ;; (add-hook 'js-mode-hook 'js2-minor-mode)
-(eval-after-load 'js2-mode
-  '(progn
-     (setq js-indent-level 2)                ;indentation level
-     (add-hook 'js2-mode-hook 'subword-mode)))
+(add-hook 'js2-mode-hook 'subword-mode)
+(with-eval-after-load 'js2-mode
+  (setq js-indent-level 2))
 
 ;; edit HTML in web-mode
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.xml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.scss\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(eval-after-load 'web-mode
-  '(progn
-     (add-hook 'web-mode-hook 'subword-mode)
-     ;; indentation
-     (setq web-mode-markup-indent-offset 2)
-     (setq web-mode-css-indent-offset 2)
-     (setq web-mode-code-indent-offset 2)
-     ;; web dev extra
-     (setq web-mode-enable-auto-pairing t)
-     (setq web-mode-enable-css-colorization t)
-     ;; html entities
-     (setq web-mode-enable-html-entities-fontification t)
-     ;; highlight
-     (setq web-mode-enable-current-element-highlight t)
-     (setq web-mode-enable-current-column-highlight t)
-     ;; keybinding within current tag
-     (define-key web-mode-map (kbd "M-n") 'web-mode-tag-next)
-     (define-key web-mode-map (kbd "M-p") 'web-mode-tag-previous)))
+(with-eval-after-load 'web-mode
+  (add-hook 'web-mode-hook 'subword-mode)
+  ;; indentation
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  ;; web dev extra
+  (setq web-mode-enable-auto-pairing t)
+  (setq web-mode-enable-css-colorization t)
+  ;; html entities
+  (setq web-mode-enable-html-entities-fontification t)
+  ;; highlight
+  (setq web-mode-enable-current-element-highlight t)
+  (setq web-mode-enable-current-column-highlight t)
+  ;; keybinding within current tag
+  (define-key web-mode-map (kbd "M-n") 'web-mode-tag-next)
+  (define-key web-mode-map (kbd "M-p") 'web-mode-tag-previous))
 
 
 ;; Markdown
