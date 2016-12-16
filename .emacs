@@ -214,7 +214,8 @@
   (setq speedbar-default-position 'left)
   (speedbar-add-supported-extension ".lisp") ;common lisp
   (speedbar-add-supported-extension ".ss")   ;scheme
-  (speedbar-add-supported-extension ".ml"))  ;ocaml
+  (speedbar-add-supported-extension ".ml")   ;ocaml
+  (speedbar-add-supported-extension ".rb"))  ;ruby
 (global-set-key (kbd "M-s M-s")
                 'speedbar)
 
@@ -552,6 +553,8 @@
 ;; then C-c C-l to load current ruby file
 (add-hook 'ruby-mode-hook 'robe-mode)
 (add-hook 'ruby-mode-hook 'subword-mode)
+(define-key ruby-mode-map (kbd "C-M-p") 'backward-list)
+(define-key ruby-mode-map (kbd "C-M-n") 'forward-list)
 ;; (add-hook 'ruby-mode-hook 'eldoc-mode)
 (with-eval-after-load 'ruby
   (inf-ruby-console-auto))
