@@ -143,7 +143,7 @@
                         :font "DejaVu Sans Mono"))
    ((member "Monaco" (font-family-list))
     (set-face-attribute 'default nil
-                        :font "Monaco 14")))
+                        :font "Monaco 13")))
   ;; for Mac OS X >= 10.7
   ;; toggle-frame-maximized binded with M-<f10>
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -215,7 +215,8 @@
   (speedbar-add-supported-extension ".lisp") ;common lisp
   (speedbar-add-supported-extension ".ss")   ;scheme
   (speedbar-add-supported-extension ".ml")   ;ocaml
-  (speedbar-add-supported-extension ".rb"))  ;ruby
+  (speedbar-add-supported-extension ".rb")   ;ruby
+  (speedbar-add-supported-extension ".sml")) ;standard ml
 (global-set-key (kbd "M-s M-s")
                 'speedbar)
 
@@ -553,10 +554,10 @@
 ;; then C-c C-l to load current ruby file
 (add-hook 'ruby-mode-hook 'robe-mode)
 (add-hook 'ruby-mode-hook 'subword-mode)
-(define-key ruby-mode-map (kbd "C-M-p") 'backward-list)
-(define-key ruby-mode-map (kbd "C-M-n") 'forward-list)
 ;; (add-hook 'ruby-mode-hook 'eldoc-mode)
 (with-eval-after-load 'ruby
+  (define-key ruby-mode-map (kbd "C-M-p") 'backward-list)
+  (define-key ruby-mode-map (kbd "C-M-n") 'forward-list)
   (inf-ruby-console-auto))
 
 
