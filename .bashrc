@@ -113,6 +113,10 @@ alias df='df -h'
 # personal accounts
 [ -f ~/.accounts ] && . ~/.accounts
 
+set-title() {
+    echo -e "\033];$*\007"
+}
+
 # fun
 # history | awk '{a[$2]++} END {for(i in a){print a[i] " " i}}' | sort -rn | head
 # nc -v -l 8080 < afile

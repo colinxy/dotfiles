@@ -143,7 +143,7 @@
                         :font "DejaVu Sans Mono"))
    ((member "Monaco" (font-family-list))
     (set-face-attribute 'default nil
-                        :font "Monaco 13")))
+                        :font "Monaco 14")))
   ;; for Mac OS X >= 10.7
   ;; toggle-frame-maximized binded with M-<f10>
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -221,6 +221,9 @@
                 'speedbar)
 
 
+;; ediff
+(setq ediff-split-window-function 'split-window-horizontally)
+
 ;;-------------;;
 ;;;   dired   ;;;
 ;;-------------;;
@@ -228,12 +231,37 @@
 ;; (require 'dired)
 ;; (setq delete-by-moving-to-trash t)
 
+;; with modification, from https://www.emacswiki.org/emacs/DavidBoon#toc4
+(defun my-dired-ediff-marked-files ()
+  "Run ediff on marked files."
+  (interactive)
+  (let ((marked-files (dired-get-marked-files)))
+    (cond ((= (safe-length marked-files) 2)
+           (ediff-files (nth 0 marked-files) (nth 1 marked-files)))
+          ((= (safe-length marked-files) 3)
+           (ediff3 (nth 0 marked-files)
+                   (nth 1 marked-files)
+                   (nth 2 marked-files)))
+          ;; inspired by dired-diff
+          ((= (safe-length marked-files) 1)
+           ;; prompt for another file if only 1 selected
+           (let* ((current-file (nth 0 marked-files))
+                  (other-file
+                   (read-file-name (format "Diff %s with: " current-file)
+                                   (dired-current-directory)
+                                   nil  ;current file serves as default
+                                   t))) ;must be valid filename
+             (ediff-files current-file other-file)))
+          (t (message "Mark no more than 3 files to ediff")))))
+
 ;; dired file search
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "C-s")
     'dired-isearch-filenames)
   (define-key dired-mode-map (kbd "C-M-s")
-    'dired-isearch-filenames-regexp))
+    'dired-isearch-filenames-regexp)
+  (define-key dired-mode-map (kbd "=")
+    'my-dired-ediff-marked-files))
 
 ;; BSD ls does not support --dired
 (when (not (eq system-type 'gnu/linux))
@@ -247,6 +275,15 @@
 (when (eq system-type 'darwin)
   (setq neo-theme (if window-system 'icons 'arrow))
   (global-set-key (kbd "C-x C-d") 'neotree-toggle))
+
+
+;;--------------;;
+;;; tramp-mode ;;;
+;;--------------;;
+
+;; tramp eshell: respect $PATH on remote host
+;; TODO : use as a hook
+;; (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 
 ;;------------;;
@@ -280,6 +317,9 @@
 
 ;; imenu
 (setq imenu-auto-rescan 1)
+;; popup-imenu
+(setq popup-imenu-style 'indent)
+(global-set-key (kbd "M-s M-i") 'popup-imenu)
 
 ;; pdf-tools binary (epdfinfo) installed from homebrew
 ;; use pdf-tools instead of doc-view
@@ -380,8 +420,8 @@
 (require 'spaceline-config)
 (setq powerline-default-separator (if window-system 'wave 'arrow))
 (spaceline-emacs-theme)
-(spaceline-toggle-flycheck-error)
-(spaceline-toggle-flycheck-warning)
+(spaceline-toggle-flycheck-error-off)
+(spaceline-toggle-flycheck-warning-off)
 
 
 ;; powerline
@@ -440,8 +480,10 @@
 (with-eval-after-load 'company
   (add-to-list 'company-backends '(company-irony
                                    company-irony-c-headers
-                                   merlin-company-backend
+                                   ;; merlin-company-backend
                                    company-robe)))
+(setq company-dabbrev-downcase 0)
+(setq company-idle-delay 0)
 (add-hook 'after-init-hook 'global-company-mode)
 
 
@@ -495,7 +537,9 @@
             (define-key irony-mode-map [remap complete-symbol]
               'irony-completion-at-point-async)))
 (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-(setq irony-additional-clang-options '("-std=c++11"))
+;; (add-hook 'c++-mode-hook
+;;           (lambda ()
+;;             (setq irony-additional-clang-options '("-std=c++11"))))
 
 
 ;; C/C++ #if 0 comment
@@ -583,6 +627,8 @@
     (autoload 'merlin-mode "merlin" nil t nil)
     ;; use tuareg
     (add-hook 'tuareg-mode-hook 'merlin-mode t)
+    (with-eval-after-load 'merlin-mode
+      (add-to-list company-backends 'merlin-company-backend))
 
     ;; installed utop via opam
     (autoload 'utop-minor-mode "utop" "Minor mode for utop" t nil)
