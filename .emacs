@@ -111,9 +111,12 @@
 (global-set-key (kbd "M-[") 'insert-pair)  ; insert []
 (global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
 
-;; upcase region
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
+;; upcase/downcase region
+;; (put 'upcase-region 'disabled nil)
+;; (put 'downcase-region 'disabled nil)
+(global-set-key (kbd "M-u") 'upcase-dwim)
+(global-set-key (kbd "M-l") 'downcase-dwim)
+(global-set-key (kbd "M-c") 'capitalize-dwim)
 
 ;; delete trailing white space
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -481,7 +484,12 @@
   (add-to-list 'company-backends '(company-irony
                                    company-irony-c-headers
                                    ;; merlin-company-backend
-                                   company-robe)))
+                                   company-robe
+                                   ;; math
+                                   company-math-symbols-unicode
+                                   company-math-symbols-latex
+                                   company-latex-commands
+                                   )))
 (setq company-dabbrev-downcase 0)
 (setq company-idle-delay 0)
 (add-hook 'after-init-hook 'global-company-mode)
@@ -680,6 +688,32 @@
 (setq markdown-command
       "pandoc -f markdown -t html -s --mathjax --highlight-style=pygments")
 ;; (add-hook 'markdown-mode-hook 'flyspell-mode)
+
+
+;; LaTeX
+
+;; AUCTeX
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq TeX-PDF-mode t)                   ;pdflatex
+
+;; math insert by pair $$, \(\)
+(setq TeX-electric-math '("$" . "$"))
+;; insert {}, [], ()
+(setq LaTeX-electric-left-right-brace t)
+
+;; Use pdf-tools to open PDF files
+(setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+      TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+      TeX-source-correlate-start-server t)
+
+;; Update PDF buffers after successful LaTeX runs
+(add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
+          #'TeX-revert-document-buffer)
+
+;; LaTeX math mode C-c ~
+;; LaTeX insert environment C-c C-e
+;; LaTeX insert item        C-c C-j
 
 
 (provide '.emacs)

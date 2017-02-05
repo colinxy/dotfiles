@@ -45,7 +45,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     alias em='open -a /Applications/Emacs.app --new --args --chdir $PWD'
     alias edit='open -a /Applications/Emacs.app --new --args --chdir $PWD -q --load ~/.emacs.min'
 else
-    function em { $(which emacs) "$@" 2>/dev/null & }
+    em() { $(which emacs) "$@" 2>/dev/null & }
     # alias edit='\emacs -q --load ~/.emacs.min &>/dev/null &'
 fi
 
@@ -59,7 +59,7 @@ ect() {
 }
 alias em-proc='pgrep -lf [eE]macs'
 alias kill-em-daemon='emacsclient -e "(save-buffers-kill-emacs)"'
-# function ec { emacsclient -c "$@" & }
+# ec() { emacsclient -c "$@" & }
 
 # git version control
 alias git-push='git push origin -u'
@@ -81,7 +81,7 @@ export CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare -Werror=return-type 
 alias scheme='rlwrap scheme'
 alias sbcl-repl='rlwrap sbcl'
 
-function clisp-run {
+clisp-run() {
     clisp -q -c "$1"
     time clisp -q -on-error abort -x "(progn (load \"${1%%.*}\") (quit))"
 }
@@ -97,21 +97,43 @@ fi
 alias highlight='pygmentize -g -f terminal256 -O style=native'
 
 # web
-# equivalent: python3 -m http.server
-alias serve='python -m SimpleHTTPServer'
+# alias serve='python -m SimpleHTTPServer'
+alias serve='python3 -m http.server --bind 127.0.0.1'
 export IP_PATTERN='[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
 
 # network
 alias dig='dig +noall +answer'  # DNS
+# check tcp connection with bash
+# http://stackoverflow.com/questions/9609130/quick-way-to-find-if-a-port-is-open-on-linux
+tcpconn() {
+    local ip='127.0.0.1'
+    if [ ! -z "$2" ]; then
+        ip=$1
+        shift
+    fi
+    port=$1
+    echo "exec 6<>/dev/tcp/$ip/$port"
+    exec 6<>"/dev/tcp/$ip/$port" && echo "listening" || echo "not listening"
+    # send http request
+    # echo -e "GET / HTTP/1.0\n" >&6 && cat <&6
+    exec 6>&- # close output connection
+    exec 6<&- # close input connection
+}
+
 # disk usage
 alias du='du -hs'
 alias df='df -h'
+
+# virtualbox
+vbox() {
+    pgrep VirtualBoxVM | xargs ps wwp
+}
 
 # python virtual environment
 [ -r /usr/local/opt/autoenv/activate.sh ] && . /usr/local/opt/autoenv/activate.sh
 
 # personal accounts
-[ -f ~/.accounts ] && . ~/.accounts
+[ -f "$HOME"/.accounts ] && . "$HOME"/.accounts
 
 set-title() {
     echo -e "\033];$*\007"
