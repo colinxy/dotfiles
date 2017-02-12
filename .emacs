@@ -21,7 +21,7 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message "colinxy")
 
-(defun file-to-string (file)
+(defun my-file-to-string (file)
   "Read all lines of FILE into string."
   (with-temp-buffer
     (insert-file-contents file)
@@ -203,27 +203,6 @@
 ;; (require 'bind-key)
 
 
-;;--------------;;
-;;;  speedbar  ;;;
-;;--------------;;
-
-;; (require 'speedbar)
-
-(with-eval-after-load 'speedbar
-  (add-to-list 'speedbar-frame-parameters '(width . 30))
-  (setq speedbar-use-images nil)
-  (setq speedbar-show-unknown-files t)
-  (setq speedbar-initial-expansion-list-name "buffers")
-  (setq speedbar-default-position 'left)
-  (speedbar-add-supported-extension ".lisp") ;common lisp
-  (speedbar-add-supported-extension ".ss")   ;scheme
-  (speedbar-add-supported-extension ".ml")   ;ocaml
-  (speedbar-add-supported-extension ".rb")   ;ruby
-  (speedbar-add-supported-extension ".sml")) ;standard ml
-(global-set-key (kbd "M-s M-s")
-                'speedbar)
-
-
 ;; ediff
 (setq ediff-split-window-function 'split-window-horizontally)
 
@@ -285,7 +264,7 @@
 ;;--------------;;
 
 ;; tramp eshell: respect $PATH on remote host
-;; TODO : use as a hook
+;; TODO : use as a event hook
 ;; (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 
@@ -301,6 +280,7 @@
   ;; If you set this variable to the symbol `{}', the braces are
   ;; *required* in order to trigger interpretations as sub/superscript.
   (setq org-use-sub-superscripts '{})
+  (setq org-highlight-latex-and-related '(latex script entities))
   ;; org agenda
   (global-set-key (kbd "C-c l") 'org-store-link)
   (global-set-key (kbd "C-c a") 'org-agenda)
@@ -318,16 +298,32 @@
 (setq ido-enable-flex-matching t)
 (ido-everywhere t)
 
+
 ;; imenu
 (setq imenu-auto-rescan 1)
+
 ;; popup-imenu
 (setq popup-imenu-style 'indent)
 (global-set-key (kbd "M-s M-i") 'popup-imenu)
+
+;; imenu-list
+(global-set-key (kbd "C-'") #'imenu-list-minor-mode)
+(setq imenu-list-focus-after-activation t)
+;; quit in imenu-list buffer with q
+(define-key imenu-list-major-mode-map (kbd "q") 'imenu-list-minor-mode)
+
+
+;; undo tree
+(global-undo-tree-mode)
+;; C-_  C-/  (`undo-tree-undo')
+;; M-_  C-?  (`undo-tree-redo')
+
 
 ;; pdf-tools binary (epdfinfo) installed from homebrew
 ;; use pdf-tools instead of doc-view
 (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
 ;; (pdf-tools-install)                     ;too slow, load on demand
+
 
 ;; shell integration
 ;; M-x eshell
@@ -356,16 +352,19 @@
                 (lambda () (interactive)
                   (ansi-term "/bin/bash")))
 
+
 ;; http://emacs.stackexchange.com/a/337/12003
 (defun my-expose-global-bindng-in-mode-map (binding mode-map)
   "Expose global BINDING in MODE-MAP."
   (define-key mode-map binding
     (lookup-key (current-global-map) binding)))
 
+
 ;; exec-path-from-shell: consistent with shell in Mac OS X
 (when (memq window-system '(mac ns))
   ;; (require 'exec-path-from-shell)
   (exec-path-from-shell-initialize))
+
 
 ;; mutiple cursor
 ;; Shift key does not work for terminal
@@ -376,16 +375,19 @@
   ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
   )
 
+
 ;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
 (when (require 'fic-mode nil t)
   (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
   (add-hook 'prog-mode-hook 'fic-mode))
 
+
 ;; emacs themes
 (if window-system
     ;; gui
     (progn
-      ;; theme for solarized
+      ;; solarized theme by bbatsov
+      ;; https://github.com/bbatsov/solarized-emacs
       ;; (setq custom-safe-themes t)
       (setq x-underline-at-descent-line t) ; modeline underline
 
@@ -393,6 +395,7 @@
         (setq solarized-high-contrast-mode-line t)
         (setq solarized-distinct-fringe-background t)
         (setq solarized-distinct-doc-face t)
+        (setq solarized-use-less-bold t)
         (setq solarized-use-more-italic t)
         (setq solarized-use-variable-pitch t)
         (setq solarized-emphasize-indicators t))
@@ -425,14 +428,6 @@
 (spaceline-emacs-theme)
 (spaceline-toggle-flycheck-error-off)
 (spaceline-toggle-flycheck-warning-off)
-
-
-;; powerline
-
-;; (when (require 'powerline nil t)
-;;   ;; powerline color
-;;   (powerline-default-theme)
-;;   (setq powerline-default-separator 'wave))
 
 
 ;;; YASnippet
@@ -533,7 +528,7 @@
 ;; irony-mode
 ;; always use clang as compiler: brew install llvm --with-clang
 ;; install-server compilation flags:
-;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX\=/Users/yxy/.emacs.d/irony/ /Users/yxy/.emacs.d/elpa/irony-20161106.830/server && cmake --build . --use-stderr --config Release --target install
+;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX\=/Users/yxy/.emacs.d/irony/ /Users/yxy/.emacs.d/elpa/irony-{latest}/server && cmake --build . --use-stderr --config Release --target install
 ;; requires libclang
 (add-hook 'c++-mode-hook 'irony-mode)
 (add-hook 'c-mode-hook 'irony-mode)
@@ -545,9 +540,8 @@
             (define-key irony-mode-map [remap complete-symbol]
               'irony-completion-at-point-async)))
 (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-;; (add-hook 'c++-mode-hook
-;;           (lambda ()
-;;             (setq irony-additional-clang-options '("-std=c++11"))))
+;; make irony aware of .clang_complete or cmake
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
 
 ;; C/C++ #if 0 comment
@@ -681,7 +675,7 @@
 
 ;; Markdown
 
-;; markdown mode
+;; markdown mode vs gfm-mode
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 ;; (require 'markdown-mode)
@@ -714,6 +708,10 @@
 ;; LaTeX math mode C-c ~
 ;; LaTeX insert environment C-c C-e
 ;; LaTeX insert item        C-c C-j
+
+
+;; gnuplot mode
+(add-to-list 'auto-mode-alist '("\\.gp\\'" . gnuplot-mode))
 
 
 (provide '.emacs)
