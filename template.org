@@ -1,0 +1,8 @@
+#+TITLE:
+#+AUTHOR: Colin Yang
+#+DATE:
+#+OPTIONS: toc:nil
+#+LATEX_HEADER: \usepackage{parskip}
+
+# if writing math
+# #+LATEX_HEADER: \usepackage{amsmath}

@@ -15,6 +15,7 @@
 .emacs.d/abbrev_defs
 .emacs.d/network-security.data
 .emacs.d/projectile-bookmarks.eld
+.emacs.d/bookmarks
 
 .DS_Store
 *.elc

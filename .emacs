@@ -27,8 +27,6 @@
     (insert-file-contents file)
     (buffer-string)))
 
-;; (setq initial-buffer-choice "~/TODO.org")
-
 ;; version control follow symbolic links
 (setq vc-follow-symlinks t)
 
@@ -45,7 +43,7 @@
 ;; now upgraded to emacs 25.1 and gnupg 2.1
 (setq epa-pinentry-mode 'loopback)
 
-;; substitute y-or-n-p with yes-or-no-p
+;; substitute y-or-n-p for yes-or-no-p
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; smooth scrolling
@@ -74,6 +72,7 @@
 
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
+(global-unset-key (kbd "C-t"))
 (global-unset-key (kbd "C-x C-w"))
 ;; C-w is only enabled when a region is selected
 (defun my-kill-region ()
@@ -82,8 +81,6 @@
   (when mark-active
     (kill-region (region-beginning) (region-end))))
 (global-set-key (kbd "C-w") 'my-kill-region)
-
-;; (define-key esc-map "g" 'goto-line)
 
 ;; show line number and column number
 ;; (global-linum-mode 1)  ; show line number of the left
@@ -188,7 +185,6 @@
 (setq package-archives
       '(("elpa" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
-        ("marmalade" . "http://marmalade-repo.org/packages/")
         ("melpa" . "http://melpa.milkbox.net/packages/")
         ("melpa-stable" . "https://stable.melpa.org/packages/")))
 (package-initialize)
@@ -202,6 +198,8 @@
 ;; (require 'diminish)
 ;; (require 'bind-key)
 
+;; compile
+(global-set-key (kbd "M-g M-c") 'compile)
 
 ;; ediff
 (setq ediff-split-window-function 'split-window-horizontally)
@@ -264,8 +262,8 @@
 ;;--------------;;
 
 ;; tramp eshell: respect $PATH on remote host
-;; TODO : use as a event hook
-;; (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+(with-eval-after-load 'tramp
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 
 ;;------------;;
@@ -280,12 +278,18 @@
   ;; If you set this variable to the symbol `{}', the braces are
   ;; *required* in order to trigger interpretations as sub/superscript.
   (setq org-use-sub-superscripts '{})
-  (setq org-highlight-latex-and-related '(latex script entities))
-  ;; org agenda
-  (global-set-key (kbd "C-c l") 'org-store-link)
-  (global-set-key (kbd "C-c a") 'org-agenda)
-  (global-set-key (kbd "C-c c") 'org-capture)
-  (global-set-key (kbd "C-c b") 'org-iswitchb))
+  (setq org-highlight-latex-and-related '(latex script entities)))
+
+(setq org-agenda-files '("~/org"))
+(setq org-default-notes-file "~/org/notes.org")
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c b") 'org-iswitchb)
+
+(setq org-capture-templates '())
+
+;; C-c C-o: org-open-at-point
 
 
 ;;--------------------------;;
@@ -307,10 +311,8 @@
 (global-set-key (kbd "M-s M-i") 'popup-imenu)
 
 ;; imenu-list
-(global-set-key (kbd "C-'") #'imenu-list-minor-mode)
+(global-set-key (kbd "C-'") #'imenu-list-smart-toggle)
 (setq imenu-list-focus-after-activation t)
-;; quit in imenu-list buffer with q
-(define-key imenu-list-major-mode-map (kbd "q") 'imenu-list-minor-mode)
 
 
 ;; undo tree
@@ -443,6 +445,11 @@
 ;;   (add-hook 'prog-mode-hook #'yas-minor-mode))
 
 
+;; async compilation of melpa package
+(setq async-bytecomp-allowed-packages '(all))
+(async-bytecomp-package-mode 1)
+
+
 ;;; magit
 (global-set-key (kbd "C-x g") 'magit-status)
 
@@ -484,8 +491,10 @@
                                    company-math-symbols-unicode
                                    company-math-symbols-latex
                                    company-latex-commands
+                                   ;; js
+                                   company-tern
                                    )))
-(setq company-dabbrev-downcase 0)
+(setq company-dabbrev-downcase nil)
 (setq company-idle-delay 0)
 (add-hook 'after-init-hook 'global-company-mode)
 
@@ -520,6 +529,9 @@
 ;; indentation
 (setq-default c-basic-offset 4
               c-default-style "k&r")
+
+;; gdb
+(setq gdb-many-windows t)
 
 ;; use company-mode for C/C++
 (add-hook 'c++-mode-hook 'company-mode)
@@ -663,6 +675,8 @@
   ;; web dev extra
   (setq web-mode-enable-auto-pairing t)
   (setq web-mode-enable-css-colorization t)
+  ;; template engine detection (put engine:<engine> at top of file)
+  (setq web-mode-enable-engine-detection t)
   ;; html entities
   (setq web-mode-enable-html-entities-fontification t)
   ;; highlight
@@ -705,6 +719,7 @@
 (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
           #'TeX-revert-document-buffer)
 
+;; LaTeX compile   C-c C-a
 ;; LaTeX math mode C-c ~
 ;; LaTeX insert environment C-c C-e
 ;; LaTeX insert item        C-c C-j
