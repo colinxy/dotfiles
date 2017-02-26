@@ -370,18 +370,15 @@
 
 ;; mutiple cursor
 ;; Shift key does not work for terminal
-(when (require 'multiple-cursors nil t)
-  ;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-  (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
-  ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
-  )
+;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C-.") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
 ;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
-(when (require 'fic-mode nil t)
-  (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
-  (add-hook 'prog-mode-hook 'fic-mode))
+(setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
+(add-hook 'prog-mode-hook 'fic-mode)
 
 
 ;; emacs themes
@@ -493,28 +490,12 @@
                                    company-latex-commands
                                    ;; js
                                    company-tern
+                                   ;; shell
+                                   company-shell
                                    )))
 (setq company-dabbrev-downcase nil)
 (setq company-idle-delay 0)
 (add-hook 'after-init-hook 'global-company-mode)
-
-
-;;-----------------;;
-;;; auto-complete ;;;
-;;-----------------;;
-
-;; requires popup
-;; (ac-config-default)
-
-;; disable auto-complete for python-mode
-;; conflicts with elpy (which use company)
-;; (defadvice auto-complete-mode (around disable-auto-complete-for-python)
-;;   "Disable auto-complete for 'python-mode'."
-;;   (unless (or (eq major-mode 'python-mode)
-;;               (eq major-mode 'c-mode)
-;;               (eq major-mode 'c++-mode))
-;;     ad-do-it))
-;; (ad-activate 'auto-complete-mode)
 
 
 ;; C/C++
@@ -598,6 +579,7 @@
   (when (require 'elpy nil t)
     (setq elpy-rpc-python-command "python3")
     (setq elpy-rpc-backend "jedi")
+    (remove-hook 'elpy-modules 'elpy-module-flymake)
     (elpy-use-ipython)
     (elpy-enable))
   ;; problem with ipython 5 prompt
@@ -692,7 +674,6 @@
 ;; markdown mode vs gfm-mode
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-;; (require 'markdown-mode)
 (setq markdown-command
       "pandoc -f markdown -t html -s --mathjax --highlight-style=pygments")
 ;; (add-hook 'markdown-mode-hook 'flyspell-mode)

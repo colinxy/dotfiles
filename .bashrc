@@ -45,7 +45,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     alias em='open -a /Applications/Emacs.app --new --args --chdir $PWD'
     alias edit='open -a /Applications/Emacs.app --new --args --chdir $PWD -q --load ~/.emacs.min'
 else
-    em() { $(which emacs) "$@" 2>/dev/null & }
+    # GUI emacs
+    em() { nohup "$(which emacs)" "$@" >/dev/null 2>&1 &
+           disown %+; }
     # alias edit='\emacs -q --load ~/.emacs.min &>/dev/null &'
 fi
 
@@ -74,7 +76,9 @@ alias diff='diff -u'
 # -w  --ignore-all-space
 
 # C++
-export CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare -Werror=return-type -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer'
+export CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare
+       -Werror=return-type -fsanitize=address -fsanitize=undefined
+       -fno-omit-frame-pointer -fsanitize=bounds'
 
 # LISP
 # repl readline wrapper
@@ -113,7 +117,8 @@ tcpconn() {
     fi
     port=$1
     echo "exec 6<>/dev/tcp/$ip/$port"
-    exec 6<>"/dev/tcp/$ip/$port" && echo "listening" || echo "not listening"
+    exec 6<>"/dev/tcp/$ip/$port" &&
+        echo "$port listening" || echo "$port not listening"
     # send http request
     # echo -e "GET / HTTP/1.0\n" >&6 && cat <&6
     exec 6>&- # close output connection
@@ -125,9 +130,11 @@ alias du='du -hs'
 alias df='df -h'
 
 # virtualbox
-vbox() {
-    pgrep VirtualBoxVM | xargs ps wwp
-}
+alias vbox='VBoxManage list runningvms'
+alias ubuntu='VBoxManage startvm "ubuntu16" --type headless'
+alias centos='VBoxManage startvm "centos7" --type headless'
+alias freebsd='VBoxManage startvm "freebsd11" --type headless'
+vshutdown() { VBoxManage controlvm "$1" acpipowerbutton; }
 
 # python virtual environment
 [ -r /usr/local/opt/autoenv/activate.sh ] && . /usr/local/opt/autoenv/activate.sh

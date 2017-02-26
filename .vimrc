@@ -15,8 +15,6 @@ Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'tpope/vim-fugitive'
 
 call vundle#end()
-filetype plugin indent on
-
 
 " Brief help
 " :PluginList       - lists configured plugins
@@ -46,7 +44,6 @@ set mouse=nicr
 
 " set showcmd
 
-
 " colorscheme pablo
 syntax on
 
@@ -66,4 +63,13 @@ set ignorecase
 set smartcase
 set nowrapscan
 
+" Allow backspacing over everything in insert mode.
+set backspace=indent,eol,start
+
 " set foldenable
+
+" keep last position
+autocmd BufReadPost *
+  \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+  \   exe "normal! g`\"" |
+  \ endif
