@@ -106,7 +106,12 @@ export IPV4='[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
 
 # network
 alias dig='dig +noall +answer'  # DNS
-# wirshark
+# whois
+# use whois to lookup ip to get more accurate results, example:
+# whois $(dig google.com | head -1 | awk '{print $5}')
+whois() { "$(which whois)" "$@" | grep -vE '^(#|\s*$)'; }
+# GUI wirshark
+alias ws='startprocess wireshark'
 # check tcp connection with bash
 # http://stackoverflow.com/questions/9609130/quick-way-to-find-if-a-port-is-open-on-linux
 tcpconn() {
@@ -135,6 +140,9 @@ alias ubuntu='VBoxManage startvm "ubuntu16" --type headless'
 alias centos='VBoxManage startvm "centos7" --type headless'
 alias freebsd='VBoxManage startvm "freebsd11" --type headless'
 vshutdown() { VBoxManage controlvm "$1" acpipowerbutton; }
+
+# vargrant completion offered through contrib/bash/completion.sh
+# complete -W "$(vagrant --help | awk '/^[[:space:]]/ {print $1}')" vagrant
 
 # python virtual environment
 [ -r /usr/local/opt/autoenv/activate.sh ] && . /usr/local/opt/autoenv/activate.sh
