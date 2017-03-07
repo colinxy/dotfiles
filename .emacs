@@ -106,6 +106,7 @@
 ;; (global-set-key (kbd "M-(") 'insert-pair)
 (setq parens-require-spaces nil)
 (global-set-key (kbd "M-[") 'insert-pair)  ; insert []
+(global-set-key (kbd "C-{") 'insert-pair)  ; insert {}
 (global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
 
 ;; upcase/downcase region
@@ -194,15 +195,22 @@
 ;;   (package-refresh-contents)
 ;;   (package-install 'use-package))
 
-;; (require 'use-package)
-;; (require 'diminish)
-;; (require 'bind-key)
+(require 'use-package)
+(require 'diminish)
+(require 'bind-key)
+
+;; hide useless strings from modeline
+(use-package abbrev
+  :diminish abbrev-mode)
 
 ;; compile
 (global-set-key (kbd "M-g M-c") 'compile)
 
 ;; ediff
 (setq ediff-split-window-function 'split-window-horizontally)
+;; create a new frame for ediff
+(add-hook 'ediff-before-setup-hook 'new-frame)
+(add-hook 'ediff-quit-hook 'delete-frame)
 
 ;;-------------;;
 ;;;   dired   ;;;
@@ -271,23 +279,40 @@
 ;;------------;;
 
 ;; org-mode
-(with-eval-after-load 'org
+;; (with-eval-after-load 'org
+;;   (setq org-src-fontify-natively t)
+;;   (setq org-src-tab-acts-natively t)
+;;   ;; from *Help*, but not working
+;;   ;; If you set this variable to the symbol `{}', the braces are
+;;   ;; *required* in order to trigger interpretations as sub/superscript.
+;;   (setq org-use-sub-superscripts '{})
+;;   (setq org-highlight-latex-and-related '(latex script entities)))
+
+;; (global-set-key (kbd "C-c l") 'org-store-link)
+;; (global-set-key (kbd "C-c a") 'org-agenda)
+;; (global-set-key (kbd "C-c c") 'org-capture)
+;; (global-set-key (kbd "C-c b") 'org-iswitchb)
+;; (setq org-agenda-files '("~/org"))
+;; (setq org-default-notes-file "~/org/notes.org")
+;; (setq org-capture-templates '())
+
+(use-package org
+  :bind (("C-c l" . org-store-link)
+         ("C-c a" . org-agenda)
+         ("C-c c" . org-capture)
+         ("C-c b" . org-iswitchb))
+  :init
+  (setq org-agenda-files '("~/org"))
+  (setq org-default-notes-file "~/org/notes.org")
+  :config
   (setq org-src-fontify-natively t)
   (setq org-src-tab-acts-natively t)
-  ;; from *Help*, but not working
+  (setq org-highlight-latex-and-related '(latex script entities))
   ;; If you set this variable to the symbol `{}', the braces are
   ;; *required* in order to trigger interpretations as sub/superscript.
-  (setq org-use-sub-superscripts '{})
-  (setq org-highlight-latex-and-related '(latex script entities)))
-
-(setq org-agenda-files '("~/org"))
-(setq org-default-notes-file "~/org/notes.org")
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c c") 'org-capture)
-(global-set-key (kbd "C-c b") 'org-iswitchb)
-
-(setq org-capture-templates '())
+  (setq org-export-with-sub-superscripts '{})
+  ;; (setq org-capture-templates '())
+  )
 
 ;; C-c C-o: org-open-at-point
 
@@ -311,14 +336,22 @@
 (global-set-key (kbd "M-s M-i") 'popup-imenu)
 
 ;; imenu-list
-(global-set-key (kbd "C-'") #'imenu-list-smart-toggle)
-(setq imenu-list-focus-after-activation t)
+;; (global-set-key (kbd "C-'") #'imenu-list-smart-toggle)
+;; (setq imenu-list-focus-after-activation t)
+(use-package imenu-list
+  :defer t
+  :bind ("C-'" . imenu-list-smart-toggle)
+  :config (setq imenu-list-focus-after-activation t))
 
 
 ;; undo tree
-(global-undo-tree-mode)
+;; (global-undo-tree-mode)
 ;; C-_  C-/  (`undo-tree-undo')
 ;; M-_  C-?  (`undo-tree-redo')
+(use-package undo-tree
+  :defer t
+  :init (add-hook 'after-init-hook 'global-undo-tree-mode)
+  :diminish undo-tree-mode)
 
 
 ;; pdf-tools binary (epdfinfo) installed from homebrew
@@ -455,9 +488,13 @@
 ;;; Flycheck ;;;
 ;;------------;;
 
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(with-eval-after-load 'flycheck
-  (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+;; (add-hook 'after-init-hook #'global-flycheck-mode)
+;; (with-eval-after-load 'flycheck
+;;   (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+(use-package flycheck
+  :defer t
+  :init (add-hook 'after-init-hook 'global-flycheck-mode)
+  :config (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
 
 
 ;;; programming language support
@@ -479,7 +516,30 @@
 ;;;   company   ;;;
 ;;---------------;;
 
-(with-eval-after-load 'company
+;; (with-eval-after-load 'company
+;;   (add-to-list 'company-backends '(company-irony
+;;                                    company-irony-c-headers
+;;                                    ;; merlin-company-backend
+;;                                    company-robe
+;;                                    ;; math
+;;                                    company-math-symbols-unicode
+;;                                    company-math-symbols-latex
+;;                                    company-latex-commands
+;;                                    ;; js
+;;                                    company-tern
+;;                                    ;; shell
+;;                                    ;; company-shell
+;;                                    )))
+;; (setq company-dabbrev-downcase nil)
+;; (setq company-idle-delay 0)
+;; (add-hook 'after-init-hook 'global-company-mode)
+
+(use-package company
+  :defer t
+  :init (add-hook 'after-init-hook 'global-company-mode)
+  :config
+  (setq company-dabbrev-downcase nil)
+  (setq company-idle-delay 0)
   (add-to-list 'company-backends '(company-irony
                                    company-irony-c-headers
                                    ;; merlin-company-backend
@@ -491,11 +551,9 @@
                                    ;; js
                                    company-tern
                                    ;; shell
-                                   company-shell
-                                   )))
-(setq company-dabbrev-downcase nil)
-(setq company-idle-delay 0)
-(add-hook 'after-init-hook 'global-company-mode)
+                                   ;; company-shell
+                                   ))
+  :diminish company-mode)
 
 
 ;; C/C++
@@ -707,7 +765,9 @@
 
 
 ;; gnuplot mode
-(add-to-list 'auto-mode-alist '("\\.gp\\'" . gnuplot-mode))
+;; (add-to-list 'auto-mode-alist '("\\.gp\\'" . gnuplot-mode))
+(use-package gnuplot-mode
+  :mode "\\.gp\\'")
 
 
 (provide '.emacs)

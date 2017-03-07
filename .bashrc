@@ -40,16 +40,14 @@ elif [ -f /usr/share/vim/vim73/macros/less.vim ]; then
     alias vless='vim -u /usr/share/vim/vim73/macros/less.vim -'
 fi
 
+startprocess() {
+    nohup "$@" >/dev/null 2>&1 &
+    disown %+
+}
+
 # emacs
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    alias em='open -a /Applications/Emacs.app --new --args --chdir $PWD'
-    alias edit='open -a /Applications/Emacs.app --new --args --chdir $PWD -q --load ~/.emacs.min'
-else
-    # GUI emacs
-    em() { nohup "$(which emacs)" "$@" >/dev/null 2>&1 &
-           disown %+; }
-    # alias edit='\emacs -q --load ~/.emacs.min &>/dev/null &'
-fi
+alias em='startprocess "$(which emacs)"'
+alias edit='startprocess "$(which emacs)" -q --load ~/.emacs.min'
 
 alias emacs='emacs -nw'
 # export EDITOR='emacsclient -t'
@@ -59,7 +57,6 @@ export EDITOR='vim'
 ect() {
     emacsclient -q -t "$@"   # &>/dev/null
 }
-alias em-proc='pgrep -lf [eE]macs'
 alias kill-em-daemon='emacsclient -e "(save-buffers-kill-emacs)"'
 # ec() { emacsclient -c "$@" & }
 
@@ -77,8 +74,10 @@ alias diff='diff -u'
 
 # C++
 export CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare
-       -Werror=return-type -fsanitize=address -fsanitize=undefined
-       -fno-omit-frame-pointer -fsanitize=bounds'
+       -Werror=return-type -fstrict-overflow -Wstrict-overflow
+       -fsanitize=address -fsanitize=undefined -fsanitize=bounds
+       -fno-omit-frame-pointer'
+# for 2's complement arithmetic, use -fwrapv
 
 # LISP
 # repl readline wrapper
@@ -103,10 +102,11 @@ alias highlight='pygmentize -g -f terminal256 -O style=native'
 # web
 # alias serve='python -m SimpleHTTPServer'
 alias serve='python3 -m http.server --bind 127.0.0.1'
-export IP_PATTERN='[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
+export IPV4='[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
 
 # network
 alias dig='dig +noall +answer'  # DNS
+# wirshark
 # check tcp connection with bash
 # http://stackoverflow.com/questions/9609130/quick-way-to-find-if-a-port-is-open-on-linux
 tcpconn() {
