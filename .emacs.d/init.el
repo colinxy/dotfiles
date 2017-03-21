@@ -442,7 +442,7 @@
       ;; solarized theme by bbatsov
       ;; https://github.com/bbatsov/solarized-emacs
       ;; (setq custom-safe-themes t)
-      (use-package solarized-dark
+      (use-package solarized
         :init
         (setq x-underline-at-descent-line t)
         (setq solarized-high-contrast-mode-line t)
@@ -519,6 +519,14 @@
   :defer t
   :bind ("C-x g" . magit-status))
 
+;; highlight changes
+(use-package diff-hl
+  :defer t
+  :config
+  (global-diff-hl-mode 1)
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+
 ;;; dumb-jump: jump to definition based on regexp
 (use-package dumb-jump
   :defer t
@@ -540,13 +548,6 @@
   :init (add-hook 'after-init-hook 'global-flycheck-mode)
   :config (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
 
-
-;;; programming language support
-
-;; enable code folding
-;; (add-hook 'prog-mode-hook #'hs-minor-mode)
-;; gud (grand unified debugger)
-;; (require 'gud)
 
 ;;---------------;;
 ;;;   company   ;;;
@@ -665,19 +666,37 @@
 
 
 ;; Python
-(with-eval-after-load 'python
+(use-package python
+  :defer t
+  :init
   (setq-default python-indent-offset 4)
-  (setq gud-pdb-command-name "python3 -m pdb") ;grand unified debugger
-  ;; elpy
-  (when (require 'elpy nil t)
-    (setq elpy-rpc-python-command "python3")
-    (setq elpy-rpc-backend "jedi")
-    (remove-hook 'elpy-modules 'elpy-module-flymake)
-    (elpy-use-ipython)
-    (elpy-enable))
-  ;; problem with ipython 5 prompt
+  (setq gud-pdb-command-name "python3 -m pdb")
+  :config
+  (elpy-enable)
   (setq python-shell-interpreter "ipython3"
         python-shell-interpreter-args "--simple-prompt --pprint -i"))
+(use-package elpy
+  :defer t
+  :commands (elpy-enable)
+  :config
+  (setq elpy-rpc-python-command "python3")
+  (setq elpy-rpc-backend "jedi")
+  (remove-hook 'elpy-modules 'elpy-module-flymake)
+  (elpy-use-ipython))
+
+;; (with-eval-after-load 'python
+;;   (setq-default python-indent-offset 4)
+;;   (setq gud-pdb-command-name "python3 -m pdb") ;grand unified debugger
+;;   ;; elpy
+;;   (when (require 'elpy nil t)
+;;     (setq elpy-rpc-python-command "python3")
+;;     (setq elpy-rpc-backend "jedi")
+;;     (remove-hook 'elpy-modules 'elpy-module-flymake)
+;;     (elpy-use-ipython)
+;;     (elpy-enable))
+;;   ;; problem with ipython 5 prompt
+;;   (setq python-shell-interpreter "ipython3"
+;;         python-shell-interpreter-args "--simple-prompt --pprint -i"))
 
 
 ;; Ruby
@@ -699,7 +718,7 @@
 ;; slime handles indent correctly
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
 (with-eval-after-load 'lisp-mode
-  (setq inferior-lisp-program "/usr/local/bin/sbcl")
+  (setq inferior-lisp-program (executable-find "sbcl"))
   (setq slime-contribs '(slime-fancy))
   ;; (slime-setup '(slime-fancy))
   )
@@ -732,7 +751,7 @@
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 ;; (add-hook 'js-mode-hook 'js2-minor-mode)
 (add-hook 'js2-mode-hook 'subword-mode)
-(add-hook 'js2-mode-hook 'jade-interaction-mode)
+;; (add-hook 'js2-mode-hook 'jade-interaction-mode)
 (with-eval-after-load 'js2-mode
   (setq js-indent-level 2))
 
@@ -767,11 +786,10 @@
 
 ;; Markdown
 
-;; markdown mode vs gfm-mode
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-(setq markdown-command
-      "pandoc -f markdown -t html -s --mathjax --highlight-style=pygments")
+(use-package markdown-mode
+  :config
+  (setq markdown-command
+        "pandoc -f markdown -t html -s --mathjax --highlight-style=pygments"))
 ;; (add-hook 'markdown-mode-hook 'flyspell-mode)
 
 
