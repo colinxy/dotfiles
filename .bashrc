@@ -1,6 +1,8 @@
 
 set -o emacs
 
+# allow parallel history
+shopt -s histappend
 
 # command prompt
 # export PS1="\u:\w \$ "
@@ -46,8 +48,8 @@ startprocess() {
 }
 
 # emacs
-alias em='startprocess "$(which emacs)"'
-alias edit='startprocess "$(which emacs)" -q --load ~/.emacs.min'
+alias em='startprocess "$(type -P emacs)"'
+alias edit='startprocess "$(type -P emacs)" -q --load ~/.emacs.min'
 
 alias emacs='emacs -nw'
 # export EDITOR='emacsclient -t'
@@ -109,7 +111,7 @@ alias dig='dig +noall +answer'  # DNS
 # whois
 # use whois to lookup ip to get more accurate results, example:
 # whois $(dig google.com | head -1 | awk '{print $5}')
-whois() { "$(which whois)" "$@" | grep -vE '^(#|\s*$)'; }
+whois() { "$(type -P whois)" "$@" | grep -vE '^(#|\s*$)'; }
 # GUI wirshark
 alias ws='startprocess wireshark'
 # check tcp connection with bash

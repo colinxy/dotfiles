@@ -72,8 +72,10 @@
 
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
+(setq outline-minor-mode-prefix (kbd "C-o"))
 (global-unset-key (kbd "C-t"))
 (global-unset-key (kbd "C-x C-w"))
+(global-unset-key (kbd "M-)"))
 ;; C-w is only enabled when a region is selected
 (defun my-kill-region ()
   "Cuts only when a region is selected."
@@ -154,6 +156,9 @@
   (when (eq system-type 'darwin)
     (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)))
 
+;; startup maximized
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 ;; window management
 
@@ -198,6 +203,7 @@
 (require 'use-package)
 (require 'diminish)
 (require 'bind-key)
+;; (setq use-package-always-ensure t)
 
 ;; hide useless strings from modeline
 (use-package abbrev
@@ -235,34 +241,51 @@
            ;; prompt for another file if only 1 selected
            (let* ((current-file (nth 0 marked-files))
                   (other-file
-                   (read-file-name (format "Diff %s with: " current-file)
+                   (read-file-name (format "Ediff %s with: " current-file)
                                    (dired-current-directory)
-                                   nil  ;current file serves as default
+                                   ;; use file on current line as default
+                                   (ignore-errors (dired-get-filename))
                                    t))) ;must be valid filename
              (ediff-files current-file other-file)))
           (t (message "Mark no more than 3 files to ediff")))))
 
-;; dired file search
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-s")
-    'dired-isearch-filenames)
-  (define-key dired-mode-map (kbd "C-M-s")
-    'dired-isearch-filenames-regexp)
-  (define-key dired-mode-map (kbd "=")
-    'my-dired-ediff-marked-files))
+(use-package dired
+  :bind (:map dired-mode-map
+              ("C-s" . dired-isearch-filenames)
+              ("C-M-s" . dired-isearch-filenames-regexp)
+              ("=" . my-dired-ediff-marked-files))
+  :config
+  (setq dired-listing-switches "-alh")
+  ;; BSD ls does not support --dired
+  (when (not (eq system-type 'gnu/linux))
+    (require 'ls-lisp)
+    (setq ls-lisp-use-insert-directory-program nil))
+  )
 
-;; BSD ls does not support --dired
-(when (not (eq system-type 'gnu/linux))
-  (require 'ls-lisp)
-  (setq ls-lisp-use-insert-directory-program nil))
+;; ;; dired file search
+;; (with-eval-after-load 'dired
+;;   (define-key dired-mode-map (kbd "C-s")
+;;     'dired-isearch-filenames)
+;;   (define-key dired-mode-map (kbd "C-M-s")
+;;     'dired-isearch-filenames-regexp)
+;;   (define-key dired-mode-map (kbd "=")
+;;     'my-dired-ediff-marked-files))
 
-(setq dired-listing-switches "-alh")
+;; ;; BSD ls does not support --dired
+;; (when (not (eq system-type 'gnu/linux))
+;;   (require 'ls-lisp)
+;;   (setq ls-lisp-use-insert-directory-program nil))
+
+;; (setq dired-listing-switches "-alh")
 
 
 ;; neotree
-(when (eq system-type 'darwin)
-  (setq neo-theme (if window-system 'icons 'arrow))
-  (global-set-key (kbd "C-x C-d") 'neotree-toggle))
+(use-package neotree
+  :bind ("C-x C-d" . neotree-toggle)
+  :config (setq neo-theme (if window-system 'icons 'arrow)))
+;; (when (eq system-type 'darwin)
+;;   (setq neo-theme (if window-system 'icons 'arrow))
+;;   (global-set-key (kbd "C-x C-d") 'neotree-toggle))
 
 
 ;;--------------;;
@@ -327,6 +350,9 @@
 (setq ido-enable-flex-matching t)
 (ido-everywhere t)
 
+;; maybe try ivy for a while ?
+;; (ivy-mode 1)
+
 
 ;; imenu
 (setq imenu-auto-rescan 1)
@@ -356,6 +382,7 @@
 
 ;; pdf-tools binary (epdfinfo) installed from homebrew
 ;; use pdf-tools instead of doc-view
+(setq doc-view-continuous t)
 (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
 ;; (pdf-tools-install)                     ;too slow, load on demand
 
@@ -396,9 +423,9 @@
 
 
 ;; exec-path-from-shell: consistent with shell in Mac OS X
-(when (memq window-system '(mac ns))
-  ;; (require 'exec-path-from-shell)
-  (exec-path-from-shell-initialize))
+;; (when (memq window-system '(mac ns))
+;;   ;; (require 'exec-path-from-shell)
+;;   (exec-path-from-shell-initialize))
 
 
 ;; mutiple cursor
@@ -421,17 +448,29 @@
       ;; solarized theme by bbatsov
       ;; https://github.com/bbatsov/solarized-emacs
       ;; (setq custom-safe-themes t)
-      (setq x-underline-at-descent-line t) ; modeline underline
-
-      (with-eval-after-load 'solarized
+      (use-package solarized-dark
+        :init
+        (setq x-underline-at-descent-line t)
         (setq solarized-high-contrast-mode-line t)
         (setq solarized-distinct-fringe-background t)
         (setq solarized-distinct-doc-face t)
         (setq solarized-use-less-bold t)
         (setq solarized-use-more-italic t)
         (setq solarized-use-variable-pitch t)
-        (setq solarized-emphasize-indicators t))
-      (load-theme 'solarized-dark t))
+        (setq solarized-emphasize-indicators t)
+        (load-theme 'solarized-dark t))
+
+      ;; (setq x-underline-at-descent-line t) ; modeline underline
+      ;; (with-eval-after-load 'solarized
+      ;;   (setq solarized-high-contrast-mode-line t)
+      ;;   (setq solarized-distinct-fringe-background t)
+      ;;   (setq solarized-distinct-doc-face t)
+      ;;   (setq solarized-use-less-bold t)
+      ;;   (setq solarized-use-more-italic t)
+      ;;   (setq solarized-use-variable-pitch t)
+      ;;   (setq solarized-emphasize-indicators t))
+      ;; (load-theme 'solarized-dark t)
+      )
   ;; terminal
   (load-theme 'tango-dark t))
 
@@ -481,12 +520,21 @@
 
 
 ;;; magit
-(global-set-key (kbd "C-x g") 'magit-status)
+;; (global-set-key (kbd "C-x g") 'magit-status)
+(use-package magit
+  :bind ("C-x g" . magit-status))
 
+;;; dumb-jump: jump to definition based on regexp
+(use-package dumb-jump
+  :bind (("M-g M-." . dumb-jump-go)
+         ("M-g M-," . dumb-jump-back)
+         ("M-g M-o" . dumb-jump-go-other-window)
+         ("M-g M-h" . dumb-jump-quick-look))
+  :config
+  (setq dumb-jump-default-project ".")  ;default project root dir
+  ;; (setq dumb-jump-selector 'ivy)
+  )
 
-;;------------;;
-;;; Flycheck ;;;
-;;------------;;
 
 ;; (add-hook 'after-init-hook #'global-flycheck-mode)
 ;; (with-eval-after-load 'flycheck
@@ -550,10 +598,9 @@
                                    company-latex-commands
                                    ;; js
                                    company-tern
-                                   ;; shell
-                                   ;; company-shell
                                    ))
-  :diminish company-mode)
+  ;; :diminish company-mode
+  )
 
 
 ;; C/C++
@@ -665,7 +712,9 @@
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
 (with-eval-after-load 'lisp-mode
   (setq inferior-lisp-program "/usr/local/bin/sbcl")
-  (slime-setup '(slime-fancy)))
+  (setq slime-contribs '(slime-fancy))
+  ;; (slime-setup '(slime-fancy))
+  )
 
 ;; Scheme
 ;; M-x run-geiser
@@ -695,6 +744,7 @@
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 ;; (add-hook 'js-mode-hook 'js2-minor-mode)
 (add-hook 'js2-mode-hook 'subword-mode)
+(add-hook 'js2-mode-hook 'jade-interaction-mode)
 (with-eval-after-load 'js2-mode
   (setq js-indent-level 2))
 
@@ -738,8 +788,9 @@
 
 
 ;; LaTeX
-
 ;; AUCTeX
+;; (use-package tex
+;;   )
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq TeX-PDF-mode t)                   ;pdflatex
@@ -762,6 +813,8 @@
 ;; LaTeX math mode C-c ~
 ;; LaTeX insert environment C-c C-e
 ;; LaTeX insert item        C-c C-j
+
+(add-hook 'LaTeX-mode-hook 'outline-minor-mode)
 
 
 ;; gnuplot mode
