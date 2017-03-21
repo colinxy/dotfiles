@@ -21,14 +21,11 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message "colinxy")
 
-(defun my-file-to-string (file)
-  "Read all lines of FILE into string."
-  (with-temp-buffer
-    (insert-file-contents file)
-    (buffer-string)))
+;; less frequent garbage collection
+(setq gc-cons-threshold 5000000)        ;5MB
 
 ;; version control follow symbolic links
-(setq vc-follow-symlinks t)
+;; (setq vc-follow-symlinks t)
 
 ;; backup files
 (setq backup-directory-alist '(("." . "~/.saves"))
@@ -207,6 +204,7 @@
 
 ;; hide useless strings from modeline
 (use-package abbrev
+  :defer t
   :diminish abbrev-mode)
 
 ;; compile
@@ -250,6 +248,7 @@
           (t (message "Mark no more than 3 files to ediff")))))
 
 (use-package dired
+  :defer t
   :bind (:map dired-mode-map
               ("C-s" . dired-isearch-filenames)
               ("C-M-s" . dired-isearch-filenames-regexp)
@@ -281,6 +280,7 @@
 
 ;; neotree
 (use-package neotree
+  :defer t
   :bind ("C-x C-d" . neotree-toggle)
   :config (setq neo-theme (if window-system 'icons 'arrow)))
 ;; (when (eq system-type 'darwin)
@@ -320,6 +320,7 @@
 ;; (setq org-capture-templates '())
 
 (use-package org
+  :defer t
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
          ("C-c c" . org-capture)
@@ -413,13 +414,6 @@
 (global-set-key (kbd "M-t")
                 (lambda () (interactive)
                   (ansi-term "/bin/bash")))
-
-
-;; http://emacs.stackexchange.com/a/337/12003
-(defun my-expose-global-bindng-in-mode-map (binding mode-map)
-  "Expose global BINDING in MODE-MAP."
-  (define-key mode-map binding
-    (lookup-key (current-global-map) binding)))
 
 
 ;; exec-path-from-shell: consistent with shell in Mac OS X
@@ -522,10 +516,12 @@
 ;;; magit
 ;; (global-set-key (kbd "C-x g") 'magit-status)
 (use-package magit
+  :defer t
   :bind ("C-x g" . magit-status))
 
 ;;; dumb-jump: jump to definition based on regexp
 (use-package dumb-jump
+  :defer t
   :bind (("M-g M-." . dumb-jump-go)
          ("M-g M-," . dumb-jump-back)
          ("M-g M-o" . dumb-jump-go-other-window)
@@ -551,14 +547,6 @@
 ;; (add-hook 'prog-mode-hook #'hs-minor-mode)
 ;; gud (grand unified debugger)
 ;; (require 'gud)
-
-(defun my-select-current-line ()
-  "Handy function for selection current line."
-  (interactive)
-  (move-beginning-of-line nil)
-  (set-mark-command nil)
-  (move-end-of-line nil)
-  (setq deactivate-mark nil))
 
 ;;---------------;;
 ;;;   company   ;;;
@@ -789,37 +777,53 @@
 
 ;; LaTeX
 ;; AUCTeX
-;; (use-package tex
-;;   )
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq TeX-PDF-mode t)                   ;pdflatex
-
-;; math insert by pair $$, \(\)
-(setq TeX-electric-math '("$" . "$"))
-;; insert {}, [], ()
-(setq LaTeX-electric-left-right-brace t)
-
-;; Use pdf-tools to open PDF files
-(setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-      TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-      TeX-source-correlate-start-server t)
-
-;; Update PDF buffers after successful LaTeX runs
-(add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
-          #'TeX-revert-document-buffer)
+(use-package tex
+  :defer t
+  :init
+  (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
+  ;; Update PDF buffers after successful LaTeX runs
+  (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
+            #'TeX-revert-document-buffer)
+  :config
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-PDF-mode t)                 ;pdflatex
+  ;; math insert by pair $$, \(\)
+  (setq TeX-electric-math '("$" . "$"))
+  ;; insert {}, [], ()
+  (setq LaTeX-electric-left-right-brace t)
+  ;; Use pdf-tools to open PDF files
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+        TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+        TeX-source-correlate-start-server t)
+  )
 
 ;; LaTeX compile   C-c C-a
 ;; LaTeX math mode C-c ~
 ;; LaTeX insert environment C-c C-e
 ;; LaTeX insert item        C-c C-j
 
-(add-hook 'LaTeX-mode-hook 'outline-minor-mode)
+;; (setq TeX-auto-save t)
+;; (setq TeX-parse-self t)
+;; (setq TeX-PDF-mode t)                   ;pdflatex
+;; ;; math insert by pair $$, \(\)
+;; (setq TeX-electric-math '("$" . "$"))
+;; ;; insert {}, [], ()
+;; (setq LaTeX-electric-left-right-brace t)
+;; ;; Use pdf-tools to open PDF files
+;; (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+;;       TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+;;       TeX-source-correlate-start-server t)
+;; ;; Update PDF buffers after successful LaTeX runs
+;; (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
+;;           #'TeX-revert-document-buffer)
+;; (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
 
 
 ;; gnuplot mode
 ;; (add-to-list 'auto-mode-alist '("\\.gp\\'" . gnuplot-mode))
 (use-package gnuplot-mode
+  :defer t
   :mode "\\.gp\\'")
 
 
