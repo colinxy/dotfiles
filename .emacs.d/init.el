@@ -220,9 +220,6 @@
 ;;;   dired   ;;;
 ;;-------------;;
 
-;; (require 'dired)
-;; (setq delete-by-moving-to-trash t)
-
 ;; with modification, from https://www.emacswiki.org/emacs/DavidBoon#toc4
 (defun my-dired-ediff-marked-files ()
   "Run ediff on marked files."
@@ -261,31 +258,12 @@
     (setq ls-lisp-use-insert-directory-program nil))
   )
 
-;; ;; dired file search
-;; (with-eval-after-load 'dired
-;;   (define-key dired-mode-map (kbd "C-s")
-;;     'dired-isearch-filenames)
-;;   (define-key dired-mode-map (kbd "C-M-s")
-;;     'dired-isearch-filenames-regexp)
-;;   (define-key dired-mode-map (kbd "=")
-;;     'my-dired-ediff-marked-files))
-
-;; ;; BSD ls does not support --dired
-;; (when (not (eq system-type 'gnu/linux))
-;;   (require 'ls-lisp)
-;;   (setq ls-lisp-use-insert-directory-program nil))
-
-;; (setq dired-listing-switches "-alh")
-
 
 ;; neotree
 (use-package neotree
   :defer t
   :bind ("C-x C-d" . neotree-toggle)
   :config (setq neo-theme (if window-system 'icons 'arrow)))
-;; (when (eq system-type 'darwin)
-;;   (setq neo-theme (if window-system 'icons 'arrow))
-;;   (global-set-key (kbd "C-x C-d") 'neotree-toggle))
 
 
 ;;--------------;;
@@ -300,24 +278,6 @@
 ;;------------;;
 ;;; org-mode ;;;
 ;;------------;;
-
-;; org-mode
-;; (with-eval-after-load 'org
-;;   (setq org-src-fontify-natively t)
-;;   (setq org-src-tab-acts-natively t)
-;;   ;; from *Help*, but not working
-;;   ;; If you set this variable to the symbol `{}', the braces are
-;;   ;; *required* in order to trigger interpretations as sub/superscript.
-;;   (setq org-use-sub-superscripts '{})
-;;   (setq org-highlight-latex-and-related '(latex script entities)))
-
-;; (global-set-key (kbd "C-c l") 'org-store-link)
-;; (global-set-key (kbd "C-c a") 'org-agenda)
-;; (global-set-key (kbd "C-c c") 'org-capture)
-;; (global-set-key (kbd "C-c b") 'org-iswitchb)
-;; (setq org-agenda-files '("~/org"))
-;; (setq org-default-notes-file "~/org/notes.org")
-;; (setq org-capture-templates '())
 
 (use-package org
   :defer t
@@ -335,6 +295,8 @@
   ;; If you set this variable to the symbol `{}', the braces are
   ;; *required* in order to trigger interpretations as sub/superscript.
   (setq org-export-with-sub-superscripts '{})
+  (setq org-agenda-files '("~/org"))
+  (setq org-default-notes-file "~/org/notes.org")
   ;; (setq org-capture-templates '())
   )
 
@@ -363,8 +325,6 @@
 (global-set-key (kbd "M-s M-i") 'popup-imenu)
 
 ;; imenu-list
-;; (global-set-key (kbd "C-'") #'imenu-list-smart-toggle)
-;; (setq imenu-list-focus-after-activation t)
 (use-package imenu-list
   :defer t
   :bind ("C-'" . imenu-list-smart-toggle)
@@ -372,7 +332,6 @@
 
 
 ;; undo tree
-;; (global-undo-tree-mode)
 ;; C-_  C-/  (`undo-tree-undo')
 ;; M-_  C-?  (`undo-tree-redo')
 (use-package undo-tree
@@ -417,6 +376,7 @@
 
 
 ;; exec-path-from-shell: consistent with shell in Mac OS X
+;; the current launcher em from .bashrc can let emacs inherit correct PATH
 ;; (when (memq window-system '(mac ns))
 ;;   ;; (require 'exec-path-from-shell)
 ;;   (exec-path-from-shell-initialize))
@@ -453,17 +413,6 @@
         (setq solarized-use-variable-pitch t)
         (setq solarized-emphasize-indicators t)
         (load-theme 'solarized-dark t))
-
-      ;; (setq x-underline-at-descent-line t) ; modeline underline
-      ;; (with-eval-after-load 'solarized
-      ;;   (setq solarized-high-contrast-mode-line t)
-      ;;   (setq solarized-distinct-fringe-background t)
-      ;;   (setq solarized-distinct-doc-face t)
-      ;;   (setq solarized-use-less-bold t)
-      ;;   (setq solarized-use-more-italic t)
-      ;;   (setq solarized-use-variable-pitch t)
-      ;;   (setq solarized-emphasize-indicators t))
-      ;; (load-theme 'solarized-dark t)
       )
   ;; terminal
   (load-theme 'tango-dark t))
@@ -540,9 +489,6 @@
   )
 
 
-;; (add-hook 'after-init-hook #'global-flycheck-mode)
-;; (with-eval-after-load 'flycheck
-;;   (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 (use-package flycheck
   :defer t
   :init (add-hook 'after-init-hook 'global-flycheck-mode)
@@ -552,24 +498,6 @@
 ;;---------------;;
 ;;;   company   ;;;
 ;;---------------;;
-
-;; (with-eval-after-load 'company
-;;   (add-to-list 'company-backends '(company-irony
-;;                                    company-irony-c-headers
-;;                                    ;; merlin-company-backend
-;;                                    company-robe
-;;                                    ;; math
-;;                                    company-math-symbols-unicode
-;;                                    company-math-symbols-latex
-;;                                    company-latex-commands
-;;                                    ;; js
-;;                                    company-tern
-;;                                    ;; shell
-;;                                    ;; company-shell
-;;                                    )))
-;; (setq company-dabbrev-downcase nil)
-;; (setq company-idle-delay 0)
-;; (add-hook 'after-init-hook 'global-company-mode)
 
 (use-package company
   :defer t
@@ -668,11 +596,14 @@
 ;; Python
 (use-package python
   :defer t
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python3" . python-mode)
   :init
   (setq-default python-indent-offset 4)
   (setq gud-pdb-command-name "python3 -m pdb")
   :config
   (elpy-enable)
+  ;; problem with ipython 5 prompt
   (setq python-shell-interpreter "ipython3"
         python-shell-interpreter-args "--simple-prompt --pprint -i"))
 (use-package elpy
@@ -683,20 +614,6 @@
   (setq elpy-rpc-backend "jedi")
   (remove-hook 'elpy-modules 'elpy-module-flymake)
   (elpy-use-ipython))
-
-;; (with-eval-after-load 'python
-;;   (setq-default python-indent-offset 4)
-;;   (setq gud-pdb-command-name "python3 -m pdb") ;grand unified debugger
-;;   ;; elpy
-;;   (when (require 'elpy nil t)
-;;     (setq elpy-rpc-python-command "python3")
-;;     (setq elpy-rpc-backend "jedi")
-;;     (remove-hook 'elpy-modules 'elpy-module-flymake)
-;;     (elpy-use-ipython)
-;;     (elpy-enable))
-;;   ;; problem with ipython 5 prompt
-;;   (setq python-shell-interpreter "ipython3"
-;;         python-shell-interpreter-args "--simple-prompt --pprint -i"))
 
 
 ;; Ruby
@@ -797,6 +714,7 @@
 ;; AUCTeX
 (use-package tex
   :defer t
+  ;; :ensure auctex
   :init
   (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
   ;; Update PDF buffers after successful LaTeX runs
@@ -820,22 +738,6 @@
 ;; LaTeX math mode C-c ~
 ;; LaTeX insert environment C-c C-e
 ;; LaTeX insert item        C-c C-j
-
-;; (setq TeX-auto-save t)
-;; (setq TeX-parse-self t)
-;; (setq TeX-PDF-mode t)                   ;pdflatex
-;; ;; math insert by pair $$, \(\)
-;; (setq TeX-electric-math '("$" . "$"))
-;; ;; insert {}, [], ()
-;; (setq LaTeX-electric-left-right-brace t)
-;; ;; Use pdf-tools to open PDF files
-;; (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-;;       TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
-;;       TeX-source-correlate-start-server t)
-;; ;; Update PDF buffers after successful LaTeX runs
-;; (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
-;;           #'TeX-revert-document-buffer)
-;; (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
 
 
 ;; gnuplot mode
