@@ -470,10 +470,11 @@
 ;; highlight changes
 (use-package diff-hl
   :defer t
-  :config
-  (global-diff-hl-mode 1)
+  :init
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  :config
+  (global-diff-hl-mode 1))
 
 ;;; dumb-jump: jump to definition based on regexp
 (use-package dumb-jump
@@ -493,10 +494,6 @@
   :init (add-hook 'after-init-hook 'global-flycheck-mode)
   :config (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
 
-
-;;---------------;;
-;;;   company   ;;;
-;;---------------;;
 
 (use-package company
   :defer t
@@ -535,27 +532,38 @@
 ;; gdb
 (setq gdb-many-windows t)
 
-;; use company-mode for C/C++
-(add-hook 'c++-mode-hook 'company-mode)
-(add-hook 'c-mode-hook 'company-mode)
-
-;; irony-mode
+;; irony-mode, irony-eldoc, company-irony
 ;; always use clang as compiler: brew install llvm --with-clang
 ;; install-server compilation flags:
 ;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX\=/Users/yxy/.emacs.d/irony/ /Users/yxy/.emacs.d/elpa/irony-{latest}/server && cmake --build . --use-stderr --config Release --target install
 ;; requires libclang
-(add-hook 'c++-mode-hook 'irony-mode)
-(add-hook 'c-mode-hook 'irony-mode)
-(add-hook 'irony-mode-hook 'irony-eldoc)
-(add-hook 'irony-mode-hook
-          (lambda ()
-            (define-key irony-mode-map [remap completion-at-point]
-              'irony-completion-at-point-async)
-            (define-key irony-mode-map [remap complete-symbol]
-              'irony-completion-at-point-async)))
-(add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-;; make irony aware of .clang_complete or cmake
-(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+(use-package irony
+  :defer t
+  :bind (:irony-mode-map
+         ([remap completion-at-point] . irony-completion-at-point-async)
+         ([remap complete-symbol] . irony-completion-at-point-async))
+  :init
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
+  :config
+  ;; needs irony-eldoc
+  (add-hook 'irony-mode-hook 'irony-eldoc)
+  (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+  ;; make irony aware of .clang_complete or cmake
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  )
+;; (add-hook 'c++-mode-hook 'irony-mode)
+;; (add-hook 'c-mode-hook 'irony-mode)
+;; (add-hook 'irony-mode-hook 'irony-eldoc)
+;; (add-hook 'irony-mode-hook
+;;           (lambda ()
+;;             (define-key irony-mode-map [remap completion-at-point]
+;;               'irony-completion-at-point-async)
+;;             (define-key irony-mode-map [remap complete-symbol]
+;;               'irony-completion-at-point-async)))
+;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+;; ;; make irony aware of .clang_complete or cmake
+;; (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
 
 ;; C/C++ #if 0 comment
@@ -599,8 +607,8 @@
   :interpreter ("python3" . python-mode)
   :init
   (setq-default python-indent-offset 4)
-  (setq gud-pdb-command-name "python3 -m pdb")
   :config
+  (setq gud-pdb-command-name "python3 -m pdb")
   (elpy-enable)
   ;; problem with ipython 5 prompt
   (setq python-shell-interpreter "ipython3"
@@ -620,24 +628,28 @@
 ;; inf-ruby:  repl integration
 ;; M-x inf-ruby (or C-c C-s) to start ruby process
 ;; then C-c C-l to load current ruby file
-(add-hook 'ruby-mode-hook 'robe-mode)
-(add-hook 'ruby-mode-hook 'subword-mode)
+;; (add-hook 'ruby-mode-hook 'subword-mode)
 ;; (add-hook 'ruby-mode-hook 'eldoc-mode)
-(with-eval-after-load 'ruby
-  (define-key ruby-mode-map (kbd "C-M-p") 'backward-list)
-  (define-key ruby-mode-map (kbd "C-M-n") 'forward-list)
-  (inf-ruby-console-auto))
+(use-package ruby-mode
+  :defer t
+  :bind (:ruby-mode-map
+         ("C-M-p" . backward-list)
+         ("C-M-n" . forward-list))
+  ;; :init (inf-ruby-console-auto)
+  :config
+  (add-hook 'ruby-mode-hook 'robe-mode))
 
 
 ;; Common Lisp
 ;; M-x slime
 ;; slime handles indent correctly
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
-(with-eval-after-load 'lisp-mode
+(use-package slime
+  :defer t
+  :config
   (setq inferior-lisp-program (executable-find "sbcl"))
-  (setq slime-contribs '(slime-fancy))
-  ;; (slime-setup '(slime-fancy))
-  )
+  (setq slime-contribs '(slime-fancy)))
+;; (slime-setup '(slime-fancy))
 
 ;; Scheme
 ;; M-x run-geiser
@@ -664,24 +676,33 @@
 
 ;; Javascript & HTML & CSS
 
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-;; (add-hook 'js-mode-hook 'js2-minor-mode)
-(add-hook 'js2-mode-hook 'subword-mode)
-;; (add-hook 'js2-mode-hook 'jade-interaction-mode)
-(with-eval-after-load 'js2-mode
-  (setq js-indent-level 2))
+(use-package js2-mode
+  :defer t
+  :mode (("\\.js\\'" . js2-mode)
+         ("\\.jsx\\'" . js2-jsx-mode))
+  :config
+  (setq js-indent-level 2)
+  ;; (add-hook 'js2-mode-hook 'subword-mode)
+
+  ;; requires tern: npm install -g tern
+  ;; add ~/.tern-project to get tern working
+  (add-hook 'js2-mode-hook 'tern-mode)
+  ;; flycheck support for eslint
+  ;; flycheck will automatically load eslint if .eslintrc exists
+  ;; (flycheck-add-mode 'javascript-eslint 'js2-mode)
+  ;; prefer flycheck warnings to js2-mode warnings
+  (setq js2-mode-show-parse-errors nil
+        js2-mode-show-strict-warnings nil))
 
 ;; edit HTML in web-mode
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.xml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.scss\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(with-eval-after-load 'web-mode
-  (add-hook 'web-mode-hook 'subword-mode)
-  ;; indentation
+(use-package web-mode
+  :defer t
+  :mode (("\\.html?\\'" . web-mode)
+         ("\\.xml\\'" . web-mode)
+         ("\\.css\\'" . web-mode)
+         ("\\.scss\\'" . web-mode)
+         ("\\.erb\\'" . web-mode))
+  :config
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2)
   (setq web-mode-code-indent-offset 2)
@@ -728,7 +749,7 @@
   (setq TeX-electric-math '("$" . "$"))
   ;; insert {}, [], ()
   (setq LaTeX-electric-left-right-brace t)
-  ;; Use pdf-tools to open PDF files
+  ;; use pdf-tools to open PDF files
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
         TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
         TeX-source-correlate-start-server t)
