@@ -22,10 +22,7 @@
       inhibit-startup-echo-area-message "colinxy")
 
 ;; less frequent garbage collection
-(setq gc-cons-threshold 5000000)        ;5MB
-
-;; version control follow symbolic links
-;; (setq vc-follow-symlinks t)
+(setq gc-cons-threshold 10000000)        ;10MB
 
 ;; backup files
 (setq backup-directory-alist '(("." . "~/.saves"))
@@ -154,7 +151,7 @@
     (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)))
 
 ;; startup maximized
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 ;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 ;; window management
@@ -212,6 +209,7 @@
 
 ;; ediff
 (setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
 ;; create a new frame for ediff
 (add-hook 'ediff-before-setup-hook 'new-frame)
 (add-hook 'ediff-quit-hook 'delete-frame)
@@ -249,13 +247,16 @@
   :bind (:map dired-mode-map
               ("C-s" . dired-isearch-filenames)
               ("C-M-s" . dired-isearch-filenames-regexp)
-              ("=" . my-dired-ediff-marked-files))
+              ("=" . my-dired-ediff-marked-files)
+              ;; needs dired+
+              ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
+              )
   :config
   (setq dired-listing-switches "-alh")
   ;; BSD ls does not support --dired
-  (when (not (eq system-type 'gnu/linux))
-    (require 'ls-lisp)
-    (setq ls-lisp-use-insert-directory-program nil))
+  (use-package ls-lisp
+    :if (not (eq system-type 'gnu/linux))
+    :config (setq ls-lisp-use-insert-directory-program nil))
   )
 
 
@@ -295,8 +296,6 @@
   ;; If you set this variable to the symbol `{}', the braces are
   ;; *required* in order to trigger interpretations as sub/superscript.
   (setq org-export-with-sub-superscripts '{})
-  (setq org-agenda-files '("~/org"))
-  (setq org-default-notes-file "~/org/notes.org")
   ;; (setq org-capture-templates '())
   )
 
@@ -321,8 +320,10 @@
 (setq imenu-auto-rescan 1)
 
 ;; popup-imenu
-(setq popup-imenu-style 'indent)
-(global-set-key (kbd "M-s M-i") 'popup-imenu)
+(use-package popup-imenu
+  :defer t
+  :bind ("M-s M-i" . popup-imenu)
+  :config (setq popup-imenu-style 'indent))
 
 ;; imenu-list
 (use-package imenu-list
@@ -396,25 +397,23 @@
 
 
 ;; emacs themes
-(if window-system
-    ;; gui
-    (progn
-      ;; solarized theme by bbatsov
-      ;; https://github.com/bbatsov/solarized-emacs
-      ;; (setq custom-safe-themes t)
-      (use-package solarized
-        :init
-        (setq x-underline-at-descent-line t)
-        (setq solarized-high-contrast-mode-line t)
-        (setq solarized-distinct-fringe-background t)
-        (setq solarized-distinct-doc-face t)
-        (setq solarized-use-less-bold t)
-        (setq solarized-use-more-italic t)
-        (setq solarized-use-variable-pitch t)
-        (setq solarized-emphasize-indicators t)
-        (load-theme 'solarized-dark t))
-      )
-  ;; terminal
+;; solarized theme by bbatsov
+;; https://github.com/bbatsov/solarized-emacs
+(use-package solarized
+  :defer t
+  :if window-system
+  :init
+  (setq x-underline-at-descent-line t)
+  (setq solarized-high-contrast-mode-line t)
+  (setq solarized-distinct-fringe-background t)
+  (setq solarized-distinct-doc-face t)
+  (setq solarized-use-less-bold t)
+  (setq solarized-use-more-italic t)
+  (setq solarized-use-variable-pitch t)
+  (setq solarized-emphasize-indicators t)
+  (load-theme 'solarized-dark t))
+;; when in terminal
+(unless window-system
   (load-theme 'tango-dark t))
 
 ;;; modeline
@@ -704,6 +703,7 @@
 ;; Markdown
 
 (use-package markdown-mode
+  :defer t
   :config
   (setq markdown-command
         "pandoc -f markdown -t html -s --mathjax --highlight-style=pygments"))
@@ -746,6 +746,11 @@
   :defer t
   :mode "\\.gp\\'")
 
+
+;; custom file load at last
+(setq custom-file "~/.emacs.d/custom.el")
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 (provide '.emacs)
 ;;; .emacs ends here
