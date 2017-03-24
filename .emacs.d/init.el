@@ -1,4 +1,4 @@
-;;; .emacs --- My emacs configuration
+;;; init.el --- My emacs configuration
 
 ;;; Commentary:
 ;;
@@ -178,7 +178,7 @@
 ;;; package manager ;;;
 ;;-------------------;;
 
-;; package archive
+;;; package archive
 (unless (require 'package nil t)
   (load "~/.emacs.d/elpa/package.el"))
 (setq package-enable-at-startup nil)
@@ -204,19 +204,24 @@
   :defer t
   :diminish abbrev-mode)
 
+;;; jump to position within visible text
+(use-package avy
+  :defer t
+  :bind ("C-;" . avy-goto-word-1))
+
 ;; compile
 (global-set-key (kbd "M-g M-c") 'compile)
 
-;; ediff
-(setq ediff-split-window-function 'split-window-horizontally)
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-;; create a new frame for ediff
-(add-hook 'ediff-before-setup-hook 'new-frame)
-(add-hook 'ediff-quit-hook 'delete-frame)
+;;; ediff
+(use-package ediff
+  :defer t
+  :config
+  (setq ediff-split-window-function 'split-window-horizontally
+        ediff-window-setup-function 'ediff-setup-windows-plain)
+  ;; create a new frame for ediff
+  (add-hook 'ediff-before-setup-hook 'new-frame)
+  (add-hook 'ediff-quit-hook 'delete-frame))
 
-;;-------------;;
-;;;   dired   ;;;
-;;-------------;;
 
 ;; with modification, from https://www.emacswiki.org/emacs/DavidBoon#toc4
 (defun my-dired-ediff-marked-files ()
@@ -260,25 +265,17 @@
   )
 
 
-;; neotree
+;;; neotree
 (use-package neotree
   :defer t
   :bind ("C-x C-d" . neotree-toggle)
   :config (setq neo-theme (if window-system 'icons 'arrow)))
 
 
-;;--------------;;
-;;; tramp-mode ;;;
-;;--------------;;
-
 ;; tramp eshell: respect $PATH on remote host
 (with-eval-after-load 'tramp
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
-
-;;------------;;
-;;; org-mode ;;;
-;;------------;;
 
 (use-package org
   :defer t
@@ -306,7 +303,7 @@
 ;;; convenience and themes ;;;
 ;;--------------------------;;
 
-;; enable interactively do things (ido)
+;;; enable interactively do things (ido)
 (require 'ido)
 (ido-mode 1)
 (setq ido-enable-flex-matching t)
@@ -319,32 +316,36 @@
 ;; imenu
 (setq imenu-auto-rescan 1)
 
-;; popup-imenu
+;;; popup-imenu
 (use-package popup-imenu
   :defer t
   :bind ("M-s M-i" . popup-imenu)
   :config (setq popup-imenu-style 'indent))
 
-;; imenu-list
+;;; imenu-list
 (use-package imenu-list
   :defer t
   :bind ("C-'" . imenu-list-smart-toggle)
   :config (setq imenu-list-focus-after-activation t))
 
 
-;; undo tree
+;;; undo tree
 ;; C-_  C-/  (`undo-tree-undo')
 ;; M-_  C-?  (`undo-tree-redo')
 (use-package undo-tree
   :defer t
-  :init (add-hook 'after-init-hook 'global-undo-tree-mode)
+  :init (global-undo-tree-mode)
   :diminish undo-tree-mode)
 
 
-;; pdf-tools binary (epdfinfo) installed from homebrew
-;; use pdf-tools instead of doc-view
 (setq doc-view-continuous t)
-(setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
+;; pdf-tools binary (epdfinfo) installed from homebrew
+;;; pdf-tools
+(use-package pdf-tools
+  :defer t
+  :init
+  ;; (pdf-tools-install)
+  (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo"))
 ;; (pdf-tools-install)                     ;too slow, load on demand
 
 
@@ -383,7 +384,7 @@
 ;;   (exec-path-from-shell-initialize))
 
 
-;; mutiple cursor
+;;; mutiple cursor
 ;; Shift key does not work for terminal
 ;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
@@ -397,8 +398,8 @@
 
 
 ;; emacs themes
-;; solarized theme by bbatsov
 ;; https://github.com/bbatsov/solarized-emacs
+;;; solarized theme by bbatsov
 (use-package solarized
   :defer t
   :if window-system
@@ -434,17 +435,17 @@
                     :background "#1a655f"
                     :box nil)
 
-;; spaceline
+;;; spaceline
 ;; depends on powerline
-(require 'spaceline-config)
-(setq powerline-default-separator (if window-system 'wave 'arrow))
-(spaceline-emacs-theme)
-(spaceline-toggle-flycheck-error-off)
-(spaceline-toggle-flycheck-warning-off)
+(use-package spaceline-config
+  :config
+  (setq powerline-default-separator (if window-system 'wave 'bar))
+  (spaceline-emacs-theme)
+  (spaceline-toggle-flycheck-error-off)
+  (spaceline-toggle-flycheck-warning-off))
 
 
 ;;; YASnippet
-;; let go of yasnippet for sometime
 ;; (when (require 'yasnippet nil t)
 ;;   ;; (require 'yasnippet-bundle)
 ;;   ;; set snippet directory
@@ -454,6 +455,8 @@
 ;;   ;; minor
 ;;   (yas-reload-all)
 ;;   (add-hook 'prog-mode-hook #'yas-minor-mode))
+(use-package yasnippet
+  :defer t)
 
 
 ;; async compilation of melpa package
@@ -467,7 +470,7 @@
   :defer t
   :bind ("C-x g" . magit-status))
 
-;; highlight changes
+;;; highlight changes
 (use-package diff-hl
   :defer t
   :init
@@ -516,23 +519,28 @@
   )
 
 
-;; C/C++
-
-;; treat .h as cpp header file
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+;;; cc-mode: mode for editing c/c++/java/awk
+(use-package cc-mode
+  :defer t
+  :mode ("\\.h\\'" . c++-mode)
+  :init
+  (setq-default c-basic-offset 4
+                c-default-style "k&r")
+  :config
+  (use-package c++-mode
+    :defer t
+    :init
+    ;; do not indent namespace
+    (c-set-offset 'innamespace [0]))
+  (use-package gdb-mi
+    :defer t
+    :init
+    (setq gdb-many-windows t
+          gdb-show-main t)))
 ;; subword mode, treat CamelCase as 2 words
-(add-hook 'c++-mode-hook 'subword-mode)
-;; do not indent namespace
-;; (c-set-offset 'innamespace 0)
+;; (add-hook 'c++-mode-hook 'subword-mode)
 
-;; indentation
-(setq-default c-basic-offset 4
-              c-default-style "k&r")
-
-;; gdb
-(setq gdb-many-windows t)
-
-;; irony-mode, irony-eldoc, company-irony
+;;; irony-mode, irony-eldoc, company-irony
 ;; always use clang as compiler: brew install llvm --with-clang
 ;; install-server compilation flags:
 ;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX\=/Users/yxy/.emacs.d/irony/ /Users/yxy/.emacs.d/elpa/irony-{latest}/server && cmake --build . --use-stderr --config Release --target install
@@ -552,55 +560,9 @@
   ;; make irony aware of .clang_complete or cmake
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
   )
-;; (add-hook 'c++-mode-hook 'irony-mode)
-;; (add-hook 'c-mode-hook 'irony-mode)
-;; (add-hook 'irony-mode-hook 'irony-eldoc)
-;; (add-hook 'irony-mode-hook
-;;           (lambda ()
-;;             (define-key irony-mode-map [remap completion-at-point]
-;;               'irony-completion-at-point-async)
-;;             (define-key irony-mode-map [remap complete-symbol]
-;;               'irony-completion-at-point-async)))
-;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-;; ;; make irony aware of .clang_complete or cmake
-;; (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
 
-;; C/C++ #if 0 comment
-;; http://stackoverflow.com/q/4549015/5478848
-(defun my-c-mode-font-lock-if0 (limit)
-  "Show directive #if 0 as comment."
-  (save-restriction
-    (widen)
-    (save-excursion
-      (goto-char (point-min))
-      (let ((depth 0) str start start-depth)
-        (while (re-search-forward "^\\s-*#\\s-*\\(if\\|else\\|endif\\)" limit 'move)
-          (setq str (match-string 1))
-          (if (string= str "if")
-              (progn
-                (setq depth (1+ depth))
-                (when (and (null start) (looking-at "\\s-+0"))
-                  (setq start (match-end 0)
-                        start-depth depth)))
-            (when (and start (= depth start-depth))
-              (c-put-font-lock-face start (match-beginning 0) 'font-lock-comment-face)
-              (setq start nil))
-            (when (string= str "endif")
-              (setq depth (1- depth)))))
-        (when (and start (> depth 0))
-          (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
-  nil)
-
-;; (add-hook 'c-mode-common-hook
-;;           #'(lambda ()
-;;               (font-lock-add-keywords
-;;                nil
-;;                '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend)))
-;;                'add-to-end)))
-
-
-;; Python
+;;; Python
 (use-package python
   :defer t
   :mode ("\\.py\\'" . python-mode)
@@ -623,7 +585,7 @@
   (elpy-use-ipython))
 
 
-;; Ruby
+;;; Ruby
 ;; robe-mode: code navigation
 ;; inf-ruby:  repl integration
 ;; M-x inf-ruby (or C-c C-s) to start ruby process
@@ -637,10 +599,11 @@
          ("C-M-n" . forward-list))
   ;; :init (inf-ruby-console-auto)
   :config
-  (add-hook 'ruby-mode-hook 'robe-mode))
+  (add-hook 'ruby-mode-hook 'robe-mode)
+  (add-hook 'ruby-mode-hook 'eldoc-mode))
 
 
-;; Common Lisp
+;;; Common Lisp
 ;; M-x slime
 ;; slime handles indent correctly
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
@@ -651,12 +614,12 @@
   (setq slime-contribs '(slime-fancy)))
 ;; (slime-setup '(slime-fancy))
 
-;; Scheme
+;;; Scheme
 ;; M-x run-geiser
 (setq geiser-active-implementations '(racket))
 
 
-;; OCaml
+;;; OCaml
 ;; tuareg, merlin (minor mode)
 ;; if only interactive, M-x run-ocaml
 (let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
@@ -674,7 +637,7 @@
     (add-hook 'tuareg-mode-hook 'utop-minor-mode)))
 
 
-;; Javascript & HTML & CSS
+;;; Javascript & HTML & CSS
 
 (use-package js2-mode
   :defer t
@@ -721,8 +684,7 @@
   (define-key web-mode-map (kbd "M-p") 'web-mode-tag-previous))
 
 
-;; Markdown
-
+;;; Markdown
 (use-package markdown-mode
   :defer t
   :config
@@ -732,7 +694,7 @@
 
 
 ;; LaTeX
-;; AUCTeX
+;;; AUCTeX
 (use-package tex
   :defer t
   ;; :ensure auctex
@@ -761,7 +723,7 @@
 ;; LaTeX insert item        C-c C-j
 
 
-;; gnuplot mode
+;;; gnuplot mode
 ;; (add-to-list 'auto-mode-alist '("\\.gp\\'" . gnuplot-mode))
 (use-package gnuplot-mode
   :defer t

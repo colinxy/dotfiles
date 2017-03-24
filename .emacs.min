@@ -12,8 +12,8 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message "colinxy")
 
-;; version control follow symbolic links
-(setq vc-follow-symlinks t)
+;; less frequent garbage collection
+(setq gc-cons-threshold 10000000)        ;10MB
 
 ;; backup files
 (setq backup-directory-alist '(("." . "~/.saves"))
@@ -23,7 +23,7 @@
       kept-old-versions 2
       version-control t)
 
-;; substitute y-or-n-p with yes-or-no-p
+;; substitute y-or-n-p for yes-or-no-p
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; smooth scrolling
@@ -53,6 +53,7 @@
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
 (global-unset-key (kbd "C-x C-w"))
+(global-unset-key (kbd "M-)"))
 ;; C-w is only enabled when a region is selected
 (defun my-kill-region ()
   "Cuts only when a region is selected."
@@ -63,7 +64,7 @@
 
 ;; show line number and column number
 ;; (require 'linum)
-(global-linum-mode 1)  ; show line number of the left
+;; (global-linum-mode 1)  ; show line number of the left
 (column-number-mode t)
 (show-paren-mode 1)
 (if window-system
@@ -80,7 +81,13 @@
 ;; (global-set-key (kbd "M-(") 'insert-pair)
 (setq parens-require-spaces nil)
 (global-set-key (kbd "M-[") 'insert-pair)  ; insert []
+(global-set-key (kbd "C-{") 'insert-pair)  ; insert {}
 (global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
+
+;; upcase/downcase region
+(global-set-key (kbd "M-u") 'upcase-dwim)
+(global-set-key (kbd "M-l") 'downcase-dwim)
+(global-set-key (kbd "M-c") 'capitalize-dwim)
 
 ;; delete trailing white space
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -90,8 +97,10 @@
 (setq split-width-threshold 150) ;split horizontally if at least <> columns
 
 ;; no tool bar, no scroll bar
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
 
 ;; tango-dark is a good theme
 (when (not window-system)
