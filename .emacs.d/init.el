@@ -144,15 +144,12 @@
   ;; for Mac OS X >= 10.7
   ;; toggle-frame-maximized binded with M-<f10>
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  ;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
   ;; toggle-frame-fullscreen binded with <f11> (default)
   ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
   ;; <f11> conflicts with mac command, bind it to M-<f11>
   (when (eq system-type 'darwin)
     (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)))
-
-;; startup maximized
-;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
-;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 ;; window management
 
@@ -171,14 +168,11 @@
        (global-set-key (kbd "C-<right>") 'windmove-right)))
 
 
-;;; before packages loads
-
-
 ;;-------------------;;
 ;;; package manager ;;;
 ;;-------------------;;
 
-;;; package archive
+;;; package.el
 (unless (require 'package nil t)
   (load "~/.emacs.d/elpa/package.el"))
 (setq package-enable-at-startup nil)
@@ -208,6 +202,22 @@
 (use-package avy
   :defer t
   :bind ("C-;" . avy-goto-word-1))
+
+;; ibuffer instead of buffer list
+(use-package ibuffer
+  :defer t
+  :bind (("C-x C-b" . ibuffer)
+         :map ibuffer-mode-map
+         ("U" . ibuffer-unmark-all))
+  :config
+  ;; from http://martinowen.net/blog/2010/02/03/tips-for-emacs-ibuffer.html
+  (add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode)
+  (setq ibuffer-show-empty-filter-groups nil))
+(use-package ibuffer-vc
+  :defer t
+  :init
+  ;; NOTE: ibuffer-hook, not ibuffer-mode-hook, runs whenever ibuffer is called
+  (add-hook 'ibuffer-hook 'ibuffer-vc-set-filter-groups-by-vc-root))
 
 ;; compile
 (global-set-key (kbd "M-g M-c") 'compile)
@@ -273,7 +283,9 @@
 
 
 ;; tramp eshell: respect $PATH on remote host
-(with-eval-after-load 'tramp
+(use-package tramp
+  :defer t
+  :config
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 
@@ -422,6 +434,7 @@
 (when (eq system-type 'darwin)
   (setq ns-use-srgb-colorspace nil))
 ;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
+;; works best with dark themes
 (set-face-attribute 'mode-line nil
                     :underline nil
                     :overline nil
@@ -657,7 +670,7 @@
   (setq js2-mode-show-parse-errors nil
         js2-mode-show-strict-warnings nil))
 
-;; edit HTML in web-mode
+;;; web-mode
 (use-package web-mode
   :defer t
   :mode (("\\.html?\\'" . web-mode)

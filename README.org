@@ -1,5 +1,22 @@
 
-* Setup Python Environment
+* Emacs
+
+Config file is =.emacs.d/init.el=
+Packages are setup with use-package. Most packages are not ensured
+(automatically downloaded). To download everything, uncomment the
+following line and restart emacs.
+
+#+BEGIN_SRC emacs-lisp
+
+  (setq use-package-always-ensure t)
+
+#+END_SRC
+
+On an environment with limited needs, use =.emacs.min= as config
+file.
+
+
+* Python
 
 ** Install pip
 
@@ -98,3 +115,29 @@ When trying to run a tool only under python 2/3, use the following.
   wget -P ~ git.io/.gdbinit
 
 #+END_SRC
+
+** Clang
+
+#+BEGIN_SRC sh
+
+  # on Mac
+  brew install llvm --with-clang
+  # on ubuntu
+  apt-get install llvm-dev
+
+#+END_SRC
+
+** emacs irony-mode
+
+Make sure to specify
+
+#+BEGIN_EXAMPLE
+-DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
+#+END_EXAMPLE
+
+
+* Javascript
+
+** eslint
+
+** tern
