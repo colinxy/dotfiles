@@ -212,12 +212,19 @@
   :config
   ;; from http://martinowen.net/blog/2010/02/03/tips-for-emacs-ibuffer.html
   (add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode)
+  ;; (add-hook 'ibuffer-mode-hook
+  ;;           (lambda ()
+  ;;             (ibuffer-switch-to-saved-filter-groups "default")))
+  ;; (setq ibuffer-saved-filter-groups
+  ;;       '(("default"
+  ;;          ("Special" (name . "^\*.*\*$")))))
   (setq ibuffer-show-empty-filter-groups nil))
 (use-package ibuffer-vc
   :defer t
   :init
   ;; NOTE: ibuffer-hook, not ibuffer-mode-hook, runs whenever ibuffer is called
-  (add-hook 'ibuffer-hook 'ibuffer-vc-set-filter-groups-by-vc-root))
+  (add-hook 'ibuffer-hook 'ibuffer-vc-set-filter-groups-by-vc-root)
+  (add-hook 'ibuffer-hook 'ibuffer-do-sort-by-filename/process))
 
 ;; compile
 (global-set-key (kbd "M-g M-c") 'compile)
@@ -575,6 +582,12 @@
   )
 
 
+;; indent tools
+(use-package indent-tools
+  :defer t
+  :bind ("M-i" . indent-tools-hydra/body))
+
+
 ;;; Python
 (use-package python
   :defer t
@@ -734,6 +747,22 @@
 ;; LaTeX math mode C-c ~
 ;; LaTeX insert environment C-c C-e
 ;; LaTeX insert item        C-c C-j
+
+
+;;; yaml mode
+(use-package yaml-mode
+  :defer t
+  :bind (("C-m" . newline-and-indent)
+         ("C-c C-d" . ansible-doc))
+  :config
+  ;; requires highlight-indentation
+  (add-hook 'yaml-mode-hook 'highlight-indentation-mode)
+  ;; ansible minor mode
+  ;; https://github.com/k1LoW/emacs-ansible
+  (add-hook 'yaml-mode-hook 'ansible)
+  ;; requires ansible-doc-mode, https://github.com/lunaryorn/ansible-doc.el
+  ;; (add-hook 'yaml-mode-hook 'ansible-doc-mode)
+  )
 
 
 ;;; gnuplot mode

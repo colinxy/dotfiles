@@ -105,6 +105,8 @@ alias highlight='pygmentize -g -f terminal256 -O style=native'
 # alias serve='python -m SimpleHTTPServer'
 alias serve='python3 -m http.server --bind 127.0.0.1'
 export IPV4='[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
+# for use with extended regex (grep -E)
+export IPV4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 
 # network
 alias dig='dig +noall +answer'  # DNS
@@ -117,12 +119,19 @@ alias ws='startprocess wireshark'
 # check tcp connection with bash
 # http://stackoverflow.com/questions/9609130/quick-way-to-find-if-a-port-is-open-on-linux
 tcpconn() {
+    [ -z "$1" ] && echo "tcpconn <ip> <port>" && return 1
     local ip='127.0.0.1'
-    if [ ! -z "$2" ]; then
+    local port=80
+
+    if [[ "$1" =~ $IPV4_E ]]; then
         ip=$1
-        shift
+        [ ! -z "$2" ] && port=$2
+    elif [[ "$1" =~ ^[0-9]{1,6}$ ]]; then
+        port=$1
+    else
+        echo "tcpconn <ip> <port>" && return 1
     fi
-    port=$1
+
     echo "exec 6<>/dev/tcp/$ip/$port"
     exec 6<>"/dev/tcp/$ip/$port" &&
         echo "$port listening" || echo "$port not listening"
