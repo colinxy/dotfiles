@@ -13,6 +13,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'tpope/vim-fugitive'
+Plugin 'scrooloose/nerdtree'
 
 call vundle#end()
 
@@ -26,6 +27,9 @@ call vundle#end()
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+
+" nerdtree
+map <C-n> :NERDTreeToggle<CR>
 
 " powerline
 " set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9

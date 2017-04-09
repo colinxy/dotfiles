@@ -63,7 +63,7 @@ alias kill-em-daemon='emacsclient -e "(save-buffers-kill-emacs)"'
 # ec() { emacsclient -c "$@" & }
 
 # git version control
-alias git-push='git push origin -u'
+alias git-push='git pull --rebase && git push origin -u'
 alias git-log='git log --oneline --decorate --graph --all'
 
 # diff
@@ -104,9 +104,9 @@ alias highlight='pygmentize -g -f terminal256 -O style=native'
 # web
 # alias serve='python -m SimpleHTTPServer'
 alias serve='python3 -m http.server --bind 127.0.0.1'
-export IPV4='[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
+export IPv4='[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
 # for use with extended regex (grep -E)
-export IPV4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
+export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 
 # network
 alias dig='dig +noall +answer'  # DNS

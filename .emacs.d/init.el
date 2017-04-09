@@ -266,13 +266,14 @@
 
 (use-package dired
   :defer t
-  :bind (:map dired-mode-map
-              ("C-s" . dired-isearch-filenames)
-              ("C-M-s" . dired-isearch-filenames-regexp)
-              ("=" . my-dired-ediff-marked-files)
-              ;; needs dired+
-              ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
-              )
+  :bind (("C-x C-j" . dired-jump)
+         :map dired-mode-map
+         ("C-s" . dired-isearch-filenames)
+         ("C-M-s" . dired-isearch-filenames-regexp)
+         ("=" . my-dired-ediff-marked-files)
+         ;; needs dired+
+         ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
+         )
   :config
   (setq dired-listing-switches "-alh")
   ;; BSD ls does not support --dired
@@ -312,6 +313,7 @@
   ;; If you set this variable to the symbol `{}', the braces are
   ;; *required* in order to trigger interpretations as sub/superscript.
   (setq org-export-with-sub-superscripts '{})
+  ;; (setq org-latex-packages-alist '(("margin=2cm" "geometry" nil)))
   ;; (setq org-capture-templates '())
   )
 
@@ -405,9 +407,14 @@
 
 ;;; mutiple cursor
 ;; Shift key does not work for terminal
+(use-package multiple-cursors
+  :defer t
+  :bind (("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)
+         ("M-<down-mouse-1>" . mc/add-cursor-on-click)))
 ;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C-.") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C-.") 'mc/mark-next-like-this)
+;; (global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
 ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
@@ -437,28 +444,28 @@
   (load-theme 'tango-dark t))
 
 ;;; modeline
-;; mac specific, see https://github.com/milkypostman/powerline/issues/54
-(when (eq system-type 'darwin)
-  (setq ns-use-srgb-colorspace nil))
-;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
-;; works best with dark themes
-(set-face-attribute 'mode-line nil
-                    :underline nil
-                    :overline nil
-                    :foreground "#fdf6e3"
-                    :background "#2aa198"
-                    :box nil)
-(set-face-attribute 'mode-line-inactive nil
-                    :underline nil
-                    :overline nil
-                    :foreground "#fdf6e3"
-                    :background "#1a655f"
-                    :box nil)
 
 ;;; spaceline
 ;; depends on powerline
 (use-package spaceline-config
   :config
+  ;; mac specific, see https://github.com/milkypostman/powerline/issues/54
+  (when (eq system-type 'darwin)
+    (setq ns-use-srgb-colorspace nil))
+  ;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
+  ;; works best with dark themes
+  (set-face-attribute 'mode-line nil
+                      :underline nil
+                      :overline nil
+                      :foreground "#fdf6e3"
+                      :background "#2aa198"
+                      :box nil)
+  (set-face-attribute 'mode-line-inactive nil
+                      :underline nil
+                      :overline nil
+                      :foreground "#fdf6e3"
+                      :background "#1a655f"
+                      :box nil)
   (setq powerline-default-separator (if window-system 'wave 'bar))
   (spaceline-emacs-theme)
   (spaceline-toggle-flycheck-error-off)
@@ -495,9 +502,10 @@
   :defer t
   :init
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  ;; (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
   :config
-  (global-diff-hl-mode 1))
+  ;; (global-diff-hl-mode 1)
+  )
 
 ;;; dumb-jump: jump to definition based on regexp
 (use-package dumb-jump
@@ -524,7 +532,8 @@
   :config
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0)
-  (add-to-list 'company-backends '(company-irony
+  (add-to-list 'company-backends '(
+                                   company-irony
                                    company-irony-c-headers
                                    ;; merlin-company-backend
                                    company-robe
@@ -534,6 +543,8 @@
                                    company-latex-commands
                                    ;; js
                                    company-tern
+                                   ;; ansible
+                                   company-ansible
                                    ))
   ;; :diminish company-mode
   )
@@ -576,6 +587,8 @@
   :config
   ;; needs irony-eldoc
   (add-hook 'irony-mode-hook 'irony-eldoc)
+  ;; company-irony
+  ;; (add-to-list 'company-backends '(company-irony company-irony-c-headers))
   (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
   ;; make irony aware of .clang_complete or cmake
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
@@ -607,6 +620,7 @@
   :config
   (setq elpy-rpc-python-command "python3")
   (setq elpy-rpc-backend "jedi")
+  ;; prefer flycheck to flymake
   (remove-hook 'elpy-modules 'elpy-module-flymake)
   (elpy-use-ipython))
 
@@ -626,19 +640,32 @@
   ;; :init (inf-ruby-console-auto)
   :config
   (add-hook 'ruby-mode-hook 'robe-mode)
-  (add-hook 'ruby-mode-hook 'eldoc-mode))
+  (add-hook 'ruby-mode-hook 'eldoc-mode)
+  ;; company-robe
+  ;; (add-to-list 'company-backends 'company-robe)
+  )
 
 
 ;;; Common Lisp
 ;; M-x slime
 ;; slime handles indent correctly
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
+(use-package rainbow-delimiters-mode
+  :defer t
+  :init
+  (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode))
+(use-package paredit
+  :defer t
+  :init (add-hook 'lisp-mode-hook 'enable-paredit-mode)
+  ;; M-s : paredit-splice-sexp
+  )
 (use-package slime
   :defer t
   :config
   (setq inferior-lisp-program (executable-find "sbcl"))
-  (setq slime-contribs '(slime-fancy)))
-;; (slime-setup '(slime-fancy))
+  (setq slime-contribs '(slime-fancy slime-company)))
+;; (slime-setup '(slime-fancy slime-company))
 
 ;;; Scheme
 ;; M-x run-geiser
@@ -676,6 +703,8 @@
   ;; requires tern: npm install -g tern
   ;; add ~/.tern-project to get tern working
   (add-hook 'js2-mode-hook 'tern-mode)
+  ;; company-tern
+  ;; (add-to-list 'company-backends 'company-tern)
   ;; flycheck support for eslint
   ;; flycheck will automatically load eslint if .eslintrc exists
   ;; (flycheck-add-mode 'javascript-eslint 'js2-mode)
@@ -752,7 +781,8 @@
 ;;; yaml mode
 (use-package yaml-mode
   :defer t
-  :bind (("C-m" . newline-and-indent)
+  :bind (:map yaml-mode-map
+         ("C-m" . newline-and-indent)
          ("C-c C-d" . ansible-doc))
   :config
   ;; requires highlight-indentation
@@ -762,6 +792,8 @@
   (add-hook 'yaml-mode-hook 'ansible)
   ;; requires ansible-doc-mode, https://github.com/lunaryorn/ansible-doc.el
   ;; (add-hook 'yaml-mode-hook 'ansible-doc-mode)
+  ;; company-ansible
+  ;; (add-to-list 'company-backends 'company-ansible)
   )
 
 
@@ -777,5 +809,4 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
-(provide '.emacs)
-;;; .emacs ends here
+;;; init.el ends here
