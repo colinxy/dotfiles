@@ -3,6 +3,7 @@
 #+DATE:
 #+OPTIONS: toc:nil
 #+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage[margin=0.5in]{geometry}
 
 # if writing math
 # #+LATEX_HEADER: \usepackage{amsmath}

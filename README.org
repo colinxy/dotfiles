@@ -123,13 +123,22 @@ When trying to run a tool only under python 2/3, use the following.
   # on Mac
   brew install llvm --with-clang
   # on ubuntu
-  apt-get install llvm-dev
+  apt-get install llvm-dev clang libclang-dev
+
+#+END_SRC
+
+** Tools
+
+#+BEGIN_SRC sh
+
+  brew install cmake
+  apt-get install cmake
 
 #+END_SRC
 
 ** emacs irony-mode
 
-Make sure to specify
+=M-x irony-install-server=: Make sure to specify
 
 #+BEGIN_EXAMPLE
 -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
@@ -138,6 +147,102 @@ Make sure to specify
 
 * Javascript
 
-** eslint
+** Runtime and Package Manager
 
-** tern
+ - nodejs, npm
+
+#+BEGIN_SRC sh
+
+  # Mac
+  brew install nodejs npm
+  # ubuntu
+  apt-get install nodejs npm
+  # for ubuntu, node might have to be symlinked
+  ln -s /usr/bin/nodejs /usr/bin/node
+
+#+END_SRC
+
+ - npm install user global:
+   https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md
+
+   - local directory
+
+     #+BEGIN_SRC sh
+
+       mkdir "${HOME}/.npm-packages"
+
+     #+END_SRC
+
+   - add to =~/.npmrc=
+     #+BEGIN_EXAMPLE
+     prefix=${HOME}/.npm-packages
+     #+END_EXAMPLE
+
+   - add to =.bashrc=
+     #+BEGIN_SRC sh
+
+       NPM_PACKAGES="${HOME}/.npm-packages"
+
+       PATH="$NPM_PACKAGES/bin:$PATH"
+
+       # Unset manpath so we can inherit from /etc/manpath via the `manpath` command
+       unset MANPATH # delete if you already modified MANPATH elsewhere in your config
+       export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
+
+     #+END_SRC
+
+** Linter: eslint, Completion: tern
+
+#+BEGIN_SRC sh
+
+  # no need to sudo
+  npm install -g eslint tern
+
+#+END_SRC
+
+ - =tern=: add a default config under home directory
+   #+BEGIN_SRC javascript
+
+     // ~/.tern-project
+     {
+       "plugins": {
+         "es_modules": {},
+         "node": {}
+       },
+       "libs": [
+         "ecma5",
+         "ecma6"
+       ],
+       "ecmaVersion": 6
+     }
+
+   #+END_SRC
+
+ - =eslint=: add a default config under home directory
+   #+BEGIN_SRC javascript
+
+     // ~/.eslintrc.json
+     {
+       "env": {
+         "browser": true,
+         "node": true,
+         "es6": true
+       },
+       "rules": {
+         "no-use-before-define": "error"
+       }
+     }
+
+   #+END_SRC
+
+
+* Shell Scripting
+
+** shellcheck
+
+#+BEGIN_SRC sh
+
+  brew install shellcheck
+  apt-get install shellcheck
+
+#+END_SRC

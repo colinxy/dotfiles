@@ -55,6 +55,8 @@
 (blink-cursor-mode -1)
 ;; make cursor blink as few as possible
 ;; (setq blink-cursor-blinks 1)
+;; show prefix key in echo area quicker
+(setq echo-keystrokes 0.1)
 
 ;; auto revert
 (global-auto-revert-mode)
@@ -194,9 +196,7 @@
 ;; (setq use-package-always-ensure t)
 
 ;; hide useless strings from modeline
-(use-package abbrev
-  :defer t
-  :diminish abbrev-mode)
+(diminish 'abbrev-mode)
 
 ;;; jump to position within visible text
 (use-package avy
@@ -315,6 +315,17 @@
   (setq org-export-with-sub-superscripts '{})
   ;; (setq org-latex-packages-alist '(("margin=2cm" "geometry" nil)))
   ;; (setq org-capture-templates '())
+  ;; more document class
+  ;; (add-to-list 'org-latex-classes
+  ;;              ;; extarticle: more font sizes
+  ;;              ;; 8pt, 9pt, 10pt, 11pt, 12pt, 14pt, 17pt, 20pt
+  ;;              ;; #+LATEX_CLASS: extarticle
+  ;;              '("extarticle" "\\documentclass[14pt]{extarticle}"
+  ;;                ("\\section{%s}" . "\\section*{%s}")
+  ;;                ("\\subsection{%s}" . "\\subsection*{%s}")
+  ;;                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+  ;;                ("\\paragraph{%s}" . "\\paragraph*{%s}")
+  ;;                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   )
 
 ;; C-c C-o: org-open-at-point
@@ -426,7 +437,7 @@
 ;; emacs themes
 ;; https://github.com/bbatsov/solarized-emacs
 ;;; solarized theme by bbatsov
-(use-package solarized
+(use-package solarized-theme
   :defer t
   :if window-system
   :init
@@ -487,9 +498,11 @@
 
 
 ;; async compilation of melpa package
-(setq async-bytecomp-allowed-packages '(all))
-(async-bytecomp-package-mode 1)
-
+(use-package async
+  :defer t
+  :init
+  (setq async-bytecomp-allowed-packages '(all))
+  (async-bytecomp-package-mode 1))
 
 ;;; magit
 ;; (global-set-key (kbd "C-x g") 'magit-status)
@@ -523,7 +536,10 @@
 (use-package flycheck
   :defer t
   :init (add-hook 'after-init-hook 'global-flycheck-mode)
-  :config (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
+  :config
+  ;; TODO : requires flycheck-irony
+  (add-hook 'flycheck-mode-hook 'flycheck-irony-setup)
+  )
 
 
 (use-package company
@@ -585,9 +601,9 @@
   (add-hook 'c++-mode-hook 'irony-mode)
   (add-hook 'c-mode-hook 'irony-mode)
   :config
-  ;; needs irony-eldoc
+  ;; TODO : needs irony-eldoc
   (add-hook 'irony-mode-hook 'irony-eldoc)
-  ;; company-irony
+  ;; TODO : company-irony
   ;; (add-to-list 'company-backends '(company-irony company-irony-c-headers))
   (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
   ;; make irony aware of .clang_complete or cmake
@@ -650,7 +666,7 @@
 ;; M-x slime
 ;; slime handles indent correctly
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
-(use-package rainbow-delimiters-mode
+(use-package rainbow-delimiters
   :defer t
   :init
   (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
@@ -758,6 +774,9 @@
   ;; Update PDF buffers after successful LaTeX runs
   (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
             #'TeX-revert-document-buffer)
+  ;; synctex
+  (setq TeX-source-correlate-method 'syntex)
+  (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
   :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
