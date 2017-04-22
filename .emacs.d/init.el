@@ -70,7 +70,7 @@
 (global-unset-key (kbd "C-o"))
 (setq outline-minor-mode-prefix (kbd "C-o"))
 (global-unset-key (kbd "C-t"))
-(global-unset-key (kbd "C-x C-w"))
+;; (global-unset-key (kbd "C-x C-w"))
 (global-unset-key (kbd "M-)"))
 ;; C-w is only enabled when a region is selected
 (defun my-kill-region ()
@@ -312,21 +312,25 @@
   (setq org-highlight-latex-and-related '(latex script entities))
   ;; If you set this variable to the symbol `{}', the braces are
   ;; *required* in order to trigger interpretations as sub/superscript.
+  (setq org-use-sub-superscripts '{})
+  ;; (setq org-capture-templates '())
+  )
+(use-package ox-latex                   ;export to latex
+  :defer t
+  :config
   (setq org-export-with-sub-superscripts '{})
   ;; (setq org-latex-packages-alist '(("margin=2cm" "geometry" nil)))
-  ;; (setq org-capture-templates '())
   ;; more document class
-  ;; (add-to-list 'org-latex-classes
-  ;;              ;; extarticle: more font sizes
-  ;;              ;; 8pt, 9pt, 10pt, 11pt, 12pt, 14pt, 17pt, 20pt
-  ;;              ;; #+LATEX_CLASS: extarticle
-  ;;              '("extarticle" "\\documentclass[14pt]{extarticle}"
-  ;;                ("\\section{%s}" . "\\section*{%s}")
-  ;;                ("\\subsection{%s}" . "\\subsection*{%s}")
-  ;;                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-  ;;                ("\\paragraph{%s}" . "\\paragraph*{%s}")
-  ;;                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  )
+  (add-to-list 'org-latex-classes
+               ;; extarticle: more font sizes
+               ;; 8pt, 9pt, 10pt, 11pt, 12pt, 14pt, 17pt, 20pt
+               ;; #+LATEX_CLASS: extarticle
+               '("extarticle" "\\documentclass[12pt]{extarticle}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
 ;; C-c C-o: org-open-at-point
 
@@ -346,7 +350,10 @@
 
 
 ;; imenu
-(setq imenu-auto-rescan 1)
+(use-package imenu
+  :defer t
+  :config
+  (setq imenu-auto-rescan 1))
 
 ;;; popup-imenu
 (use-package popup-imenu
@@ -370,12 +377,15 @@
   :diminish undo-tree-mode)
 
 
-(setq doc-view-continuous t)
+(use-package doc-view
+  :defer t
+  :config
+  (setq doc-view-continuous t))
 ;; pdf-tools binary (epdfinfo) installed from homebrew
 ;;; pdf-tools
 (use-package pdf-tools
   :defer t
-  :init
+  :config
   ;; (pdf-tools-install)
   (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo"))
 ;; (pdf-tools-install)                     ;too slow, load on demand
@@ -386,10 +396,34 @@
 ;; M-x shell
 ;; M-x term
 ;; M-x ansi-term
-;; (require 'term)
-;; for term-mode, explicit shell name
-;; (setq explicit-shell-file-name "/usr/local/bin/bash")
-;; (require 'comint)
+
+;; not working
+;; (use-package term
+;;   :defer t
+;;   :bind (("M-t" . my-term-launch)
+;;          :term-mode-map
+;;          ("M-p" . term-send-up)
+;;          ("M-n" . term-send-down)
+;;          :term-raw-map
+;;          ("M-p" . term-send-up)
+;;          ("M-n" . term-send-down)
+;;          ;; ("C-y" . term-paste)
+;;          ;; ("M-(" . my-term-send-left-paren)
+;;          ;; ("M-\"" . my-term-send-left-dpublequote)
+;;          )
+;;   :config
+;;   (ansi-color-for-comint-mode-on)
+;;   (defun my-term-launch ()
+;;     (interactive)
+;;     (ansi-term "/bin/bash"))
+;;   (defun my-term-send-left-paren ()
+;;     (interactive)
+;;     (term-send-raw-string "()")
+;;     (term-send-left))
+;;   (defun my-term-send-left-doublequote ()
+;;     (interactive)
+;;     (term-send-raw-string "\"\"")
+;;     (term-send-left)))
 (add-hook 'term-mode-hook
           (lambda ()
             (ansi-color-for-comint-mode-on)
@@ -429,9 +463,12 @@
 ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
-;; highlight TODO FIXME CHECKME (s) (make sure it is highlighted)
-(setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME"))
-(add-hook 'prog-mode-hook 'fic-mode)
+;; highlight TODO/FIXME
+(use-package fix-mode
+  :defer t
+  :init (add-hook 'prog-mode-hook 'fic-mode)
+  :config
+  (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME" "XXX")))
 
 
 ;; emacs themes
@@ -501,8 +538,9 @@
 (use-package async
   :defer t
   :init
-  (setq async-bytecomp-allowed-packages '(all))
-  (async-bytecomp-package-mode 1))
+  (async-bytecomp-package-mode 1)
+  :config
+  (setq async-bytecomp-allowed-packages '(all)))
 
 ;;; magit
 ;; (global-set-key (kbd "C-x g") 'magit-status)
@@ -685,13 +723,22 @@
 
 ;;; Scheme
 ;; M-x run-geiser
-(setq geiser-active-implementations '(racket))
+(use-package geiser
+  :defer t
+  :config
+  (setq geiser-active-implementations '(racket)))
 
 
 ;;; OCaml
 ;; tuareg, merlin (minor mode)
 ;; if only interactive, M-x run-ocaml
-(let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
+(let ((opam-share
+       (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
+  ;; (use-package merlin
+  ;;   :defer t
+  ;;   :if (and opam-share (file-directory-p opam-share))
+  ;;   :load-path (lambda () (expand-file-name "emacs/site-lisp" opam-share))
+  ;;   )
   (when (and opam-share (file-directory-p opam-share))
     (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
     (autoload 'merlin-mode "merlin" nil t nil)
@@ -774,8 +821,6 @@
   ;; Update PDF buffers after successful LaTeX runs
   (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
             #'TeX-revert-document-buffer)
-  ;; synctex
-  (setq TeX-source-correlate-method 'syntex)
   (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
   :config
   (setq TeX-auto-save t)
@@ -783,6 +828,8 @@
   (setq TeX-PDF-mode t)                 ;pdflatex
   ;; math insert by pair $$, \(\)
   (setq TeX-electric-math '("$" . "$"))
+  ;; synctex
+  (setq TeX-source-correlate-method 'syntex)
   ;; insert {}, [], ()
   (setq LaTeX-electric-left-right-brace t)
   ;; use pdf-tools to open PDF files

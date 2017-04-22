@@ -5,7 +5,7 @@ set -o emacs
 shopt -s histappend
 
 # command prompt
-# export PS1="\u:\w \$ "
+export PS1="\u:\w \$ "
 
 # ls color flag
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -109,7 +109,7 @@ export IPv4='[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
 export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 
 # network
-alias dig='dig +noall +answer'  # DNS
+# alias dig='dig +noall +answer'  # DNS
 # whois
 # use whois to lookup ip to get more accurate results, example:
 # whois $(dig google.com | head -1 | awk '{print $5}')
