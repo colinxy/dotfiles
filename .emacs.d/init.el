@@ -4,11 +4,13 @@
 ;;
 ;; Flycheck made me do this
 ;;
-;; install Emacs with cocoa on Mac OSX
+;; Install Emacs with cocoa on Mac OSX
 ;; $ brew install Emacs --with-cocoa --with-librsvg --with-gnutls --with-imagemagick
+;; Or use emacs-mac-port by railwaycat: better retina support, better scrolling
+;; $ brew install emacs-mac --with-gnutls --with-imagemagick --with-modules --with-xml2 --with-modern-icon
 ;;
-;; TODO
-;; 1. reorganize packages with use-package
+;; Install Emacs on ubuntu (build from source)
+;; $ apt-get build-dep emacs
 ;;
 ;;; Code:
 
@@ -97,6 +99,7 @@
 
 ;; modifier key
 (when (eq system-type 'darwin)
+  (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'super))
 
 ;; auto insert pair
@@ -186,9 +189,9 @@
 (package-initialize)
 
 ;; http://cachestocaches.com/2015/8/getting-started-use-package/
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
 (require 'use-package)
 (require 'diminish)
@@ -206,6 +209,7 @@
 ;; ibuffer instead of buffer list
 (use-package ibuffer
   :defer t
+  :pin manual                           ;builtin package
   :bind (("C-x C-b" . ibuffer)
          :map ibuffer-mode-map
          ("U" . ibuffer-unmark-all))
@@ -232,6 +236,7 @@
 ;;; ediff
 (use-package ediff
   :defer t
+  :pin manual                           ;builtin package
   :config
   (setq ediff-split-window-function 'split-window-horizontally
         ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -266,6 +271,7 @@
 
 (use-package dired
   :defer t
+  :pin manual                           ;builtin package
   :bind (("C-x C-j" . dired-jump)
          :map dired-mode-map
          ("C-s" . dired-isearch-filenames)
@@ -276,6 +282,7 @@
          )
   :config
   (setq dired-listing-switches "-alh")
+  (setq dired-dwim-target t)
   ;; BSD ls does not support --dired
   (use-package ls-lisp
     :if (not (eq system-type 'gnu/linux))
@@ -293,6 +300,7 @@
 ;; tramp eshell: respect $PATH on remote host
 (use-package tramp
   :defer t
+  :pin manual                           ;builtin package
   :config
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
@@ -352,6 +360,7 @@
 ;; imenu
 (use-package imenu
   :defer t
+  :pin manual                           ;builtin package
   :config
   (setq imenu-auto-rescan 1))
 
@@ -379,6 +388,7 @@
 
 (use-package doc-view
   :defer t
+  :pin manual                           ;builtin package
   :config
   (setq doc-view-continuous t))
 ;; pdf-tools binary (epdfinfo) installed from homebrew
@@ -464,7 +474,7 @@
 
 
 ;; highlight TODO/FIXME
-(use-package fix-mode
+(use-package fic-mode
   :defer t
   :init (add-hook 'prog-mode-hook 'fic-mode)
   :config
@@ -515,6 +525,19 @@
                       :background "#1a655f"
                       :box nil)
   (setq powerline-default-separator (if window-system 'wave 'bar))
+  ;; (declare-function doc-view-current-page 'doc-view)
+  ;; (declare-function doc-view-last-page-number 'doc-view)
+  ;; (defun spaceline--docview-page-number ()
+  ;;   "Display page number in doc-view mode on spaceline."
+  ;;   (format "(%d/%d)"
+  ;;           (eval `(doc-view-current-page))
+  ;;           (doc-view-last-page-number)))
+  ;; (spaceline-define-segment line-column
+  ;;   "The current line and column numbers, or `(current page/number of pages)`
+  ;; in pdf-view mode (enabled by the `pdf-tools' package) or doc-view mode."
+  ;;   (cond ((eq 'pdf-view-mode major-mode) (spaceline--pdfview-page-number))
+  ;;         ((eq 'doc-view-mode major-mode) (spaceline--docview-page-number))
+  ;;         (t "%l:%2c")))
   (spaceline-emacs-theme)
   (spaceline-toggle-flycheck-error-off)
   (spaceline-toggle-flycheck-warning-off))
@@ -535,7 +558,7 @@
 
 
 ;; async compilation of melpa package
-(use-package async
+(use-package async-bytecomp
   :defer t
   :init
   (async-bytecomp-package-mode 1)
@@ -573,22 +596,18 @@
 
 (use-package flycheck
   :defer t
-  :init (add-hook 'after-init-hook 'global-flycheck-mode)
-  :config
-  ;; TODO : requires flycheck-irony
-  (add-hook 'flycheck-mode-hook 'flycheck-irony-setup)
-  )
+  :init (add-hook 'after-init-hook 'global-flycheck-mode))
 
 
 (use-package company
   :defer t
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
-  (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0)
+  ;; TODO : move these to each individual package configs
   (add-to-list 'company-backends '(
-                                   company-irony
-                                   company-irony-c-headers
+                                   ;; company-irony
+                                   ;; company-irony-c-headers
                                    ;; merlin-company-backend
                                    company-robe
                                    ;; math
@@ -602,6 +621,9 @@
                                    ))
   ;; :diminish company-mode
   )
+(use-package company-dabbrev
+  :defer t
+  :config (setq company-dabbrev-downcase nil))
 
 
 ;;; cc-mode: mode for editing c/c++/java/awk
@@ -632,20 +654,31 @@
 ;; requires libclang
 (use-package irony
   :defer t
-  :bind (:irony-mode-map
-         ([remap completion-at-point] . irony-completion-at-point-async)
-         ([remap complete-symbol] . irony-completion-at-point-async))
+  ;; irony `0.3.0' breaking changes, removed async API (supported by default)
+  ;; :bind (:irony-mode-map
+  ;;        ([remap completion-at-point] . irony-completion-at-point-async)
+  ;;        ([remap complete-symbol] . irony-completion-at-point-async))
   :init
   (add-hook 'c++-mode-hook 'irony-mode)
   (add-hook 'c-mode-hook 'irony-mode)
   :config
-  ;; TODO : needs irony-eldoc
-  (add-hook 'irony-mode-hook 'irony-eldoc)
-  ;; TODO : company-irony
-  ;; (add-to-list 'company-backends '(company-irony company-irony-c-headers))
-  (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
   ;; make irony aware of .clang_complete or cmake
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  ;; company version >= `0.8.4' include these commands by default
+  ;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+
+  (use-package irony-eldoc
+    :defer t
+    :init (add-hook 'irony-mode-hook 'irony-eldoc))
+  (use-package company-irony
+    :defer t
+    :init (add-to-list 'company-backends 'company-irony))
+  (use-package company-irony-c-headers
+    :defer t
+    :init (add-to-list 'company-backends 'company-irony-c-headers))
+  (use-package flycheck-irony
+    :defer t
+    :init (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
   )
 
 

@@ -63,7 +63,7 @@ alias kill-em-daemon='emacsclient -e "(save-buffers-kill-emacs)"'
 # ec() { emacsclient -c "$@" & }
 
 # git version control
-alias git-push='git pull --rebase && git push origin -u'
+# alias git-push='git pull --rebase && git push origin -u'
 alias git-log='git log --oneline --decorate --graph --all'
 
 # diff
@@ -110,9 +110,10 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 
 # network
 # alias dig='dig +noall +answer'  # DNS
+# understand dns lookup process: +trace
 # whois
 # use whois to lookup ip to get more accurate results, example:
-# whois $(dig google.com | head -1 | awk '{print $5}')
+# whois $(dig google.com +short | head -1)
 whois() { "$(type -P whois)" "$@" | grep -vE '^(#|\s*$)'; }
 # GUI wirshark
 alias ws='startprocess wireshark'

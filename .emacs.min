@@ -4,7 +4,7 @@
 ;;; Commentary:
 ;;
 ;; run Emacs as
-;; \emacs -nw -q --load ~/.emacs.min
+;; command emacs -nw -q --load ~/.emacs.min
 
 ;;; Code:
 
@@ -41,6 +41,8 @@
 (blink-cursor-mode -1)
 ;; make cursor blink as few as possible
 ;; (setq blink-cursor-blinks 1)
+;; show prefix key in echo area quicker
+(setq echo-keystrokes 0.1)
 
 ;; auto revert
 (global-auto-revert-mode)
@@ -52,7 +54,6 @@
 
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
-(global-unset-key (kbd "C-x C-w"))
 (global-unset-key (kbd "M-)"))
 ;; C-w is only enabled when a region is selected
 (defun my-kill-region ()
@@ -75,6 +76,14 @@
 
 ;; use DEL to delete selected text
 (delete-selection-mode 1)
+
+;; consider CamelCase to be 2 words
+;; subword minor mode, bind it to a mode hook
+
+;; modifier key
+(when (eq system-type 'darwin)
+  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'super))
 
 ;; auto insert pair
 ;; M-( ; insert ()
@@ -106,10 +115,6 @@
 (when (not window-system)
   (menu-bar-mode -1)
   (load-theme 'tango-dark t))
-
-;; modifier key
-(when (eq system-type 'darwin)
-  (setq mac-command-modifier 'super))
 
 ;; move between windows
 ;; only works for gui
