@@ -54,3 +54,15 @@
 ;;                nil
 ;;                '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend)))
 ;;                'add-to-end)))
+
+
+;; ocaml, opam
+(eval-and-compile
+  (defun my-opam-share-path ()
+    (let ((opam-share
+           (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
+      (when (and opam-share (file-directory-p opam-share))
+        (expand-file-name "emacs/site-lisp" opam-share)))))
+;; (use-package tuareg
+;;   :defer t
+;;   :load-path (lambda () (my-opam-share-path)))

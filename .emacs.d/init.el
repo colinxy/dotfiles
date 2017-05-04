@@ -10,7 +10,7 @@
 ;; $ brew install emacs-mac --with-gnutls --with-imagemagick --with-modules --with-xml2 --with-modern-icon
 ;;
 ;; Install Emacs on ubuntu (build from source)
-;; $ apt-get build-dep emacs
+;; $ apt-get build-dep Emacs
 ;;
 ;;; Code:
 
@@ -33,11 +33,6 @@
       kept-new-versions 10
       kept-old-versions 2
       version-control t)
-
-;; Easy PG setup
-;; it used to work with emacs 24.5 and gnupg 1.x without any setup
-;; now upgraded to emacs 25.1 and gnupg 2.1
-(setq epa-pinentry-mode 'loopback)
 
 ;; substitute y-or-n-p for yes-or-no-p
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -204,7 +199,13 @@
 ;;; jump to position within visible text
 (use-package avy
   :defer t
-  :bind ("C-;" . avy-goto-word-1))
+  :bind ("C-;" . avy-goto-char-2))
+
+;; EasyPG Assistant
+(use-package epa
+  :defer t
+  ;; enter passphrase through the minibuffer
+  :config (setq epa-pinentry-mode 'loopback))
 
 ;; ibuffer instead of buffer list
 (use-package ibuffer
@@ -222,7 +223,8 @@
   ;; (setq ibuffer-saved-filter-groups
   ;;       '(("default"
   ;;          ("Special" (name . "^\*.*\*$")))))
-  (setq ibuffer-show-empty-filter-groups nil))
+  ;; (setq ibuffer-show-empty-filter-groups nil)
+  )
 (use-package ibuffer-vc
   :defer t
   :init
@@ -614,10 +616,8 @@
                                    company-math-symbols-unicode
                                    company-math-symbols-latex
                                    company-latex-commands
-                                   ;; js
-                                   company-tern
-                                   ;; ansible
-                                   company-ansible
+                                   ;; company-tern
+                                   ;; company-ansible
                                    ))
   ;; :diminish company-mode
   )
@@ -726,11 +726,12 @@
          ("C-M-n" . forward-list))
   ;; :init (inf-ruby-console-auto)
   :config
-  (add-hook 'ruby-mode-hook 'robe-mode)
-  (add-hook 'ruby-mode-hook 'eldoc-mode)
-  ;; company-robe
-  ;; (add-to-list 'company-backends 'company-robe)
-  )
+  (add-hook 'ruby-mode-hook 'eldoc-mode))
+(use-package robe
+  :defer t
+  :init (add-hook 'ruby-mode-hook 'robe-mode)
+  ;; company-robe contained within robe package
+  :config (add-to-list 'company-backends 'company-robe))
 
 
 ;;; Common Lisp
@@ -741,7 +742,8 @@
   :defer t
   :init
   (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode))
+  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'json-mode-hook 'rainbow-delimiters-mode))
 (use-package paredit
   :defer t
   :init (add-hook 'lisp-mode-hook 'enable-paredit-mode)
@@ -751,6 +753,7 @@
   :defer t
   :config
   (setq inferior-lisp-program (executable-find "sbcl"))
+  ;; TODO : requires slime-company
   (setq slime-contribs '(slime-fancy slime-company)))
 ;; (slime-setup '(slime-fancy slime-company))
 
@@ -758,32 +761,27 @@
 ;; M-x run-geiser
 (use-package geiser
   :defer t
-  :config
-  (setq geiser-active-implementations '(racket)))
+  ;; :config (setq geiser-active-implementations '(racket))
+  )
 
 
 ;;; OCaml
 ;; tuareg, merlin (minor mode)
-;; if only interactive, M-x run-ocaml
-(let ((opam-share
-       (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
-  ;; (use-package merlin
-  ;;   :defer t
-  ;;   :if (and opam-share (file-directory-p opam-share))
-  ;;   :load-path (lambda () (expand-file-name "emacs/site-lisp" opam-share))
-  ;;   )
-  (when (and opam-share (file-directory-p opam-share))
-    (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
-    (autoload 'merlin-mode "merlin" nil t nil)
-    ;; use tuareg
-    (add-hook 'tuareg-mode-hook 'merlin-mode t)
-    (with-eval-after-load 'merlin-mode
-      (add-to-list company-backends 'merlin-company-backend))
+;; install opam
+(use-package tuareg
+  ;; opam install tuareg
+  :defer t)
+(use-package merlin
+  ;; opam install merlin
+  :defer t
+  :init (add-hook 'tuareg-mode-hook 'merlin-mode)
+  ;; merlin-company added by merlin.el
+  )
+(use-package utop
+  ;; opam install utop
+  :defer t
 
-    ;; installed utop via opam
-    (autoload 'utop-minor-mode "utop" "Minor mode for utop" t nil)
-    (setq utop-command "opam config exec -- utop -emacs")
-    (add-hook 'tuareg-mode-hook 'utop-minor-mode)))
+  :config (setq utop-command "opam config exec -- utop -emacs"))
 
 
 ;;; Javascript & HTML & CSS
@@ -792,15 +790,16 @@
   :defer t
   :mode (("\\.js\\'" . js2-mode)
          ("\\.jsx\\'" . js2-jsx-mode))
+  ;; :init (add-hook 'js2-mode-hook 'subword-mode)
   :config
   (setq js-indent-level 2)
-  ;; (add-hook 'js2-mode-hook 'subword-mode)
-
   ;; requires tern: npm install -g tern
   ;; add ~/.tern-project to get tern working
   (add-hook 'js2-mode-hook 'tern-mode)
   ;; company-tern
-  ;; (add-to-list 'company-backends 'company-tern)
+  (use-package company-tern
+    :defer t
+    :init (add-to-list 'company-backends 'company-tern))
   ;; flycheck support for eslint
   ;; flycheck will automatically load eslint if .eslintrc exists
   ;; (flycheck-add-mode 'javascript-eslint 'js2-mode)
@@ -891,9 +890,9 @@
   (add-hook 'yaml-mode-hook 'ansible)
   ;; requires ansible-doc-mode, https://github.com/lunaryorn/ansible-doc.el
   ;; (add-hook 'yaml-mode-hook 'ansible-doc-mode)
-  ;; company-ansible
-  ;; (add-to-list 'company-backends 'company-ansible)
-  )
+  (use-package company-ansible
+    :defer t
+    :init (add-to-list 'company-backends 'company-ansible)))
 
 
 ;;; gnuplot mode
