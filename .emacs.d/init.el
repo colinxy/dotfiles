@@ -193,7 +193,7 @@
 (require 'use-package)
 (require 'diminish)
 (require 'bind-key)
-(setq use-package-always-ensure t)
+;; (setq use-package-always-ensure t)
 
 ;; hide useless strings from modeline
 (diminish 'abbrev-mode)
@@ -291,6 +291,15 @@
     :if (not (eq system-type 'gnu/linux))
     :config (setq ls-lisp-use-insert-directory-program nil))
   )
+(use-package dired-narrow
+  :defer t
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
+(use-package dired-subtree
+  :defer t
+  :bind (:map dired-mode-map
+              ("i" . dired-subtree-insert)
+              ("r" . dired-subtree-remove)))
 
 
 ;;; neotree
@@ -803,19 +812,18 @@
 ;; LaTeX insert item        C-c C-j
 
 
+(defun my-latex-setup ()
+    "To be set as mode hook for latex and org modes."
+    (setq-local company-backends
+                (append '((company-math-symbols-latex company-latex-commands))
+                        company-backends)))
 (use-package company-math
   :defer t
   :init
   (add-hook 'org-mode-hook 'my-latex-setup)
   (add-hook 'TeX-mode-hook 'my-latex-setup)
   :config
-  (add-to-list 'company-backends 'company-math-symbols-unicode)
-  (defun my-latex-setup ()
-    "To be set as mode hook for latex and org modes."
-    (setq-local company-backends
-                (append '((company-math-symbols-latex company-latex-commands))
-                        company-backends)))
-  )
+  (add-to-list 'company-backends 'company-math-symbols-unicode))
 
 
 ;;; yaml mode
