@@ -8,7 +8,7 @@
 ;;; solarized theme by bbatsov
 ;; https://github.com/bbatsov/solarized-emacs
 (use-package solarized
-  ;; :ensure solarized-theme
+  :ensure solarized-theme
   ;; :if window-system
   :init
   (setq x-underline-at-descent-line t)
@@ -25,6 +25,7 @@
 ;;; spaceline
 ;; depends on powerline
 (use-package spaceline-config
+  :ensure spaceline
   :config
   ;; mac specific, see https://github.com/milkypostman/powerline/issues/54
   (when (eq system-type 'darwin)

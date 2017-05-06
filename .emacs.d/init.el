@@ -12,6 +12,10 @@
 ;; Install Emacs on ubuntu (build from source)
 ;; $ apt-get build-dep Emacs
 ;;
+;;
+;; When starting Emacs for the first time, uncomment
+;; (setq use-package-always-ensure t), and all the packages will be
+;; installed automatically
 ;;; Code:
 
 
@@ -208,7 +212,6 @@
 ;; ibuffer instead of buffer list
 (use-package ibuffer
   :defer t
-  :pin manual                           ;builtin package
   :bind (("C-x C-b" . ibuffer)
          :map ibuffer-mode-map
          ("U" . ibuffer-unmark-all))
@@ -236,7 +239,6 @@
 ;;; ediff
 (use-package ediff
   :defer t
-  :pin manual                           ;builtin package
   :config
   (setq ediff-split-window-function 'split-window-horizontally
         ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -271,7 +273,7 @@
 
 (use-package dired
   :defer t
-  :pin manual                           ;builtin package
+  :ensure nil
   :bind (("C-x C-j" . dired-jump)
          :map dired-mode-map
          ("C-s" . dired-isearch-filenames)
@@ -285,6 +287,7 @@
   (setq dired-dwim-target t)
   ;; BSD ls does not support --dired
   (use-package ls-lisp
+    :ensure nil
     :if (not (eq system-type 'gnu/linux))
     :config (setq ls-lisp-use-insert-directory-program nil))
   )
@@ -312,7 +315,6 @@
 ;; tramp eshell: respect $PATH on remote host
 (use-package tramp
   :defer t
-  :pin manual                           ;builtin package
   :config
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
@@ -337,6 +339,7 @@
   )
 (use-package ox-latex                   ;export to latex
   :defer t
+  :ensure org
   :config
   (setq org-export-with-sub-superscripts '{})
   ;; (setq org-latex-packages-alist '(("margin=2cm" "geometry" nil)))
@@ -408,7 +411,7 @@
 ;; (pdf-tools-install)                     ;too slow, load on demand
 
 
-;; shell integration
+;;; shell integration
 ;; M-x eshell
 ;; M-x shell
 ;; M-x term
@@ -492,10 +495,10 @@
 (use-package yasnippet
   :defer t)
 
-
 ;;; async compilation of melpa package
 (use-package async-bytecomp
   :defer t
+  :ensure async
   :init
   (async-bytecomp-package-mode 1)
   :config
@@ -543,6 +546,7 @@
   )
 (use-package company-dabbrev
   :defer t
+  :ensure company
   :config (setq company-dabbrev-downcase nil))
 
 
@@ -765,7 +769,7 @@
 ;;; AUCTeX
 (use-package tex
   :defer t
-  ;; :ensure auctex
+  :ensure auctex
   :init
   (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
   ;; Update PDF buffers after successful LaTeX runs
@@ -780,13 +784,17 @@
   (setq TeX-electric-math '("$" . "$"))
   ;; synctex
   (setq TeX-source-correlate-method 'syntex)
-  ;; insert {}, [], ()
-  (setq LaTeX-electric-left-right-brace t)
   ;; use pdf-tools to open PDF files
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
         TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
         TeX-source-correlate-start-server t)
   )
+(use-package latex
+  :defer t
+  :ensure auctex
+  :config
+  ;; insert {}, [], ()
+  (setq LaTeX-electric-left-right-brace t))
 ;; LaTeX compile   C-c C-a
 ;; LaTeX math mode C-c ~
 ;; LaTeX insert environment C-c C-e
@@ -804,6 +812,7 @@
   :init
   (add-hook 'org-mode-hook 'my-latex-setup)
   (add-hook 'TeX-mode-hook 'my-latex-setup)
+  :config
   (add-to-list 'company-backends 'company-math-symbols-unicode))
 
 
