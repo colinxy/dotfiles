@@ -290,16 +290,16 @@
     :ensure nil
     :if (not (eq system-type 'gnu/linux))
     :config (setq ls-lisp-use-insert-directory-program nil))
+  (use-package dired-narrow
+    :defer t
+    :bind (:map dired-mode-map
+                ("/" . dired-narrow)))
+  (use-package dired-subtree
+    :defer t
+    :bind (:map dired-mode-map
+                ("i" . dired-subtree-insert)
+                ("r" . dired-subtree-remove)))
   )
-(use-package dired-narrow
-  :defer t
-  :bind (:map dired-mode-map
-              ("/" . dired-narrow)))
-(use-package dired-subtree
-  :defer t
-  :bind (:map dired-mode-map
-              ("i" . dired-subtree-insert)
-              ("r" . dired-subtree-remove)))
 
 
 ;;; neotree
@@ -379,7 +379,6 @@
 ;; imenu
 (use-package imenu
   :defer t
-  :pin manual                           ;builtin package
   :config
   (setq imenu-auto-rescan 1))
 
@@ -407,7 +406,6 @@
 
 (use-package doc-view
   :defer t
-  :pin manual                           ;builtin package
   :config
   (setq doc-view-continuous t))
 ;; pdf-tools binary (epdfinfo) installed from homebrew
@@ -415,7 +413,6 @@
 (use-package pdf-tools
   :defer t
   :config
-  ;; (pdf-tools-install)
   (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo"))
 ;; (pdf-tools-install)                     ;too slow, load on demand
 
@@ -588,6 +585,7 @@
 (use-package irony
   :defer t
   ;; irony `0.3.0' breaking changes, removed async API (supported by default)
+  ;; now irony-completion-at-point uses async by default
   ;; :bind (:irony-mode-map
   ;;        ([remap completion-at-point] . irony-completion-at-point-async)
   ;;        ([remap complete-symbol] . irony-completion-at-point-async))
@@ -713,7 +711,6 @@
 (use-package utop
   ;; opam install utop
   :defer t
-
   :config (setq utop-command "opam config exec -- utop -emacs"))
 
 
@@ -799,13 +796,12 @@
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
         TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
         TeX-source-correlate-start-server t)
-  )
-(use-package latex
-  :defer t
-  :ensure auctex
-  :config
-  ;; insert {}, [], ()
-  (setq LaTeX-electric-left-right-brace t))
+  (use-package latex
+    :defer t
+    :ensure auctex
+    :config
+    ;; insert {}, [], ()
+    (setq LaTeX-electric-left-right-brace t)))
 ;; LaTeX compile   C-c C-a
 ;; LaTeX math mode C-c ~
 ;; LaTeX insert environment C-c C-e

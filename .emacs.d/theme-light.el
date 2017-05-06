@@ -4,3 +4,6 @@
 ;;
 
 ;;; Code:
+(use-package leuven-theme
+  :init
+  (load-theme 'leuven t))
