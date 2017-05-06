@@ -138,11 +138,21 @@ When trying to run a tool only under python 2/3, use the following.
 
 ** emacs irony-mode
 
-=M-x irony-install-server=: Make sure to specify
+=M-x irony-install-server=: Make sure to specify the following
 
 #+BEGIN_EXAMPLE
 -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
 #+END_EXAMPLE
+
+** man pages
+
+amazing c++ documentation, from https://github.com/jeaye/stdman
+
+#+BEGIN_SRC sh
+
+  brew install stdman
+
+#+END_SRC
 
 
 * Javascript

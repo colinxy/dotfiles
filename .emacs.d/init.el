@@ -193,7 +193,7 @@
 (require 'use-package)
 (require 'diminish)
 (require 'bind-key)
-;; (setq use-package-always-ensure t)
+(setq use-package-always-ensure t)
 
 ;; hide useless strings from modeline
 (diminish 'abbrev-mode)
@@ -416,52 +416,52 @@
 ;; M-x shell
 ;; M-x term
 ;; M-x ansi-term
-
-;; not working
-;; (use-package term
-;;   :defer t
-;;   :bind (("M-t" . my-term-launch)
-;;          :term-mode-map
-;;          ("M-p" . term-send-up)
-;;          ("M-n" . term-send-down)
-;;          :term-raw-map
-;;          ("M-p" . term-send-up)
-;;          ("M-n" . term-send-down)
-;;          ;; ("C-y" . term-paste)
-;;          ;; ("M-(" . my-term-send-left-paren)
-;;          ;; ("M-\"" . my-term-send-left-dpublequote)
-;;          )
-;;   :config
-;;   (ansi-color-for-comint-mode-on)
-;;   (defun my-term-launch ()
-;;     (interactive)
-;;     (ansi-term "/bin/bash"))
-;;   (defun my-term-send-left-paren ()
-;;     (interactive)
-;;     (term-send-raw-string "()")
-;;     (term-send-left))
-;;   (defun my-term-send-left-doublequote ()
-;;     (interactive)
-;;     (term-send-raw-string "\"\"")
-;;     (term-send-left)))
-(add-hook 'term-mode-hook
-          (lambda ()
-            (ansi-color-for-comint-mode-on)
-            (define-key term-raw-map (kbd "C-y") 'term-paste)
-            (define-key term-raw-map (kbd "M-(")
-              (lambda ()
-                (interactive)
-                (term-send-raw-string "()")
-                (term-send-left)))
-            (define-key term-raw-map (kbd "M-\"")
-              (lambda ()
-                (interactive)
-                (term-send-raw-string "\"\"")
-                (term-send-left)))))
-(global-set-key (kbd "M-t")
-                (lambda () (interactive)
-                  (ansi-term "/bin/bash")))
-
+(use-package term
+  :defer t
+  :bind (("M-t" . ansi-term)
+         :map term-mode-map
+         ("M-p" . term-send-up)
+         ("M-n" . term-send-down)
+         :map term-raw-map
+         ("M-p" . term-send-up)
+         ("M-n" . term-send-down)
+         ("C-y" . term-paste)
+         ("M-(" . my-term-send-left-paren)
+         ("M-\"" . my-term-send-left-doublequote))
+  :config
+  (ansi-color-for-comint-mode-on)
+  (defun my-term-send-left-paren ()
+    (interactive)
+    (term-send-raw-string "()")
+    (term-send-left))
+  (defun my-term-send-left-doublequote ()
+    (interactive)
+    (term-send-raw-string "\"\"")
+    (term-send-left)))
+;; C-c C-j switch to line mode
+;; C-c C-k switch to char mode
+(use-package eshell
+  :defer t
+  :config
+  (use-package em-alias
+    :defer t
+    :ensure eshell
+    :config
+    (eshell/alias "vi" "find-file $1")
+    (eshell/alias "ll" "ls -al $*")
+    (eshell/alias "la" "ls -A $*"))
+  (use-package em-hist
+    :defer t
+    :ensure eshell
+    :config
+    (setq eshell-hist-ignoredups t))
+  (use-package em-term
+    :defer t
+    :ensure eshell
+    :config
+    (add-to-list 'eshell-visual-commands "ssh")
+    (add-to-list 'eshell-visual-commands "tail"))
+  )
 
 ;; exec-path-from-shell: consistent with shell in Mac OS X
 ;; the current launcher em from .bashrc can let emacs inherit correct PATH
@@ -534,11 +534,13 @@
 
 (use-package flycheck
   :defer t
+  :ensure t
   :init (add-hook 'after-init-hook 'global-flycheck-mode))
 
 
 (use-package company
   :defer t
+  :ensure t
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
   (setq company-idle-delay 0)
@@ -801,19 +803,19 @@
 ;; LaTeX insert item        C-c C-j
 
 
-(defun my-latex-setup ()
-  "To be set as mode hook for latex and org modes."
-  (setq-local company-backends
-              (append '((company-math-symbols-latex company-latex-commands))
-                      company-backends)))
-
 (use-package company-math
   :defer t
   :init
   (add-hook 'org-mode-hook 'my-latex-setup)
   (add-hook 'TeX-mode-hook 'my-latex-setup)
   :config
-  (add-to-list 'company-backends 'company-math-symbols-unicode))
+  (add-to-list 'company-backends 'company-math-symbols-unicode)
+  (defun my-latex-setup ()
+    "To be set as mode hook for latex and org modes."
+    (setq-local company-backends
+                (append '((company-math-symbols-latex company-latex-commands))
+                        company-backends)))
+  )
 
 
 ;;; yaml mode
@@ -845,18 +847,28 @@
 ;;; emacs theme and modeline
 
 ;; allow command line switches to choose startup theme
-(cond ((member "-dark" command-line-args)
+(defvar my-theme-dark
+  (expand-file-name "theme-dark.el" user-emacs-directory))
+(defvar my-theme-light
+  (expand-file-name "theme-light.el" user-emacs-directory))
+(defvar my-theme-modern
+  (expand-file-name "theme-modern.el" user-emacs-directory))
+(cond ((and (member "-dark" command-line-args)
+            (file-exists-p my-theme-dark))
        (message "Loading dark theme ...")
-       (load-file (expand-file-name "theme-dark.el" user-emacs-directory)))
-      ((member "-light" command-line-args)
+       (load-file my-theme-dark))
+      ((and (member "-light" command-line-args)
+            (file-exists-p my-theme-light))
        (message "Loading light theme ...")
-       (load-file (expand-file-name "theme-light.el" user-emacs-directory)))
-      ((member "-modern" command-line-args)
+       (load-file my-theme-light))
+      ((and (member "-modern" command-line-args)
+            (file-exists-p my-theme-modern))
        (message "Loading modern theme ...")
-       (load-file (expand-file-name "theme-modern.el" user-emacs-directory)))
-      (window-system                    ;by default use dark theme
+       (load-file my-theme-modern))
+      ((and window-system
+            (file-exists-p my-theme-dark)) ;by default use dark theme
        (message "Loading dark theme ...")
-       (load-file (expand-file-name "theme-dark.el" user-emacs-directory)))
+       (load-file my-theme-dark))
       (t
        (load-theme 'tango-dark t)))
 (defun my-themes (_theme)
