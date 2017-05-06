@@ -127,11 +127,9 @@
 ;; for window
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-(if (not window-system)
-    ;; terminal
-    (menu-bar-mode -1)
-
-  ;; gui
+(unless (memq window-system '(mac ns))
+  (menu-bar-mode -1))
+(when window-system
   (setq frame-title-format "%b")
   ;; set font
   (cond
@@ -243,7 +241,7 @@
   (setq ediff-split-window-function 'split-window-horizontally
         ediff-window-setup-function 'ediff-setup-windows-plain)
   ;; create a new frame for ediff
-  (add-hook 'ediff-before-setup-hook 'new-frame)
+  (add-hook 'ediff-before-setup-hook 'make-frame)
   (add-hook 'ediff-quit-hook 'delete-frame))
 
 
@@ -299,6 +297,18 @@
   :config (setq neo-theme (if window-system 'icons 'arrow)))
 
 
+;;; ag (silver searcher)
+(use-package ag
+  :defer t
+  :commands ag)
+
+
+;;; quickrun
+(use-package quickrun
+  :defer t
+  :commands quickrun)
+
+
 ;; tramp eshell: respect $PATH on remote host
 (use-package tramp
   :defer t
@@ -341,13 +351,8 @@
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
-
 ;; C-c C-o: org-open-at-point
 
-
-;;--------------------------;;
-;;; convenience and themes ;;;
-;;--------------------------;;
 
 ;;; enable interactively do things (ido)
 (require 'ido)
@@ -475,7 +480,7 @@
 ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this)
 
 
-;; highlight TODO/FIXME
+;;; highlight TODO/FIXME
 (use-package fic-mode
   :defer t
   :init (add-hook 'prog-mode-hook 'fic-mode)
@@ -483,83 +488,12 @@
   (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME" "XXX")))
 
 
-;; emacs themes
-;; https://github.com/bbatsov/solarized-emacs
-;;; solarized theme by bbatsov
-(use-package solarized-theme
-  :defer t
-  :if window-system
-  :init
-  (setq x-underline-at-descent-line t)
-  (setq solarized-high-contrast-mode-line t)
-  (setq solarized-distinct-fringe-background t)
-  (setq solarized-distinct-doc-face t)
-  (setq solarized-use-less-bold t)
-  (setq solarized-use-more-italic t)
-  (setq solarized-use-variable-pitch t)
-  (setq solarized-emphasize-indicators t)
-  (load-theme 'solarized-dark t))
-;; when in terminal
-(unless window-system
-  (load-theme 'tango-dark t))
-
-;;; modeline
-
-;;; spaceline
-;; depends on powerline
-(use-package spaceline-config
-  :config
-  ;; mac specific, see https://github.com/milkypostman/powerline/issues/54
-  (when (eq system-type 'darwin)
-    (setq ns-use-srgb-colorspace nil))
-  ;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
-  ;; works best with dark themes
-  (set-face-attribute 'mode-line nil
-                      :underline nil
-                      :overline nil
-                      :foreground "#fdf6e3"
-                      :background "#2aa198"
-                      :box nil)
-  (set-face-attribute 'mode-line-inactive nil
-                      :underline nil
-                      :overline nil
-                      :foreground "#fdf6e3"
-                      :background "#1a655f"
-                      :box nil)
-  (setq powerline-default-separator (if window-system 'wave 'bar))
-  ;; (declare-function doc-view-current-page 'doc-view)
-  ;; (declare-function doc-view-last-page-number 'doc-view)
-  ;; (defun spaceline--docview-page-number ()
-  ;;   "Display page number in doc-view mode on spaceline."
-  ;;   (format "(%d/%d)"
-  ;;           (eval `(doc-view-current-page))
-  ;;           (doc-view-last-page-number)))
-  ;; (spaceline-define-segment line-column
-  ;;   "The current line and column numbers, or `(current page/number of pages)`
-  ;; in pdf-view mode (enabled by the `pdf-tools' package) or doc-view mode."
-  ;;   (cond ((eq 'pdf-view-mode major-mode) (spaceline--pdfview-page-number))
-  ;;         ((eq 'doc-view-mode major-mode) (spaceline--docview-page-number))
-  ;;         (t "%l:%2c")))
-  (spaceline-emacs-theme)
-  (spaceline-toggle-flycheck-error-off)
-  (spaceline-toggle-flycheck-warning-off))
-
-
 ;;; YASnippet
-;; (when (require 'yasnippet nil t)
-;;   ;; (require 'yasnippet-bundle)
-;;   ;; set snippet directory
-;;   (setq yas-snippet-dirs "~/.emacs.d/snippets/yasnippet-snippets")
-;;   ;; global
-;;   ;; (yas-global-mode 1)
-;;   ;; minor
-;;   (yas-reload-all)
-;;   (add-hook 'prog-mode-hook #'yas-minor-mode))
 (use-package yasnippet
   :defer t)
 
 
-;; async compilation of melpa package
+;;; async compilation of melpa package
 (use-package async-bytecomp
   :defer t
   :init
@@ -579,7 +513,6 @@
   :init
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
   ;; (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-  :config
   ;; (global-diff-hl-mode 1)
   )
 
@@ -606,19 +539,6 @@
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
   (setq company-idle-delay 0)
-  ;; TODO : move these to each individual package configs
-  (add-to-list 'company-backends '(
-                                   ;; company-irony
-                                   ;; company-irony-c-headers
-                                   ;; merlin-company-backend
-                                   company-robe
-                                   ;; math
-                                   company-math-symbols-unicode
-                                   company-math-symbols-latex
-                                   company-latex-commands
-                                   ;; company-tern
-                                   ;; company-ansible
-                                   ))
   ;; :diminish company-mode
   )
 (use-package company-dabbrev
@@ -644,10 +564,8 @@
     :init
     (setq gdb-many-windows t
           gdb-show-main t)))
-;; subword mode, treat CamelCase as 2 words
-;; (add-hook 'c++-mode-hook 'subword-mode)
 
-;;; irony-mode, irony-eldoc, company-irony
+;;; irony-mode, irony-eldoc, company-irony, flycheck-irony
 ;; always use clang as compiler: brew install llvm --with-clang
 ;; install-server compilation flags:
 ;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX\=/Users/yxy/.emacs.d/irony/ /Users/yxy/.emacs.d/elpa/irony-{latest}/server && cmake --build . --use-stderr --config Release --target install
@@ -869,11 +787,24 @@
         TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
         TeX-source-correlate-start-server t)
   )
-
 ;; LaTeX compile   C-c C-a
 ;; LaTeX math mode C-c ~
 ;; LaTeX insert environment C-c C-e
 ;; LaTeX insert item        C-c C-j
+
+
+(defun my-latex-setup ()
+  "To be set as mode hook for latex and org modes."
+  (setq-local company-backends
+              (append '((company-math-symbols-latex company-latex-commands))
+                      company-backends)))
+
+(use-package company-math
+  :defer t
+  :init
+  (add-hook 'org-mode-hook 'my-latex-setup)
+  (add-hook 'TeX-mode-hook 'my-latex-setup)
+  (add-to-list 'company-backends 'company-math-symbols-unicode))
 
 
 ;;; yaml mode
@@ -902,8 +833,32 @@
   :mode "\\.gp\\'")
 
 
+;;; emacs theme and modeline
+
+;; allow command line switches to choose startup theme
+(cond ((member "-dark" command-line-args)
+       (message "Loading dark theme ...")
+       (load-file (expand-file-name "theme-dark.el" user-emacs-directory)))
+      ((member "-light" command-line-args)
+       (message "Loading light theme ...")
+       (load-file (expand-file-name "theme-light.el" user-emacs-directory)))
+      ((member "-modern" command-line-args)
+       (message "Loading modern theme ...")
+       (load-file (expand-file-name "theme-modern.el" user-emacs-directory)))
+      (window-system                    ;by default use dark theme
+       (message "Loading dark theme ...")
+       (load-file (expand-file-name "theme-dark.el" user-emacs-directory)))
+      (t
+       (load-theme 'tango-dark t)))
+(defun my-themes (_theme)
+  "Command line switch placeholder.")
+(add-to-list 'command-switch-alist '("dark" . my-themes))
+(add-to-list 'command-switch-alist '("light" . my-themes))
+(add-to-list 'command-switch-alist '("modern" . my-themes))
+
+
 ;; custom file load at last
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
 

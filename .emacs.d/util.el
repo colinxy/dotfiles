@@ -1,3 +1,8 @@
+;;; util.el --- utility functions and unused code
+
+;;; Commentary:
+
+;;; Code:
 
 (defun my-file-to-string (file)
   "Read all lines of FILE into string."
@@ -25,7 +30,7 @@
 ;; C/C++ #if 0 comment
 ;; http://stackoverflow.com/q/4549015/5478848
 (defun my-c-mode-font-lock-if0 (limit)
-  "Show directive #if 0 as comment."
+  "Show directive #if 0 as comment.  LIMIT."
   (save-restriction
     (widen)
     (save-excursion
