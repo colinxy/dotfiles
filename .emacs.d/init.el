@@ -306,7 +306,10 @@
 (use-package neotree
   :defer t
   :bind ("C-x C-d" . neotree-toggle)
-  :config (setq neo-theme (if window-system 'icons 'arrow)))
+  :config
+  (setq neo-smart-open t)
+  (setq neo-autorefresh nil)
+  (setq neo-theme (if window-system 'icons 'arrow)))
 
 
 ;;; ag (silver searcher)

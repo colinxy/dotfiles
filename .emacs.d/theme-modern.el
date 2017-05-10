@@ -22,3 +22,6 @@
         org-fontify-done-headline t
         org-fontify-quote-and-verse-blocks t)
   (load-theme 'doom-one t))
+
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(add-hook 'after-init-hook 'neotree-toggle)
