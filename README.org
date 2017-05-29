@@ -103,6 +103,18 @@ When trying to run a tool only under python 2/3, use the following.
 #+END_SRC
 
 
+** Pyenv
+
+#+BEGIN_SRC sh
+  apt-get build-dep python3
+  # install pyenv
+  # curl: from github
+  export PATH="/root/.pyenv/bin:$PATH"
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
+#+END_SRC
+
+
 * C/C++
 
 ** gdb-dashboard
@@ -254,5 +266,27 @@ amazing c++ documentation, from https://github.com/jeaye/stdman
 
   brew install shellcheck
   apt-get install shellcheck
+
+#+END_SRC
+
+
+* Ruby
+
+#+BEGIN_SRC sh
+
+  gem install pry jekyll
+
+#+END_SRC
+
+* Linux (mac)
+
+** ip command
+
+For mac, emulate =ip= from Linux
+
+#+BEGIN_SRC sh
+
+  brew tap brona/iproute2mac
+  brew install iproute2mac
 
 #+END_SRC

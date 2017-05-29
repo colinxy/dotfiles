@@ -71,6 +71,8 @@
 (global-unset-key (kbd "C-o"))
 (setq outline-minor-mode-prefix (kbd "C-o"))
 (global-unset-key (kbd "C-t"))
+;; (global-unset-key (kbd "M-v"))
+;; (global-set-key (kbd "C-S-v") 'scroll-down-command)
 ;; (global-unset-key (kbd "C-x C-w"))
 (global-unset-key (kbd "M-)"))
 ;; C-w is only enabled when a region is selected
@@ -142,7 +144,7 @@
                         :font "DejaVu Sans Mono"))
    ((member "Monaco" (font-family-list))
     (set-face-attribute 'default nil
-                        :font "Monaco 14")))
+                        :font "Monaco 13")))
   ;; for Mac OS X >= 10.7
   ;; toggle-frame-maximized binded with M-<f10>
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -342,6 +344,7 @@
   (setq org-default-notes-file "~/org/notes.org")
   :config
   (setq org-src-fontify-natively t)
+  (setq org-fontify-whole-heading-line t)
   (setq org-src-tab-acts-natively t)
   (setq org-highlight-latex-and-related '(latex script entities))
   ;; If you set this variable to the symbol `{}', the braces are
@@ -369,11 +372,12 @@
 ;; C-c C-o: org-open-at-point
 
 
-;;; enable interactively do things (ido)
+;;; interactively do things (ido)
 (require 'ido)
 (ido-mode 1)
 (setq ido-enable-flex-matching t)
 (ido-everywhere t)
+(global-set-key (kbd "C-x C-v") 'ff-find-other-file)
 
 ;; maybe try ivy for a while ?
 ;; (ivy-mode 1)
@@ -403,8 +407,11 @@
 ;; M-_  C-?  (`undo-tree-redo')
 (use-package undo-tree
   :defer t
+  :diminish undo-tree-mode
   :init (global-undo-tree-mode)
-  :diminish undo-tree-mode)
+  :config
+  (setq undo-tree-visualizer-timestamps t)
+  (setq undo-tree-visualizer-diff t))
 
 
 (use-package doc-view
@@ -552,7 +559,7 @@
   :ensure t
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
-  (setq company-idle-delay 0)
+  (setq company-idle-delay 0.1)
   ;; :diminish company-mode
   )
 (use-package company-dabbrev
@@ -569,11 +576,7 @@
   (setq-default c-basic-offset 4
                 c-default-style "k&r")
   :config
-  (use-package c++-mode
-    :defer t
-    :init
-    ;; do not indent namespace
-    (c-set-offset 'innamespace [0]))
+  (c-set-offset 'innamespace [0])
   (use-package gdb-mi
     :defer t
     :init
@@ -583,7 +586,7 @@
 ;;; irony-mode, irony-eldoc, company-irony, flycheck-irony
 ;; always use clang as compiler: brew install llvm --with-clang
 ;; install-server compilation flags:
-;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX\=/Users/yxy/.emacs.d/irony/ /Users/yxy/.emacs.d/elpa/irony-{latest}/server && cmake --build . --use-stderr --config Release --target install
+;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX\=$HOME/.emacs.d/irony/ $HOME/.emacs.d/elpa/irony-{latest}/server && cmake --build . --use-stderr --config Release --target install
 ;; requires libclang
 (use-package irony
   :defer t
@@ -647,12 +650,13 @@
 
 
 ;;; Ruby
-;; robe-mode: code navigation
+;;; CURRENT SETUP BROKEN
 ;; inf-ruby:  repl integration
 ;; M-x inf-ruby (or C-c C-s) to start ruby process
+;; robe-mode: code navigation, completion
+;; M-x robe-start (after inf-ruby is running)
 ;; then C-c C-l to load current ruby file
 ;; (add-hook 'ruby-mode-hook 'subword-mode)
-;; (add-hook 'ruby-mode-hook 'eldoc-mode)
 (use-package ruby-mode
   :defer t
   :bind (:ruby-mode-map

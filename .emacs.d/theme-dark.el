@@ -45,19 +45,26 @@
                       :background "#1a655f"
                       :box nil)
   (setq powerline-default-separator (if window-system 'wave 'bar))
-  ;; (declare-function doc-view-current-page 'doc-view)
-  ;; (declare-function doc-view-last-page-number 'doc-view)
-  ;; (defun spaceline--docview-page-number ()
-  ;;   "Display page number in doc-view mode on spaceline."
-  ;;   (format "(%d/%d)"
-  ;;           (eval `(doc-view-current-page))
-  ;;           (doc-view-last-page-number)))
-  ;; (spaceline-define-segment line-column
-  ;;   "The current line and column numbers, or `(current page/number of pages)`
-  ;; in pdf-view mode (enabled by the `pdf-tools' package) or doc-view mode."
-  ;;   (cond ((eq 'pdf-view-mode major-mode) (spaceline--pdfview-page-number))
-  ;;         ((eq 'doc-view-mode major-mode) (spaceline--docview-page-number))
-  ;;         (t "%l:%2c")))
+
+  ;; adding page number to line-column segment
+  (declare-function doc-view-current-page 'doc-view)
+  (declare-function doc-view-last-page-number 'doc-view)
+  (defun spaceline--docview-page-number ()
+    "Display page number in doc-view mode on spaceline."
+    (format "(%d/%d)"
+            (eval `(doc-view-current-page))
+            (doc-view-last-page-number)))
+  (spaceline-define-segment line-column
+    "The current line and column numbers, or `(current page/number of pages)`
+  in pdf-view mode (enabled by the `pdf-tools' package) or doc-view mode."
+    (cond ((eq 'pdf-view-mode major-mode) (spaceline--pdfview-page-number))
+          ((eq 'doc-view-mode major-mode) (spaceline--docview-page-number))
+          (t "%l:%2c")))
+
   (spaceline-emacs-theme)
-  (spaceline-toggle-flycheck-error-off)
-  (spaceline-toggle-flycheck-warning-off))
+
+  (spaceline-toggle-buffer-size-off)
+  ;; (spaceline-toggle-minor-modes-off)
+  ;; (spaceline-toggle-flycheck-error-off)
+  ;; (spaceline-toggle-flycheck-warning-off)
+  )
