@@ -504,7 +504,7 @@
   :defer t
   :init (add-hook 'prog-mode-hook 'fic-mode)
   :config
-  (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "CHECKME" "XXX")))
+  (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "XXX")))
 
 
 ;;; YASnippet

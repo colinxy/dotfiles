@@ -107,8 +107,17 @@ alias serve='python3 -m http.server --bind 127.0.0.1'
 export IPv4='[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
 # for use with extended regex (grep -E)
 export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
+# useful curl switches
+# curl -svo /dev/null <url>
+# -s : silent, useful when piping output
+# -i : include header in reponse
+# -o : output to file
+# -I : HEAD
+# -L : follow redirect
+# -v : verbose
+# -w : -w "%{http_code} %{content_type}\n"
 
-# network
+# networking
 # alias dig='dig +noall +answer'  # DNS
 # understand dns lookup process: +trace
 # whois
@@ -124,7 +133,7 @@ tcpconn() {
     local ip='127.0.0.1'
     local port=80
 
-    if [[ "$1" =~ $IPV4_E ]]; then
+    if [[ "$1" =~ $IPv4_E ]]; then
         ip=$1
         [ ! -z "$2" ] && port=$2
     elif [[ "$1" =~ ^[0-9]{1,6}$ ]]; then
@@ -135,11 +144,19 @@ tcpconn() {
 
     echo "exec 6<>/dev/tcp/$ip/$port"
     exec 6<>"/dev/tcp/$ip/$port" &&
-        echo "$port listening" || echo "$port not listening"
+        echo "$ip:$port listening" || echo "$ip:$port NOT listening"
     # send http request
-    # echo -e "GET / HTTP/1.0\n" >&6 && cat <&6
+    # echo -ne "GET / HTTP/1.0\r\n" >&6 && cat <&6
     exec 6>&- # close output connection
     exec 6<&- # close input connection
+}
+# ssl certificates
+# https://serverfault.com/questions/661978/displaying-a-remote-ssl-certificate-details-using-cli-tools
+showcert() {
+    local host="$1"
+    local port="${2:-443}"
+    : | openssl s_client -showcerts -servername "$host" -connect "$host":"$port" 2>/dev/null |\
+        openssl x509 -inform pem -noout -text
 }
 
 # disk usage

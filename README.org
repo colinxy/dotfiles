@@ -109,7 +109,7 @@ When trying to run a tool only under python 2/3, use the following.
   apt-get build-dep python3
   # install pyenv
   # curl: from github
-  export PATH="/root/.pyenv/bin:$PATH"
+  export PATH="$HOME/.pyenv/bin:$PATH"
   eval "$(pyenv init -)"
   eval "$(pyenv virtualenv-init -)"
 #+END_SRC
@@ -274,9 +274,10 @@ amazing c++ documentation, from https://github.com/jeaye/stdman
 
 #+BEGIN_SRC sh
 
-  gem install pry jekyll
+  gem install pry robocop jekyll
 
 #+END_SRC
+
 
 * Linux (mac)
 
