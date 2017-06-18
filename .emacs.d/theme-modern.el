@@ -1,4 +1,4 @@
-;;; theme-dark.el --- load dark theme
+;;; theme-modern.el --- load modern theme
 
 ;;; Commentary:
 ;;
@@ -7,21 +7,23 @@
 
 (use-package doom-themes
   :init
-  (add-hook 'find-file-hook 'doom-buffer-mode-maybe)
-  (add-hook 'after-revert-hook 'doom-buffer-mode-maybe)
-  (add-hook 'ediff-prepare-buffer-hook 'doom-buffer-mode)
-  (add-hook 'minibuffer-setup-hook 'doom-brighten-minibuffer)
+  (doom-themes-visual-bell-config)
+  (use-package solaire-mode
+    :init
+    (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
+    (add-hook 'after-revert-hook #'turn-on-solaire-mode)
+    (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
+    (add-hook 'ediff-prepare-buffer-hook #'solaire-mode))
+
   ;; neotree integration requires all-the-icons
   (use-package all-the-icons)
   (doom-themes-neotree-config)
-  ;; enable global nlinum
-  (use-package nlinum
-    :init (global-nlinum-mode))
-  (doom-themes-nlinum-config)
-  (setq org-fontify-whole-heading-line t
-        org-fontify-done-headline t
-        org-fontify-quote-and-verse-blocks t)
-  (load-theme 'doom-one t))
+  (load-theme 'doom-vibrant t))
+
+;; enable global nlinum
+(use-package nlinum
+  :init (global-nlinum-mode)
+  :config (setq nlinum-highlight-current-line t))
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (add-hook 'after-init-hook 'neotree-toggle)

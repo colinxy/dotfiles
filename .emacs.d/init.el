@@ -238,6 +238,9 @@
 ;; compile
 (global-set-key (kbd "M-g M-c") 'compile)
 
+;; word count
+(global-set-key (kbd "M-s M-c") 'count-words)
+
 ;;; ediff
 (use-package ediff
   :defer t
@@ -333,6 +336,10 @@
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 
+(use-package logview
+  :defer t)
+
+
 (use-package org
   :defer t
   :bind (("C-c l" . org-store-link)
@@ -350,6 +357,7 @@
   ;; If you set this variable to the symbol `{}', the braces are
   ;; *required* in order to trigger interpretations as sub/superscript.
   (setq org-use-sub-superscripts '{})
+  (setq org-support-shift-select t)
   ;; (setq org-capture-templates '())
   )
 (use-package ox-latex                   ;export to latex

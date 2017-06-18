@@ -1,4 +1,4 @@
-;;; theme-dark.el --- load dark theme
+;;; theme-light.el --- load light theme
 
 ;;; Commentary:
 ;;
