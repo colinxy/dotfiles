@@ -24,7 +24,8 @@ file.
 
 #+END_SRC
 
-To launch GUI emacs, add the following file =emacs= to somewhere in =PATH=
+To launch GUI emacs, add the following file =emacs= to somewhere in =PATH=,
+and make sure executable bit is on
 
 #+BEGIN_SRC bash
 
@@ -288,6 +289,24 @@ amazing c++ documentation, from https://github.com/jeaye/stdman
      }
 
    #+END_SRC
+
+
+* Bash Powerline
+
+#+BEGIN_SRC sh
+
+  pip install powerline-status
+
+#+END_SRC
+
+more stuff to do
+ - http://powerline.readthedocs.io/en/master/usage/shell-prompts.html#bash-prompt
+ - fonts
+ - http://powerline.readthedocs.io/en/master/configuration.html#quick-setup-guide
+ - potiential problem:
+   - exit code, git status not showing up
+     - add =~/.config/powerline/config.json=
+     - set =shell.theme = "default_leftonly"=
 
 
 * Shell Scripting
