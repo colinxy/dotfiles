@@ -15,6 +15,24 @@ following line and restart emacs.
 On an environment with limited needs, use =.emacs.min= as config
 file.
 
+** Emacs on Mac
+
+#+BEGIN_SRC sh
+
+  brew tap railwaycat/emacsmacport
+  brew install emacs-mac --with-gnutls --with-imagemagick --with-modules --with-xml2 --with-modern-icon
+
+#+END_SRC
+
+To launch GUI emacs, add the following file =emacs= to somewhere in =PATH=
+
+#+BEGIN_SRC bash
+
+  #!/bin/bash
+  exec /usr/local/opt/emacs-mac/Emacs.app/Contents/MacOS/Emacs "$@"
+
+#+END_SRC
+
 
 * Python
 
