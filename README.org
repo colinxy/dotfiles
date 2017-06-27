@@ -41,6 +41,20 @@ use =--user= if no admin privilege
 
 #+END_SRC
 
+*** Add config file and environment variable to silence warning
+
+environment variable: =PIP_CONFIG_FILE=/Users/yxy/.config/pip/pip.conf=
+
+#+BEGIN_SRC conf
+
+  [global]
+  timeout=3
+
+  [list]
+  format=columns
+
+#+END_SRC
+
 
 ** Additional python package for emacs elpy to work properly
 

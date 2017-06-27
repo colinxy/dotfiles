@@ -276,6 +276,12 @@
              (ediff-files current-file other-file)))
           (t (message "Mark no more than 3 files to ediff")))))
 
+(defun my-dired-find-file-dwim ()
+  "TODO : Find or create file from current directory."
+  (interactive)
+  (let ((default-directory (dired-current-directory))) ;use dynamic scoping
+    (find-file)))
+
 (use-package dired
   :defer t
   :ensure nil
@@ -284,6 +290,7 @@
          ("C-s" . dired-isearch-filenames)
          ("C-M-s" . dired-isearch-filenames-regexp)
          ("=" . my-dired-ediff-marked-files)
+         ("e" . my-dired-find-file-dwim)
          ;; needs dired+
          ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
          )
