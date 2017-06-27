@@ -144,7 +144,7 @@
                         :font "DejaVu Sans Mono"))
    ((member "Monaco" (font-family-list))
     (set-face-attribute 'default nil
-                        :font "Monaco 13")))
+                        :font "Monaco 14")))
   ;; for Mac OS X >= 10.7
   ;; toggle-frame-maximized binded with M-<f10>
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
