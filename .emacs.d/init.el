@@ -84,7 +84,6 @@
 (global-set-key (kbd "C-w") 'my-kill-region)
 
 ;; show line number and column number
-;; (global-linum-mode 1)  ; show line number of the left
 (column-number-mode t)
 (show-paren-mode 1)
 (when window-system
@@ -110,6 +109,7 @@
 (global-set-key (kbd "M-[") 'insert-pair)  ; insert []
 (global-set-key (kbd "C-{") 'insert-pair)  ; insert {}
 (global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
+(global-set-key (kbd "M-'") 'insert-pair)  ; insert ''
 
 ;; upcase/downcase region
 ;; (put 'upcase-region 'disabled nil)
@@ -388,14 +388,27 @@
 
 
 ;;; interactively do things (ido)
-(require 'ido)
-(ido-mode 1)
-(setq ido-enable-flex-matching t)
-(ido-everywhere t)
-(global-set-key (kbd "C-x C-v") 'ff-find-other-file)
+(use-package ido
+  :init (ido-mode 1)
+  :config
+  (setq ido-enable-flex-matching t)
+  (ido-everywhere t)
+  (global-set-key (kbd "C-x C-v") 'ff-find-other-file))
 
 ;; maybe try ivy for a while ?
 ;; (ivy-mode 1)
+
+
+;;; undo tree
+;; C-_  C-/  (`undo-tree-undo')
+;; M-_  C-?  (`undo-tree-redo')
+(use-package undo-tree
+  :defer t
+  :diminish undo-tree-mode
+  :init (global-undo-tree-mode)
+  :config
+  (setq undo-tree-visualizer-timestamps t)
+  (setq undo-tree-visualizer-diff t))
 
 
 ;; imenu
@@ -415,18 +428,6 @@
   :defer t
   :bind ("C-'" . imenu-list-smart-toggle)
   :config (setq imenu-list-focus-after-activation t))
-
-
-;;; undo tree
-;; C-_  C-/  (`undo-tree-undo')
-;; M-_  C-?  (`undo-tree-redo')
-(use-package undo-tree
-  :defer t
-  :diminish undo-tree-mode
-  :init (global-undo-tree-mode)
-  :config
-  (setq undo-tree-visualizer-timestamps t)
-  (setq undo-tree-visualizer-diff t))
 
 
 (use-package doc-view
