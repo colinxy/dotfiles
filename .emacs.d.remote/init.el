@@ -292,7 +292,22 @@
               c-default-style "k&r")
 
 ;; python
-(setq-default python-indent-offset 4)
+;; stolen from elpy
+(defun elpy-occur-definitions ()
+  "Display an occur buffer of all definitions in the current buffer.
+Also, switch to that buffer."
+  (interactive)
+  (let ((list-matching-lines-face nil))
+    (occur "^ *\\(def\\|class\\) "))
+  (let ((window (get-buffer-window "*Occur*")))
+    (if window
+        (select-window window)
+      (switch-to-buffer "*Occur*"))))
+(use-package python
+  :defer t
+  :init
+  (setq-default python-indent-offset 4)
+  :bind ("C-c C-o" . elpy-occur-definitions))
 
 
 ;; themes
