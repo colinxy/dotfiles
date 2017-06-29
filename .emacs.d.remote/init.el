@@ -68,7 +68,8 @@
 (column-number-mode t)
 (show-paren-mode 1)
 (global-hl-line-mode)
-(set-face-background 'hl-line "#222")
+(when (not window-system)
+  (set-face-attribute hl-line-face nil :underline t))
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
 ;; line-number-mode-hook
 
@@ -83,14 +84,10 @@
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'super))
 
-;; auto insert pair
+;; insert pair
 ;; M-( ; insert ()
-;; (global-set-key (kbd "M-(") 'insert-pair)
 (setq parens-require-spaces nil)
-(global-set-key (kbd "M-[") 'insert-pair)  ; insert []
-(global-set-key (kbd "C-{") 'insert-pair)  ; insert {}
-(global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
-(global-set-key (kbd "M-'") 'insert-pair)  ; insert ''
+(electric-pair-mode 1)
 
 ;; upcase/downcase region
 (global-set-key (kbd "M-u") 'upcase-dwim)
@@ -111,22 +108,27 @@
   (scroll-bar-mode -1))
 
 (when (not window-system)
-  (menu-bar-mode -1)
-  (load-theme 'wombat t))
+  (menu-bar-mode -1))
 
 ;; move between windows
-;; only works for gui
-(cond ((eq system-type 'darwin)
-       (global-unset-key (kbd "s-q"))
-       (global-set-key (kbd "s-<up>") 'windmove-up)
-       (global-set-key (kbd "s-<down>") 'windmove-down)
-       (global-set-key (kbd "s-<left>") 'windmove-left)
-       (global-set-key (kbd "s-<right>") 'windmove-right))
-      ((eq system-type 'gnu/linux)
-       (global-set-key (kbd "C-<up>") 'windmove-up)
-       (global-set-key (kbd "C-<down>") 'windmove-down)
-       (global-set-key (kbd "C-<left>") 'windmove-left)
-       (global-set-key (kbd "C-<right>") 'windmove-right)))
+(if (display-graphic-p)
+    (cond ((eq system-type 'darwin)
+           (global-unset-key (kbd "s-q"))
+           (global-set-key (kbd "s-<up>") 'windmove-up)
+           (global-set-key (kbd "s-<down>") 'windmove-down)
+           (global-set-key (kbd "s-<left>") 'windmove-left)
+           (global-set-key (kbd "s-<right>") 'windmove-right))
+          ((eq system-type 'gnu/linux)
+           (global-set-key (kbd "C-<up>") 'windmove-up)
+           (global-set-key (kbd "C-<down>") 'windmove-down)
+           (global-set-key (kbd "C-<left>") 'windmove-left)
+           (global-set-key (kbd "C-<right>") 'windmove-right)))
+  ;; terminal
+  (define-key input-decode-map "\e[1;2A" [S-up])
+  (define-key input-decode-map "\e[1;2B" [S-down])
+  (define-key input-decode-map "\e[1;2D" [S-left])
+  (define-key input-decode-map "\e[1;2C" [S-right])
+  (windmove-default-keybindings))
 
 
 ;; package.el
@@ -231,10 +233,13 @@
 
 (use-package which-func
   :defer t
-  :init (which-func-mode)
-  :config
-  (add-to-list 'which-func-modes 'cc-mode)
-  (add-to-list 'which-func-modes 'python-mode))
+  :init
+  (require 'which-func)         ;make sure which-func-modes is defined
+  (add-to-list 'which-func-modes 'c++-mode)
+  (add-to-list 'which-func-modes 'c-mode)
+  (add-to-list 'which-func-modes 'python-mode)
+  ;; runs after which-func-modes is determined
+  (which-func-mode))
 
 
 ;;; shell integration
@@ -288,6 +293,10 @@
 
 ;; python
 (setq-default python-indent-offset 4)
+
+
+;; themes
+(load-theme 'ample t)
 
 
 ;; custom file load at last

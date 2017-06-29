@@ -86,6 +86,7 @@
 ;; show line number and column number
 (column-number-mode t)
 (show-paren-mode 1)
+;; (setq show-paren-style 'expression)
 (when window-system
   (global-hl-line-mode))
 ;; (setq line-number-display-limit-width 5) ; line number in mode line

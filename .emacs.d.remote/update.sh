@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 dotfiles_root=$(git rev-parse --show-toplevel)
 elpa="$dotfiles_root/.emacs.d/elpa"
 remote_elpa="$dotfiles_root/.emacs.d.remote/elpa"
@@ -27,6 +29,8 @@ packages=(
     # imenu popup
     popup
     popup-imenu
+    # theme
+    ample-theme
 )
 
 [ -d "$elpa" ] || { echo "$elpa does not exist"; exit 1; }
