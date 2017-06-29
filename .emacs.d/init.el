@@ -86,9 +86,9 @@
 ;; show line number and column number
 (column-number-mode t)
 (show-paren-mode 1)
-;; (setq show-paren-style 'expression)
-(when window-system
-  (global-hl-line-mode))
+(global-hl-line-mode)
+(when (not window-system)
+  (set-face-attribute hl-line-face nil :underline t))
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
 ;; line-number-mode-hook
 
@@ -103,14 +103,10 @@
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'super))
 
-;; auto insert pair
+;; insert pair
 ;; M-( ; insert ()
-;; (global-set-key (kbd "M-(") 'insert-pair)
 (setq parens-require-spaces nil)
-(global-set-key (kbd "M-[") 'insert-pair)  ; insert []
-(global-set-key (kbd "C-{") 'insert-pair)  ; insert {}
-(global-set-key (kbd "M-\"") 'insert-pair) ; insert ""
-(global-set-key (kbd "M-'") 'insert-pair)  ; insert ''
+(electric-pair-mode 1)
 
 ;; upcase/downcase region
 ;; (put 'upcase-region 'disabled nil)
@@ -159,18 +155,24 @@
 ;; window management
 
 ;; move between windows
-;; only works for gui
-(cond ((eq system-type 'darwin)
-       (global-unset-key (kbd "s-q"))
-       (global-set-key (kbd "s-<up>") 'windmove-up)
-       (global-set-key (kbd "s-<down>") 'windmove-down)
-       (global-set-key (kbd "s-<left>") 'windmove-left)
-       (global-set-key (kbd "s-<right>") 'windmove-right))
-      ((eq system-type 'gnu/linux)
-       (global-set-key (kbd "C-<up>") 'windmove-up)
-       (global-set-key (kbd "C-<down>") 'windmove-down)
-       (global-set-key (kbd "C-<left>") 'windmove-left)
-       (global-set-key (kbd "C-<right>") 'windmove-right)))
+(if (display-graphic-p)
+    (cond ((eq system-type 'darwin)
+           (global-unset-key (kbd "s-q"))
+           (global-set-key (kbd "s-<up>") 'windmove-up)
+           (global-set-key (kbd "s-<down>") 'windmove-down)
+           (global-set-key (kbd "s-<left>") 'windmove-left)
+           (global-set-key (kbd "s-<right>") 'windmove-right))
+          ((eq system-type 'gnu/linux)
+           (global-set-key (kbd "C-<up>") 'windmove-up)
+           (global-set-key (kbd "C-<down>") 'windmove-down)
+           (global-set-key (kbd "C-<left>") 'windmove-left)
+           (global-set-key (kbd "C-<right>") 'windmove-right)))
+  ;; terminal
+  (define-key input-decode-map "\e[1;2A" [S-up])
+  (define-key input-decode-map "\e[1;2B" [S-down])
+  (define-key input-decode-map "\e[1;2D" [S-left])
+  (define-key input-decode-map "\e[1;2C" [S-right])
+  (windmove-default-keybindings))
 
 
 ;;-------------------;;
