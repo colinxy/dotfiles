@@ -197,11 +197,13 @@
 
 
 ;;; interactively do things (ido)
-(require 'ido)
-(ido-mode 1)
-(setq ido-enable-flex-matching t)
-(ido-everywhere t)
-(global-set-key (kbd "C-x C-v") 'ff-find-other-file)
+(use-package ido
+  :init (ido-mode 1)
+  :config
+  (setq ido-enable-flex-matching t)
+  (ido-everywhere t)
+  (global-set-key (kbd "C-x C-v") 'ff-find-other-file))
+
 
 ;;; undo tree
 ;; C-_  C-/  (`undo-tree-undo')
