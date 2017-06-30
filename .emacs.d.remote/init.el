@@ -295,6 +295,7 @@
 ;; stolen from elpy
 (defun elpy-occur-definitions ()
   "Display an occur buffer of all definitions in the current buffer.
+
 Also, switch to that buffer."
   (interactive)
   (let ((list-matching-lines-face nil))
