@@ -21,14 +21,16 @@ packages=(
     dired-hacks-utils
     dired-narrow
     dired-subtree
-    # flx ido
+    # flx-ido
     flx
     flx-ido
     # undo-tree
     undo-tree
-    # imenu popup
+    # imenu-popup
     popup
     popup-imenu
+    #
+    dumb-jump
     # theme
     ample-theme
 )

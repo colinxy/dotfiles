@@ -306,7 +306,8 @@ more stuff to do
  - potiential problem:
    - exit code, git status not showing up
      - add =~/.config/powerline/config.json=
-     - set =shell.theme = "default_leftonly"=
+     - set
+         : shell.theme = "default_leftonly"
 
 
 * Shell Scripting

@@ -900,7 +900,9 @@
        (message "Loading dark theme ...")
        (load-file my-theme-dark))
       (t
-       (load-theme 'tango-dark t)))
+       (use-package ample-theme
+         :init
+         (load-theme 'tango-dark t))))
 (defun my-themes (_theme)
   "Command line switch placeholder.")
 (add-to-list 'command-switch-alist '("dark" . my-themes))
