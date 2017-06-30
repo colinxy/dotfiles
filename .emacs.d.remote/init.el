@@ -287,6 +287,19 @@
   :config (setq company-dabbrev-downcase nil))
 
 
+;; dumb-jump: navigation
+(use-package dumb-jump
+  :defer t
+  :bind (("M-s M-." . dumb-jump-go)
+         ("M-s M-," . dumb-jump-back)
+         ("M-s M-o" . dumb-jump-go-other-window)
+         ("M-s M-h" . dumb-jump-quick-look))
+  :config
+  (setq dumb-jump-default-project ".")  ;default project root dir
+  ;; (setq dumb-jump-selector 'ivy)
+  )
+
+
 ;; c/c++
 (setq-default c-basic-offset 4
               c-default-style "k&r")

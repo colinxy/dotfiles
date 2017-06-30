@@ -557,10 +557,10 @@
 ;;; dumb-jump: jump to definition based on regexp
 (use-package dumb-jump
   :defer t
-  :bind (("M-g M-." . dumb-jump-go)
-         ("M-g M-," . dumb-jump-back)
-         ("M-g M-o" . dumb-jump-go-other-window)
-         ("M-g M-h" . dumb-jump-quick-look))
+  :bind (("M-s M-." . dumb-jump-go)
+         ("M-s M-," . dumb-jump-back)
+         ("M-s M-o" . dumb-jump-go-other-window)
+         ("M-s M-h" . dumb-jump-quick-look))
   :config
   (setq dumb-jump-default-project ".")  ;default project root dir
   ;; (setq dumb-jump-selector 'ivy)
