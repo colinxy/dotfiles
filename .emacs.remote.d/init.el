@@ -6,6 +6,12 @@
 ;; self contained Emacs config (with elpa dir)
 ;; should use together with tmux on remote machines
 ;;
+;; better to use with Emacs daemon, add the following to ~/.bashrc
+;; export ALTERNATE_EDITOR=''
+;; alias emacs='emacsclient -t'
+;; alias e=emacs
+;; alias kill-emacs="emacsclient -e '(save-buffers-kill-emacs)'"
+;;
 ;; Emacs 24+ recommended
 
 ;;; Code:
@@ -70,8 +76,6 @@
 (global-hl-line-mode)
 (when (not window-system)
   (set-face-attribute hl-line-face nil :underline t))
-;; (setq line-number-display-limit-width 5) ; line number in mode line
-;; line-number-mode-hook
 
 ;; use DEL to delete selected text
 (delete-selection-mode 1)
@@ -287,7 +291,7 @@
   :config (setq company-dabbrev-downcase nil))
 
 
-;; dumb-jump: navigation
+;; dumb-jump: navigation (most effective for locating local variables)
 (use-package dumb-jump
   :defer t
   :bind (("M-s M-." . dumb-jump-go)
@@ -298,6 +302,13 @@
   (setq dumb-jump-default-project ".")  ;default project root dir
   ;; (setq dumb-jump-selector 'ivy)
   )
+;; add file .dumbjump to current directory of file
+
+
+(use-package flycheck
+  :defer t
+  :ensure t
+  :init (add-hook 'after-init-hook 'global-flycheck-mode))
 
 
 ;; c/c++

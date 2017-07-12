@@ -4,7 +4,7 @@ set -e
 
 dotfiles_root=$(git rev-parse --show-toplevel)
 elpa="$dotfiles_root/.emacs.d/elpa"
-remote_elpa="$dotfiles_root/.emacs.d.remote/elpa"
+remote_elpa="$dotfiles_root/.emacs.remote.d/elpa"
 
 packages=(
     # common dependency
