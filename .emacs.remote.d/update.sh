@@ -39,6 +39,8 @@ packages=(
 [ -d "$remote_elpa" ] || mkdir -p "$remote_elpa"
 
 for p in "${packages[@]}"; do
+    rm -r "$remote_elpa/$p-"[0-9]* || true
+
     echo "$elpa/$p-"[0-9]*
     cp -R "$elpa/$p-"[0-9]* "$remote_elpa"
 done
