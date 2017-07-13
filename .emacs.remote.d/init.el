@@ -328,6 +328,7 @@ Also, switch to that buffer."
     (if window
         (select-window window)
       (switch-to-buffer "*Occur*"))))
+(add-hook 'occur-hook 'occur-rename-buffer)
 (use-package python
   :defer t
   :init
