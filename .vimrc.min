@@ -1,0 +1,26 @@
+syntax on
+
+" indentation
+set autoindent
+filetype plugin indent on
+
+" 4 space tab and use softtab
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
+" incremental highlight search
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set nowrapscan
+
+" Allow backspacing over everything in insert mode.
+set backspace=indent,eol,start
+
+" set foldenable
+
+" vim command completion style
+set wildmode=longest,list,full
+set wildmenu

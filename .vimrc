@@ -45,6 +45,8 @@ set tm=500
 nmap <C-v> :vsplit<CR>
 nmap <C-l> :wincmd l<CR>
 nmap <C-h> :wincmd h<CR>
+nmap <C-j> :wincmd j<CR>
+nmap <C-k> :wincmd k<CR>
 set mouse=nicr
 
 " set number
@@ -80,3 +82,7 @@ autocmd BufReadPost *
   \ if line("'\"") >= 1 && line("'\"") <= line("$") |
   \   exe "normal! g`\"" |
   \ endif
+
+" vim command completion style
+set wildmode=longest,list,full
+set wildmenu
