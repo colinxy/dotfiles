@@ -141,7 +141,7 @@
                         :font "DejaVu Sans Mono"))
    ((member "Monaco" (font-family-list))
     (set-face-attribute 'default nil
-                        :font "Monaco 14")))
+                        :font "Monaco 13")))
   ;; for Mac OS X >= 10.7
   ;; toggle-frame-maximized binded with M-<f10>
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -883,6 +883,8 @@
   (expand-file-name "theme-light.el" user-emacs-directory))
 (defvar my-theme-modern
   (expand-file-name "theme-modern.el" user-emacs-directory))
+(defvar my-theme-terminal
+  (expand-file-name "theme-terminal.el" user-emacs-directory))
 (cond ((and (member "-dark" command-line-args)
             (file-exists-p my-theme-dark))
        (message "Loading dark theme ...")
@@ -899,10 +901,11 @@
             (file-exists-p my-theme-dark)) ;by default use dark theme
        (message "Loading dark theme ...")
        (load-file my-theme-dark))
+      ((file-exists-p my-theme-terminal)
+       (message "Loading terminal theme ...")
+       (load-file my-theme-terminal))
       (t
-       (use-package ample-theme
-         :init
-         (load-theme 'tango-dark t))))
+       (load-theme 'tango-dark t)))
 (defun my-themes (_theme)
   "Command line switch placeholder.")
 (add-to-list 'command-switch-alist '("dark" . my-themes))

@@ -40,14 +40,17 @@ set laststatus=2
 " let g:Powerline_symbols = 'fancy'
 
 
-imap jk <Esc>
-set tm=500
+"imap jk <Esc>  " use C-[
+"set tm=500
 nmap <C-v> :vsplit<CR>
 nmap <C-l> :wincmd l<CR>
 nmap <C-h> :wincmd h<CR>
 nmap <C-j> :wincmd j<CR>
 nmap <C-k> :wincmd k<CR>
 set mouse=nicr
+
+" reduce ESC delay
+set timeoutlen=1000 ttimeoutlen=10
 
 " set number
 
