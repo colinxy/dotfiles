@@ -280,11 +280,10 @@
 (use-package company
   :defer t
   :ensure t
+  :diminish company-mode
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
-  (setq company-idle-delay 0.1)
-  ;; :diminish company-mode
-  )
+  (setq company-idle-delay 0.1))
 (use-package company-dabbrev
   :defer t
   :ensure company
@@ -328,7 +327,7 @@ Also, switch to that buffer."
     (if window
         (select-window window)
       (switch-to-buffer "*Occur*"))))
-(add-hook 'occur-hook 'occur-rename-buffer)
+;; (add-hook 'occur-hook 'occur-rename-buffer)
 (use-package python
   :defer t
   :init
