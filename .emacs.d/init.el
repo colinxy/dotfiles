@@ -101,7 +101,9 @@
 ;; modifier key
 (when (eq system-type 'darwin)
   (setq mac-option-modifier 'meta)
-  (setq mac-command-modifier 'super))
+  (setq mac-command-modifier 'super)
+  (global-set-key (kbd "s-c") 'kill-ring-save)
+  (global-set-key (kbd "s-v") 'yank))
 
 ;; insert pair
 ;; M-( ; insert ()
@@ -119,6 +121,9 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 ;; final newline
 (setq require-final-newline t)
+
+;; vc
+(setq vc-follow-symlinks t)
 
 
 ;;----------------------;;

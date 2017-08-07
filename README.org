@@ -35,6 +35,27 @@ and make sure executable bit is on
 #+END_SRC
 
 
+* Tmux
+
+** on mac
+
+problems with copy/paste, opening graphical applications
+
+solution: https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard
+
+#+BEGIN_SRC sh
+
+  brew install reattach-to-user-namespace
+
+#+END_SRC
+
+#+BEGIN_SRC conf
+
+  if-shell 'test "$(uname -s)" = Darwin' 'set-option -g default-command "exec reattach-to-user-namespace -l $SHELL"'
+
+#+END_SRC
+
+
 * Python
 
 ** Install pip
@@ -62,7 +83,7 @@ use =--user= if no admin privilege
 
 *** Add config file and environment variable to silence warning
 
-environment variable: =PIP_CONFIG_FILE=/Users/yxy/.config/pip/pip.conf=
+environment variable: =PIP_CONFIG_FILE=$HOME/.config/pip/pip.conf=
 
 #+BEGIN_SRC conf
 
