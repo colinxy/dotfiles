@@ -34,6 +34,16 @@ and make sure executable bit is on
 
 #+END_SRC
 
+** Emacs in Terminal
+
+control sequence get pasted with =Command-v=
+
+bracketed paste mode https://cirw.in/blog/bracketed-paste
+
+https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard/issues/31
+
+=xclip-mode= solves the problem?
+
 
 * Tmux
 
@@ -364,3 +374,8 @@ For mac, emulate =ip= from Linux
   brew install iproute2mac
 
 #+END_SRC
+
+
+* Pastebin
+
+https://github.com/defunkt/gist

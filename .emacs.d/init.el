@@ -419,6 +419,11 @@
   (setq undo-tree-visualizer-diff t))
 
 
+;; clipboard problems
+(use-package xclip
+  :init (xclip-mode 1))
+
+
 ;; imenu
 (use-package imenu
   :defer t
