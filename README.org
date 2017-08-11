@@ -379,3 +379,35 @@ For mac, emulate =ip= from Linux
 * Pastebin
 
 https://github.com/defunkt/gist
+
+
+* IRC
+
+** ZNC bouncer
+
+#+BEGIN_SRC sh
+
+  DATADIR=/var/lib/znc
+
+  sudo apt install znc znc-dev
+  getent passwd znc || sudo useradd znc
+  mkdir -p $DATADIR && chown -R znc:znc $DATADIR
+  sudo -u znc znc --makeconf --datadir $DATADIR
+
+  git clone https://github.com/jpnurmi/znc-playback.git
+  cd znc-playback/ && znc-buildmod playback.cpp
+  mkdir -p $DATADIR/modules && mv playback.so $DATADIR/modules
+  chown -R znc:znc ~/.znc         # permission issue
+  # then follow instructions here to activate the playback module
+  # https://wiki.znc.in/Playback
+
+  # start znc as follows
+  sudo -u znc znc --datadir $DATADIR
+
+#+END_SRC
+
+reference: https://www.andrewstambrosky.com/2016/11/19/znc-ubuntu-1604/
+
+** circe (emacs)
+
+https://github.com/jorgenschaefer/circe/

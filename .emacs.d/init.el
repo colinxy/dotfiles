@@ -125,6 +125,15 @@
 ;; vc
 (setq vc-follow-symlinks t)
 
+;; isearch magic
+;; IN isearch-mode-map
+;; C-w   : isearch-yank-word-or-char
+;; C-M-w : isearch-del-char
+;; C-M-y : isearch-yank-char
+;; M-c   : isearch-toggle-case-fold
+;; M-s e : isearch-edit-string
+(define-key isearch-mode-map (kbd "C-d") 'isearch-forward-symbol-at-point)
+;; or M-s . outside of isearch mode
 
 ;;----------------------;;
 ;;; windows and moving ;;;
@@ -435,12 +444,6 @@
   :defer t
   :bind ("M-s M-i" . popup-imenu)
   :config (setq popup-imenu-style 'indent))
-
-;;; imenu-list
-(use-package imenu-list
-  :defer t
-  :bind ("C-'" . imenu-list-smart-toggle)
-  :config (setq imenu-list-focus-after-activation t))
 
 
 (use-package doc-view

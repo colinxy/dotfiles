@@ -103,6 +103,19 @@
 ;; final newline
 (setq require-final-newline t)
 
+;; vc
+(setq vc-follow-symlinks t)
+
+;; isearch magic
+;; IN isearch-mode-map
+;; C-w   : isearch-yank-word-or-char
+;; C-M-w : isearch-del-char
+;; C-M-y : isearch-yank-char
+;; M-c   : isearch-toggle-case-fold
+;; M-s e : isearch-edit-string
+(define-key isearch-mode-map (kbd "C-d") 'isearch-forward-symbol-at-point)
+;; or M-s . outside of isearch mode
+
 (setq split-width-threshold 150) ;split horizontally if at least <> columns
 
 ;; no tool bar, no scroll bar
