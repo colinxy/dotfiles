@@ -70,18 +70,28 @@
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
 (setq outline-minor-mode-prefix (kbd "C-o"))
-(global-unset-key (kbd "C-t"))
-;; (global-unset-key (kbd "M-v"))
-;; (global-set-key (kbd "C-S-v") 'scroll-down-command)
-;; (global-unset-key (kbd "C-x C-w"))
-(global-unset-key (kbd "M-)"))
-;; C-w is only enabled when a region is selected
-(defun my-kill-region ()
-  "Cuts only when a region is selected."
-  (interactive)
-  (when mark-active
-    (kill-region (region-beginning) (region-end))))
-(global-set-key (kbd "C-w") 'my-kill-region)
+;; (global-unset-key (kbd "M-)"))
+
+;; https://emacs.stackexchange.com/questions/2347/kill-or-copy-current-line-with-minimal-keystrokes
+;; C-w : kill current line
+(defun slick-cut (beg end)
+  "When called interactively with no active region, kill a single line instead.
+BEG END"
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-beginning-position 2)))))
+(advice-add 'kill-region :before #'slick-cut)
+;; M-w : copy current line
+(defun slick-copy (beg end)
+  "When called interactively with no active region, copy a single line instead.
+BEG END"
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (message "Copied line")
+     (list (line-beginning-position) (line-beginning-position 2)))))
+(advice-add 'kill-ring-save :before #'slick-copy)
 
 ;; show line number and column number
 (column-number-mode t)
@@ -94,6 +104,9 @@
 
 ;; use DEL to delete selected text
 (delete-selection-mode 1)
+
+;; kill the entire line (including the newline character)
+(setq kill-whole-line t)
 
 ;; consider CamelCase to be 2 words
 ;; subword minor mode, bind it to a mode hook
@@ -293,12 +306,6 @@
              (ediff-files current-file other-file)))
           (t (message "Mark no more than 3 files to ediff")))))
 
-(defun my-dired-find-file-dwim ()
-  "TODO : Find or create file from current directory."
-  (interactive)
-  (let ((default-directory (dired-current-directory))) ;use dynamic scoping
-    (find-file)))
-
 (use-package dired
   :defer t
   :ensure nil
@@ -307,7 +314,6 @@
          ("C-s" . dired-isearch-filenames)
          ("C-M-s" . dired-isearch-filenames-regexp)
          ("=" . my-dired-ediff-marked-files)
-         ("e" . my-dired-find-file-dwim)
          ;; needs dired+
          ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
          )
