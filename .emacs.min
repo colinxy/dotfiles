@@ -44,7 +44,7 @@
 ;; show prefix key in echo area quicker
 (setq echo-keystrokes 0.1)
 
-;; auto revert
+;; auto revert if file changes on disk
 (global-auto-revert-mode)
 
 ;; do not indent with tabs
@@ -54,14 +54,28 @@
 
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
-(global-unset-key (kbd "M-)"))
-;; C-w is only enabled when a region is selected
-(defun my-kill-region ()
-  "Cuts only when a region is selected."
-  (interactive)
-  (when mark-active
-    (kill-region (region-beginning) (region-end))))
-(global-set-key (kbd "C-w") 'my-kill-region)
+;; (global-unset-key (kbd "M-)"))
+
+;; https://emacs.stackexchange.com/questions/2347/kill-or-copy-current-line-with-minimal-keystrokes
+;; C-w : kill current line
+(defun slick-cut (beg end)
+  "When called interactively with no active region, kill a single line instead.
+BEG END"
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-beginning-position 2)))))
+(advice-add 'kill-region :before #'slick-cut)
+;; M-w : copy current line
+(defun slick-copy (beg end)
+  "When called interactively with no active region, copy a single line instead.
+BEG END"
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (message "Copied line")
+     (list (line-beginning-position) (line-beginning-position 2)))))
+(advice-add 'kill-ring-save :before #'slick-copy)
 
 (column-number-mode t)
 (show-paren-mode 1)
@@ -74,13 +88,18 @@
 ;; use DEL to delete selected text
 (delete-selection-mode 1)
 
+;; kill the entire line (including the newline character)
+(setq kill-whole-line t)
+
 ;; consider CamelCase to be 2 words
 ;; subword minor mode, bind it to a mode hook
 
 ;; modifier key
 (when (eq system-type 'darwin)
   (setq mac-option-modifier 'meta)
-  (setq mac-command-modifier 'super))
+  (setq mac-command-modifier 'super)
+  (global-set-key (kbd "s-c") 'kill-ring-save)
+  (global-set-key (kbd "s-v") 'yank))
 
 ;; auto insert pair
 ;; M-( ; insert ()
@@ -96,6 +115,19 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 ;; final newline
 (setq require-final-newline t)
+
+;; vc
+(setq vc-follow-symlinks t)
+
+;; isearch magic
+;; IN isearch-mode-map
+;; C-w   : isearch-yank-word-or-char
+;; C-M-w : isearch-del-char
+;; C-M-y : isearch-yank-char
+;; M-c   : isearch-toggle-case-fold
+;; M-s e : isearch-edit-string
+(define-key isearch-mode-map (kbd "C-d") 'isearch-forward-symbol-at-point)
+;; or M-s . outside of isearch mode
 
 (setq split-width-threshold 150) ;split horizontally if at least <> columns
 

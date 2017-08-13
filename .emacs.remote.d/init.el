@@ -52,7 +52,7 @@
 ;; show prefix key in echo area quicker
 (setq echo-keystrokes 0.1)
 
-;; auto revert
+;; auto revert if file changes on disk
 (global-auto-revert-mode)
 
 ;; do not indent with tabs
@@ -62,14 +62,28 @@
 
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
-(global-unset-key (kbd "M-)"))
-;; C-w is only enabled when a region is selected
-(defun my-kill-region ()
-  "Cuts only when a region is selected."
-  (interactive)
-  (when mark-active
-    (kill-region (region-beginning) (region-end))))
-(global-set-key (kbd "C-w") 'my-kill-region)
+;; (global-unset-key (kbd "M-)"))
+
+;; https://emacs.stackexchange.com/questions/2347/kill-or-copy-current-line-with-minimal-keystrokes
+;; C-w : kill current line
+(defun slick-cut (beg end)
+  "When called interactively with no active region, kill a single line instead.
+BEG END"
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-beginning-position 2)))))
+(advice-add 'kill-region :before #'slick-cut)
+;; M-w : copy current line
+(defun slick-copy (beg end)
+  "When called interactively with no active region, copy a single line instead.
+BEG END"
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (message "Copied line")
+     (list (line-beginning-position) (line-beginning-position 2)))))
+(advice-add 'kill-ring-save :before #'slick-copy)
 
 (column-number-mode t)
 (show-paren-mode 1)
@@ -80,6 +94,9 @@
 ;; use DEL to delete selected text
 (delete-selection-mode 1)
 
+;; kill the entire line (including the newline character)
+(setq kill-whole-line t)
+
 ;; consider CamelCase to be 2 words
 ;; subword minor mode, bind it to a mode hook
 
@@ -88,7 +105,7 @@
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'super))
 
-;; insert pair
+;; auto insert pair
 ;; M-( ; insert ()
 (setq parens-require-spaces nil)
 (electric-pair-mode 1)
@@ -198,6 +215,15 @@
   :config
   (setq dired-listing-switches "-alh")
   (setq dired-dwim-target t)
+  ;; useful when dired buffer contains subtree
+  (defun find-file-around (orig-find-file &rest args)
+    (if (eq major-mode 'dired-mode)
+        (let ((default-directory (dired-current-directory)))
+          (apply orig-find-file args))
+      (apply orig-find-file args)))
+  ;; tied with ido
+  (advice-add 'ido-find-file :around #'find-file-around)
+
   ;; BSD ls does not support --dired
   (use-package ls-lisp
     :ensure nil
@@ -257,37 +283,6 @@
   (add-to-list 'which-func-modes 'python-mode)
   ;; runs after which-func-modes is determined
   (which-func-mode))
-
-
-;;; shell integration
-;; M-x eshell
-;; M-x shell
-;; M-x term
-;; M-x ansi-term
-(use-package term
-  :defer t
-  :bind (("M-t" . ansi-term)
-         :map term-mode-map
-         ("M-p" . term-send-up)
-         ("M-n" . term-send-down)
-         :map term-raw-map
-         ("M-p" . term-send-up)
-         ("M-n" . term-send-down)
-         ("C-y" . term-paste)
-         ("M-(" . my-term-send-left-paren)
-         ("M-\"" . my-term-send-left-doublequote))
-  :config
-  (ansi-color-for-comint-mode-on)
-  (defun my-term-send-left-paren ()
-    (interactive)
-    (term-send-raw-string "()")
-    (term-send-left))
-  (defun my-term-send-left-doublequote ()
-    (interactive)
-    (term-send-raw-string "\"\"")
-    (term-send-left)))
-;; C-c C-j switch to line mode
-;; C-c C-k switch to char mode
 
 
 (use-package company

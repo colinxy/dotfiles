@@ -118,7 +118,7 @@ BEG END"
   (global-set-key (kbd "s-c") 'kill-ring-save)
   (global-set-key (kbd "s-v") 'yank))
 
-;; insert pair
+;; auto insert pair
 ;; M-( ; insert ()
 (setq parens-require-spaces nil)
 (electric-pair-mode 1)
@@ -604,11 +604,10 @@ BEG END"
 (use-package company
   :defer t
   :ensure t
+  ;; :diminish company-mode
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
-  (setq company-idle-delay 0.1)
-  ;; :diminish company-mode
-  )
+  (setq company-idle-delay 0.1))
 (use-package company-dabbrev
   :defer t
   :ensure company
