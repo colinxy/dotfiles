@@ -59,7 +59,7 @@
 ;; show prefix key in echo area quicker
 (setq echo-keystrokes 0.1)
 
-;; auto revert
+;; auto revert if file changes on disk
 (global-auto-revert-mode)
 
 ;; do not indent with tabs
@@ -320,6 +320,15 @@ BEG END"
   :config
   (setq dired-listing-switches "-alh")
   (setq dired-dwim-target t)
+  ;; useful when dired buffer contains subtree
+  (defun find-file-around (orig-find-file &rest args)
+    (if (eq major-mode 'dired-mode)
+        (let ((default-directory (dired-current-directory)))
+          (apply orig-find-file args))
+      (apply orig-find-file args)))
+  ;; tied with ido
+  (advice-add 'ido-find-file :around #'find-file-around)
+
   ;; BSD ls does not support --dired
   (use-package ls-lisp
     :ensure nil
