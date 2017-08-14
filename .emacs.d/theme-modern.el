@@ -18,7 +18,9 @@
   ;; neotree integration requires all-the-icons
   (use-package all-the-icons)
   (doom-themes-neotree-config)
-  (load-theme 'doom-vibrant t))
+  (doom-themes-org-config)
+
+  (load-theme 'doom-one t))
 
 ;; enable global nlinum
 (use-package nlinum

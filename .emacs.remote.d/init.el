@@ -292,6 +292,8 @@ BEG END"
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
   (setq company-idle-delay 0.1))
+;; company-dabbrev-code completes in code
+;; company-dabbrev completes in comments/strings
 (use-package company-dabbrev
   :defer t
   :ensure company
