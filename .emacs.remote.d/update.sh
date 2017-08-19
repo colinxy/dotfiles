@@ -29,8 +29,6 @@ packages=(
     # imenu-popup
     popup
     popup-imenu
-    #
-    dumb-jump
     # theme
     ample-theme
 )
@@ -44,3 +42,5 @@ for p in "${packages[@]}"; do
     echo "$elpa/$p-"[0-9]*
     cp -R "$elpa/$p-"[0-9]* "$remote_elpa"
 done
+
+echo "scp -r $remote_elpa dev:.emacs.d/elpa"
