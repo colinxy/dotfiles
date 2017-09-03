@@ -26,6 +26,9 @@ alias l='ls -CF'
 alias grep='grep --color=auto'
 alias more='more -R'
 alias less='less -R'
+alias les=less
+alias le=less
+alias lesss=less
 alias tree='tree -C'
 
 # programmable completion
