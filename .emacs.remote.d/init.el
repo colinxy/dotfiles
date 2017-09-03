@@ -175,7 +175,28 @@ BEG END"
 (require 'bind-key)
 (diminish 'abbrev-mode)
 
-;; dired
+(use-package view
+  :bind (("C-v" . View-scroll-half-page-forward)
+         ("M-v" . View-scroll-half-page-backward)
+         ;; use with prefix argument: C-u 50 C-%
+         ("C-%" . View-goto-percent)))
+
+;; compile
+(global-set-key (kbd "M-g M-c") 'compile)
+
+;; word count
+(global-set-key (kbd "M-s M-c") 'count-words)
+
+;;; ediff
+(use-package ediff
+  :defer t
+  :config
+  (setq ediff-split-window-function 'split-window-horizontally
+        ediff-window-setup-function 'ediff-setup-windows-plain)
+  ;; create a new frame for ediff
+  (add-hook 'ediff-before-setup-hook 'make-frame)
+  (add-hook 'ediff-quit-hook 'delete-frame))
+
 
 ;; with modification, from https://www.emacswiki.org/emacs/DavidBoon#toc4
 (defun my-dired-ediff-marked-files ()
@@ -251,6 +272,7 @@ BEG END"
 
 
 ;;; undo tree
+;; C-x u     (`undo-tree-visualize')
 ;; C-_  C-/  (`undo-tree-undo')
 ;; M-_  C-?  (`undo-tree-redo')
 (use-package undo-tree

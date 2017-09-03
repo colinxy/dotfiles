@@ -265,6 +265,12 @@ BEG END"
   (add-hook 'ibuffer-hook 'ibuffer-vc-set-filter-groups-by-vc-root)
   (add-hook 'ibuffer-hook 'ibuffer-do-sort-by-filename/process))
 
+(use-package view
+  :bind (("C-v" . View-scroll-half-page-forward)
+         ("M-v" . View-scroll-half-page-backward)
+         ;; use with prefix argument: C-u 50 C-%
+         ("C-%" . View-goto-percent)))
+
 ;; compile
 (global-set-key (kbd "M-g M-c") 'compile)
 
@@ -432,6 +438,7 @@ BEG END"
 
 
 ;;; undo tree
+;; C-x u     (`undo-tree-visualize')
 ;; C-_  C-/  (`undo-tree-undo')
 ;; M-_  C-?  (`undo-tree-redo')
 (use-package undo-tree
