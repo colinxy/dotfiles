@@ -467,6 +467,12 @@ BEG END"
   :bind ("M-s M-i" . popup-imenu)
   :config (setq popup-imenu-style 'indent))
 
+;;; imenu-list
+(use-package imenu-list
+  :defer t
+  :bind ("C-'" . imenu-list-smart-toggle)
+  :config (setq imenu-list-focus-after-activation t))
+
 
 (use-package doc-view
   :defer t
@@ -602,12 +608,6 @@ BEG END"
   )
 
 
-(use-package flycheck
-  :defer t
-  :ensure t
-  :init (add-hook 'after-init-hook 'global-flycheck-mode))
-
-
 (use-package company
   :defer t
   :ensure t
@@ -619,6 +619,34 @@ BEG END"
   :defer t
   :ensure company
   :config (setq company-dabbrev-downcase nil))
+
+
+(use-package flycheck
+  :defer t
+  :ensure t
+  :init (add-hook 'after-init-hook 'global-flycheck-mode))
+
+
+;; GNU Global
+;; generate tags with: gtags --gtagslabel=ctags  # or pygments
+;; https://github.com/syl20bnr/spacemacs/tree/master/layers/%2Btags/gtags
+(use-package ggtags
+  :bind (:map ggtags-global-mode-map
+         ;; also kill buffer
+         ("q" . quit-window-kill-buffer))
+  :init
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+                (ggtags-mode 1)
+                (setq-local eldoc-documentation-function
+                            #'ggtags-eldoc-function)
+                (setq-local imenu-create-index-function
+                            #'ggtags-build-imenu-index))))
+  :config
+  (defun quit-window-kill-buffer ()
+    (interactive)
+    (quit-window t)))
 
 
 ;;; cc-mode: mode for editing c/c++/java/awk
@@ -649,8 +677,9 @@ BEG END"
   ;;        ([remap completion-at-point] . irony-completion-at-point-async)
   ;;        ([remap complete-symbol] . irony-completion-at-point-async))
   :init
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
+  ;; (add-hook 'c++-mode-hook 'irony-mode)
+  ;; (add-hook 'c-mode-hook 'irony-mode)
+  ;; LOAD IRONY MODE ON DEMAND WITH M-x irony-mode
   :config
   ;; make irony aware of .clang_complete or cmake
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
@@ -672,6 +701,9 @@ BEG END"
   )
 
 
+;; TODO : replace irony with rtags
+
+
 ;; indent tools
 (use-package indent-tools
   :defer t
@@ -687,13 +719,16 @@ BEG END"
   (setq-default python-indent-offset 4)
   :config
   (setq gud-pdb-command-name "python3 -m pdb")
-  (elpy-enable)
-  ;; problem with ipython 5 prompt
+  ;; problem with ipython 5+ prompt
   (setq python-shell-interpreter "ipython3"
-        python-shell-interpreter-args "--simple-prompt --pprint -i"))
+        ;; ipython with readline: https://github.com/ipython/rlipython
+        ;; pip3 install rlipython
+        python-shell-interpreter-args "-i --TerminalIPythonApp.interactive_shell_class=rlipython.TerminalInteractiveShell"))
+
 (use-package elpy
   :defer t
-  :commands (elpy-enable)
+  :init
+  (elpy-enable)
   :config
   (setq elpy-rpc-python-command "python3")
   (setq elpy-rpc-backend "jedi")
