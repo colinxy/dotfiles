@@ -728,7 +728,10 @@ BEG END"
 (use-package elpy
   :defer t
   :init
-  (elpy-enable)
+  ;; calling elpy-enable at init damages init time
+  ;; instead load it once when a python buffer opens
+  (with-eval-after-load 'python
+    (elpy-enable))
   :config
   (setq elpy-rpc-python-command "python3")
   (setq elpy-rpc-backend "jedi")

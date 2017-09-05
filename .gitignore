@@ -9,6 +9,8 @@
 .emacs.*d/.org-id-locations
 .emacs.*d/.cask/
 
+profile-dotemacs.el
+package.el
 .emacs.*d/custom.el
 .emacs.*d/ac-comphist.dat
 .emacs.*d/ido.last
