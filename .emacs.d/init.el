@@ -371,7 +371,14 @@ BEG END"
 ;;; quickrun
 (use-package quickrun
   :defer t
-  :commands quickrun)
+  :commands quickrun
+  :config
+  (quickrun-add-command "c++/c11"
+    '((:command . "g++")
+      (:exec    . ("%c -std=c++11 %o -o %n %s"
+                   "%n %a"))
+      (:remove  . ("%n")))
+    :default "c++"))
 
 
 ;; tramp eshell: respect $PATH on remote host
@@ -539,11 +546,12 @@ BEG END"
     (add-to-list 'eshell-visual-commands "tail"))
   )
 
-;; exec-path-from-shell: consistent with shell in Mac OS X
-;; the current launcher em from .bashrc can let emacs inherit correct PATH
-;; (when (memq window-system '(mac ns))
-;;   ;; (require 'exec-path-from-shell)
-;;   (exec-path-from-shell-initialize))
+;; amazing with-editor: https://github.com/magit/with-editor
+;; even works with tramp
+;; TODO: test this
+;; (use-package with-editor
+;;   :init
+;;   (add-hook 'eshell-mode-hook 'with-editor-export-editor))
 
 
 ;;; mutiple cursor
@@ -619,12 +627,21 @@ BEG END"
   :defer t
   :ensure company
   :config (setq company-dabbrev-downcase nil))
+(use-package company-clang
+  :defer t
+  :ensure company
+  :config
+  (add-hook 'c++-mode-hook
+            (lambda () (setq company-clang-arguments '("-std=c++11")))))
 
 
 (use-package flycheck
   :defer t
   :ensure t
-  :init (add-hook 'after-init-hook 'global-flycheck-mode))
+  :init (add-hook 'after-init-hook 'global-flycheck-mode)
+  :config
+  (add-hook 'c++-mode-hook
+            (lambda () (setq flycheck-clang-language-standard "c++11"))))
 
 
 ;; GNU Global
@@ -652,7 +669,7 @@ BEG END"
 ;;; cc-mode: mode for editing c/c++/java/awk
 (use-package cc-mode
   :defer t
-  :mode ("\\.h\\'" . c++-mode)
+  ;; :mode ("\\.h\\'" . c++-mode)
   :init
   (setq-default c-basic-offset 4
                 c-default-style "k&r")
@@ -665,17 +682,11 @@ BEG END"
           gdb-show-main t)))
 
 ;;; irony-mode, irony-eldoc, company-irony, flycheck-irony
-;; always use clang as compiler: brew install llvm --with-clang
 ;; install-server compilation flags:
 ;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX\=$HOME/.emacs.d/irony/ $HOME/.emacs.d/elpa/irony-{latest}/server && cmake --build . --use-stderr --config Release --target install
 ;; requires libclang
 (use-package irony
   :defer t
-  ;; irony `0.3.0' breaking changes, removed async API (supported by default)
-  ;; now irony-completion-at-point uses async by default
-  ;; :bind (:irony-mode-map
-  ;;        ([remap completion-at-point] . irony-completion-at-point-async)
-  ;;        ([remap complete-symbol] . irony-completion-at-point-async))
   :init
   ;; (add-hook 'c++-mode-hook 'irony-mode)
   ;; (add-hook 'c-mode-hook 'irony-mode)

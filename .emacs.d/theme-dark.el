@@ -67,4 +67,5 @@
   ;; (spaceline-toggle-minor-modes-off)
   ;; (spaceline-toggle-flycheck-error-off)
   ;; (spaceline-toggle-flycheck-warning-off)
+  (spaceline-toggle-buffer-id-on)
   )

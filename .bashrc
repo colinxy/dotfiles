@@ -38,6 +38,10 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 [ -f "$MY_BASH_COMPLETION" ] && . "$MY_BASH_COMPLETION"
 
+# tmux
+alias tmux-copy='tmux load-buffer -'   # loadb
+alias tmux-paste='tmux save-buffer -'  # saveb
+
 # vim color hightlighter as less
 if [ -f /usr/share/vim/vim74/macros/less.vim ]; then
     alias vless='vim -u /usr/share/vim/vim74/macros/less.vim -'
@@ -78,7 +82,7 @@ alias diff='diff -u'
 # -w  --ignore-all-space
 
 # C++
-export CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare
+export _CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare
        -Werror=return-type -fstrict-overflow -Wstrict-overflow
        -fsanitize=address -fsanitize=undefined -fsanitize=bounds
        -fno-omit-frame-pointer'
@@ -118,7 +122,7 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 # -I : HEAD
 # -L : follow redirect
 # -v : verbose
-# -w : -w "%{http_code} %{content_type}\n"
+# -w : -w "%{http_code} %{content_type} %{size_download}\n"
 
 # networking
 # alias dig='dig +noall +answer'  # DNS
@@ -161,6 +165,10 @@ showcert() {
     : | openssl s_client -showcerts -servername "$host" -connect "$host":"$port" 2>/dev/null |\
         openssl x509 -inform pem -noout -text
 }
+# nmap
+# -Pn : no ping
+# -sS : TCP SYN scan
+# -sT : TCP connect scan
 
 # disk usage
 alias du='du -hs'
