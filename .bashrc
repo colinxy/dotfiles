@@ -186,6 +186,7 @@ vshutdown() { VBoxManage controlvm "$1" acpipowerbutton; }
 
 # python virtual environment
 [ -r /usr/local/opt/autoenv/activate.sh ] && . /usr/local/opt/autoenv/activate.sh
+export PYTHONSTARTUP="$HOME/.pythonrc"
 
 # personal accounts
 [ -f "$HOME"/.accounts ] && . "$HOME"/.accounts

@@ -354,7 +354,10 @@ Also, switch to that buffer."
 
 
 ;; themes
-(load-theme 'ample t)
+(use-package ample
+  :ensure ample-theme
+  :init
+  (load-theme 'ample t))
 
 
 ;; custom file load at last

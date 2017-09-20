@@ -980,6 +980,10 @@ BEG END"
             (file-exists-p my-theme-modern))
        (message "Loading modern theme ...")
        (load-file my-theme-modern))
+      ((and (member "-terminal" command-line-args)
+            (file-exists-p my-theme-terminal))
+       (message "Loading terminal theme ...")
+       (load-file my-theme-terminal))
       ((and window-system
             (file-exists-p my-theme-dark)) ;by default use dark theme
        (message "Loading dark theme ...")
@@ -994,6 +998,7 @@ BEG END"
 (add-to-list 'command-switch-alist '("dark" . my-themes))
 (add-to-list 'command-switch-alist '("light" . my-themes))
 (add-to-list 'command-switch-alist '("modern" . my-themes))
+(add-to-list 'command-switch-alist '("terminal" . my-themes))
 
 
 ;; custom file load at last
