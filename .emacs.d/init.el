@@ -463,6 +463,10 @@ BEG END"
 
 ;; clipboard problems
 (use-package xclip
+  :if (cond ((eq system-type 'darwin)
+             (executable-find "pbcopy"))
+            ((eq system-type 'gnu/linux)
+             (executable-find "xclip")))
   :init (xclip-mode 1))
 
 
