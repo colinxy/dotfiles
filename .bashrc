@@ -69,6 +69,12 @@ ect() {
 alias kill-em-daemon='emacsclient -e "(save-buffers-kill-emacs)"'
 # ec() { emacsclient -c "$@" & }
 
+# file url
+fileurl() {
+    # TODO: support space in filename
+    echo "file://$PWD/$1"
+}
+
 # git version control
 # alias git-push='git pull --rebase && git push origin -u'
 alias git-log='git log --oneline --decorate --graph --all'
@@ -187,6 +193,12 @@ vshutdown() { VBoxManage controlvm "$1" acpipowerbutton; }
 # python virtual environment
 [ -r /usr/local/opt/autoenv/activate.sh ] && . /usr/local/opt/autoenv/activate.sh
 export PYTHONSTARTUP="$HOME/.pythonrc"
+pip3upgradeall() {
+    pip3 list --outdated | tail -n +3 | awk '{print $1}' | xargs pip3 install -U
+}
+pipupgradeall() {
+    pip list --outdated | tail -n +3 | awk '{print $1}' | xargs pip install -U
+}
 
 # personal accounts
 [ -f "$HOME"/.accounts ] && . "$HOME"/.accounts

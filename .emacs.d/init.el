@@ -365,7 +365,11 @@ BEG END"
 ;;; ag (silver searcher)
 (use-package ag
   :defer t
-  :commands ag)
+  :commands ag
+  :config
+  (setq ag-highlight-search t)
+  (setq ag-reuse-window 't)
+  (setq ag-reuse-buffers 't))
 
 
 ;;; quickrun
@@ -545,13 +549,6 @@ BEG END"
     (add-to-list 'eshell-visual-commands "ssh")
     (add-to-list 'eshell-visual-commands "tail"))
   )
-
-;; amazing with-editor: https://github.com/magit/with-editor
-;; even works with tramp
-;; TODO: test this
-;; (use-package with-editor
-;;   :init
-;;   (add-hook 'eshell-mode-hook 'with-editor-export-editor))
 
 
 ;;; mutiple cursor
