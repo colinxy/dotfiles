@@ -1,4 +1,5 @@
 .emacs.*d/irony
+.emacs.*d/meghanada
 .emacs.*d/tramp
 .emacs.*d/auto-save-list/
 .emacs.*d/elpa/

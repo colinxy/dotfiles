@@ -69,7 +69,6 @@
 
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
-(setq outline-minor-mode-prefix (kbd "C-o"))
 ;; (global-unset-key (kbd "M-)"))
 
 ;; https://emacs.stackexchange.com/questions/2347/kill-or-copy-current-line-with-minimal-keystrokes
@@ -474,7 +473,11 @@ BEG END"
 (use-package imenu
   :defer t
   :config
-  (setq imenu-auto-rescan 1))
+  (setq imenu-auto-rescan t)
+  (defun imenu-rescan ()
+    "Force imenu rescan by flushing imenu cache."
+    (interactive)
+    (setq imenu--index-alist nil)))
 
 ;;; popup-imenu
 (use-package popup-imenu
@@ -712,14 +715,19 @@ BEG END"
     :init (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
   )
 
-
 ;; TODO : replace irony with rtags
 
 
-;; indent tools
-(use-package indent-tools
+;; a java development environment that just works
+(use-package meghanada
   :defer t
-  :bind ("M-i" . indent-tools-hydra/body))
+  :config
+  (defun java-meghanada ()
+    "Start meghanada on demand."
+    (interactive)
+    (add-hook 'java-mode-hook
+              '(lambda ()
+                 (meghanada-mode t)))))
 
 
 ;;; Python
@@ -792,11 +800,12 @@ BEG END"
   )
 (use-package slime
   :defer t
-  :config
+  :init
+  ;; so that M-x run-lisp can work
   (setq inferior-lisp-program (executable-find "sbcl"))
+  :config
   ;; TODO : requires slime-company
   (setq slime-contribs '(slime-fancy slime-company)))
-;; (slime-setup '(slime-fancy slime-company))
 
 ;;; Scheme
 ;; M-x run-geiser
