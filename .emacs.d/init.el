@@ -718,16 +718,16 @@ BEG END"
 ;; TODO : replace irony with rtags
 
 
+(defun java-meghanada ()
+  "Start meghanada on demand."
+  (interactive)
+  (add-hook 'java-mode-hook
+            '(lambda ()
+               (meghanada-mode t))))
 ;; a java development environment that just works
 (use-package meghanada
   :defer t
-  :config
-  (defun java-meghanada ()
-    "Start meghanada on demand."
-    (interactive)
-    (add-hook 'java-mode-hook
-              '(lambda ()
-                 (meghanada-mode t)))))
+  )
 
 
 ;;; Python
@@ -745,6 +745,7 @@ BEG END"
         ;; pip3 install rlipython
         python-shell-interpreter-args "-i --TerminalIPythonApp.interactive_shell_class=rlipython.TerminalInteractiveShell"))
 
+;; Start with M-x elpy-enable
 (use-package elpy
   :defer t
   :init
@@ -793,11 +794,6 @@ BEG END"
   (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'json-mode-hook 'rainbow-delimiters-mode))
-(use-package paredit
-  :defer t
-  :init (add-hook 'lisp-mode-hook 'enable-paredit-mode)
-  ;; M-s : paredit-splice-sexp
-  )
 (use-package slime
   :defer t
   :init
