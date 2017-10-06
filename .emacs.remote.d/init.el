@@ -168,11 +168,21 @@ BEG END"
 ;; package.el
 (require 'package nil t)
 (setq package-enable-at-startup nil)
+(setq package-archives
+      '(("elpa" . "http://tromey.com/elpa/")
+        ("gnu" . "http://elpa.gnu.org/packages/")
+        ("melpa" . "http://melpa.milkbox.net/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")))
 (package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
 (require 'use-package)
 (require 'diminish)
 (require 'bind-key)
+
 (diminish 'abbrev-mode)
 
 (use-package view
@@ -251,10 +261,12 @@ BEG END"
     :if (not (eq system-type 'gnu/linux))
     :config (setq ls-lisp-use-insert-directory-program nil))
   (use-package dired-narrow
+    :ensure t
     :defer t
     :bind (:map dired-mode-map
                 ("/" . dired-narrow)))
   (use-package dired-subtree
+    :ensure t
     :defer t
     :bind (:map dired-mode-map
                 ("i" . dired-subtree-insert)
@@ -276,6 +288,7 @@ BEG END"
 ;; C-_  C-/  (`undo-tree-undo')
 ;; M-_  C-?  (`undo-tree-redo')
 (use-package undo-tree
+  :ensure t
   :defer t
   :diminish undo-tree-mode
   :init (global-undo-tree-mode)
@@ -292,6 +305,7 @@ BEG END"
 
 ;;; popup-imenu
 (use-package popup-imenu
+  :ensure t
   :defer t
   :bind ("M-s M-i" . popup-imenu)
   :config (setq popup-imenu-style 'indent))
@@ -300,16 +314,12 @@ BEG END"
   :defer t
   :init
   (require 'which-func)         ;make sure which-func-modes is defined
-  (add-to-list 'which-func-modes 'c++-mode)
-  (add-to-list 'which-func-modes 'c-mode)
-  (add-to-list 'which-func-modes 'python-mode)
-  ;; runs after which-func-modes is determined
   (which-func-mode))
 
 
 (use-package company
-  :defer t
   :ensure t
+  :defer t
   :diminish company-mode
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
@@ -317,15 +327,15 @@ BEG END"
 ;; company-dabbrev-code completes in code
 ;; company-dabbrev completes in comments/strings
 (use-package company-dabbrev
-  :defer t
   :ensure company
+  :defer t
   :config (setq company-dabbrev-downcase nil))
 
 
-;; (use-package flycheck
-;;   :defer t
-;;   :ensure t
-;;   :init (add-hook 'after-init-hook 'global-flycheck-mode))
+(use-package flycheck
+  :ensure t
+  :defer t
+  :init (add-hook 'after-init-hook 'global-flycheck-mode))
 
 
 ;; c/c++
