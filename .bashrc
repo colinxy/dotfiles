@@ -3,6 +3,8 @@ set -o emacs
 
 # allow parallel history
 shopt -s histappend
+export HISTSIZE=100000
+export HISTFILESIZE=100000
 
 # command prompt
 export PS1="\u:\w \$ "
@@ -37,6 +39,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     MY_BASH_COMPLETION="$(brew --prefix)${MY_BASH_COMPLETION}"
 fi
 [ -f "$MY_BASH_COMPLETION" ] && . "$MY_BASH_COMPLETION"
+unset MY_BASH_COMPLETION
 
 # tmux
 alias tmux-copy='tmux load-buffer -'   # loadb
@@ -129,8 +132,10 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 # -L : follow redirect
 # -v : verbose
 # -w : -w "%{http_code} %{content_type} %{size_download}\n"
+#         "%{time_starttransfer}" (time to first byte)
 
 # networking
+alias traceroute='traceroute -n' # don't do reverse lookup
 # alias dig='dig +noall +answer'  # DNS
 # understand dns lookup process: +trace
 # whois
@@ -145,7 +150,6 @@ tcpconn() {
     [ -z "$1" ] && echo "tcpconn <ip> <port>" && return 1
     local ip='127.0.0.1'
     local port=80
-
     if [[ "$1" =~ $IPv4_E ]]; then
         ip=$1
         [ ! -z "$2" ] && port=$2
@@ -154,7 +158,6 @@ tcpconn() {
     else
         echo "tcpconn <ip> <port>" && return 1
     fi
-
     echo "exec 6<>/dev/tcp/$ip/$port"
     exec 6<>"/dev/tcp/$ip/$port" &&
         echo "$ip:$port listening" || echo "$ip:$port NOT listening"
@@ -175,6 +178,20 @@ showcert() {
 # -Pn : no ping
 # -sS : TCP SYN scan
 # -sT : TCP connect scan
+# tcpdump
+# when testing localhost, use specify loopback interface with "-i lo"
+alias tcpdump_mac='sudo tcpdump -n -vv -tttt -i lo0'
+# -i lo : loopback interface
+# -n    : no dns resolution
+# -tttt : human readable time stamp
+# -vv   : verbose
+# -X    : show contents
+# filters : host, port, portrange, dst/src, net
+# tcp flags: S SYC
+#            . ACK
+#            F FIN
+#            R RST
+#            P PUSH
 
 # disk usage
 alias du='du -hs'

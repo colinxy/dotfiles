@@ -19,6 +19,8 @@ set nowrapscan
 
 " Allow backspacing over everything in insert mode.
 set backspace=indent,eol,start
+" move past begin/end of line
+set whichwrap+=<,>,h,l
 
 " set foldenable
 

@@ -718,6 +718,9 @@ BEG END"
 ;; TODO : replace irony with rtags
 
 
+(use-package java
+  :defer t
+  :init (add-hook 'java-mode-hook 'subword-mode))
 (defun java-meghanada ()
   "Start meghanada on demand."
   (interactive)
@@ -726,8 +729,11 @@ BEG END"
                (meghanada-mode t))))
 ;; a java development environment that just works
 (use-package meghanada
-  :defer t
-  )
+  :defer t)
+
+;; groovy-mode works well for gradle
+(use-package groovy-mode
+  :defer t)
 
 
 ;;; Python
@@ -807,8 +813,13 @@ BEG END"
 ;; M-x run-geiser
 (use-package geiser
   :defer t
-  ;; :config (setq geiser-active-implementations '(racket))
+  ;; racket has great documentation
+  :config (setq geiser-active-implementations '(racket guile))
   )
+;; when using minimal racket from homebrew
+;; brew install racket
+;; raco pkg install compatibility-lib --auto  # no so complete
+;; raco pkg install drracket                  # everything
 
 
 ;;; OCaml
