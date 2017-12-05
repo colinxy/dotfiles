@@ -5,7 +5,7 @@
 ;; i.e. 256color, 16color, 8color
 
 ;;; Code:
-(use-package ample
-  :ensure ample-theme
+(use-package ample-theme
+  :ensure t
   :init
   (load-theme 'ample t))

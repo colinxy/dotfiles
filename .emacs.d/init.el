@@ -236,7 +236,7 @@ BEG END"
 
 ;; EasyPG Assistant
 (use-package epa
-  :defer t
+  :defer 5
   ;; enter passphrase through the minibuffer
   :config (setq epa-pinentry-mode 'loopback))
 
@@ -585,7 +585,7 @@ BEG END"
 
 ;;; async compilation of melpa package
 (use-package async-bytecomp
-  :defer t
+  :defer 5
   :ensure async
   :init
   (async-bytecomp-package-mode 1)
@@ -768,8 +768,7 @@ BEG END"
 
 
 ;;; Ruby
-;;; CURRENT SETUP BROKEN
-;; inf-ruby:  repl integration
+;; inf-ruby: repl integration
 ;; M-x inf-ruby (or C-c C-s) to start ruby process
 ;; robe-mode: code navigation, completion
 ;; M-x robe-start (after inf-ruby is running)
@@ -777,7 +776,7 @@ BEG END"
 ;; (add-hook 'ruby-mode-hook 'subword-mode)
 (use-package ruby-mode
   :defer t
-  :bind (:ruby-mode-map
+  :bind (:map ruby-mode-map
          ("C-M-p" . backward-list)
          ("C-M-n" . forward-list))
   ;; :init (inf-ruby-console-auto)
@@ -813,12 +812,17 @@ BEG END"
 ;; M-x run-geiser
 (use-package geiser
   :defer t
+  :defines geiser-active-implementations
   ;; racket has great documentation
-  :config (setq geiser-active-implementations '(racket guile))
+  :config
+  (setq geiser-active-implementations
+        '(racket
+          ;; guile
+          ))
   )
 ;; when using minimal racket from homebrew
 ;; brew install racket
-;; raco pkg install compatibility-lib --auto  # no so complete
+;; raco pkg install compatibility-lib --auto  # not so complete
 ;; raco pkg install drracket                  # everything
 
 
