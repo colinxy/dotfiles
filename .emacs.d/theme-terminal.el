@@ -9,3 +9,6 @@
   :ensure t
   :init
   (load-theme 'ample t))
+
+(require 'hl-line)
+(set-face-attribute hl-line-face nil :background "color-16")

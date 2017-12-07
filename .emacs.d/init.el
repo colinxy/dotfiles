@@ -96,8 +96,6 @@ BEG END"
 (column-number-mode t)
 (show-paren-mode 1)
 (global-hl-line-mode)
-(when (not window-system)
-  (set-face-attribute hl-line-face nil :underline t))
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
 ;; line-number-mode-hook
 
@@ -154,8 +152,10 @@ BEG END"
 (setq split-width-threshold 150) ;split horizontally if at least <> columns
 
 ;; for window
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+(when tool-bar-mode
+  (tool-bar-mode -1))
+(when scroll-bar-mode
+  (scroll-bar-mode -1))
 (unless (memq window-system '(mac ns))
   (menu-bar-mode -1))
 (when window-system
@@ -367,8 +367,8 @@ BEG END"
   :commands ag
   :config
   (setq ag-highlight-search t)
-  (setq ag-reuse-window 't)
-  (setq ag-reuse-buffers 't))
+  (setq ag-reuse-window t)
+  (setq ag-reuse-buffers t))
 
 
 ;;; quickrun
@@ -674,20 +674,19 @@ BEG END"
 (use-package cc-mode
   :defer t
   ;; :mode ("\\.h\\'" . c++-mode)
-  :init
+  :config
   (setq-default c-basic-offset 4
                 c-default-style "k&r")
-  :config
   (c-set-offset 'innamespace [0])
   (use-package gdb-mi
     :defer t
-    :init
+    :config
     (setq gdb-many-windows t
           gdb-show-main t)))
 
 ;;; irony-mode, irony-eldoc, company-irony, flycheck-irony
 ;; install-server compilation flags:
-;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX\=$HOME/.emacs.d/irony/ $HOME/.emacs.d/elpa/irony-{latest}/server && cmake --build . --use-stderr --config Release --target install
+;; cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_INSTALL_PREFIX=$HOME/.emacs.d/irony/ $HOME/.emacs.d/elpa/irony-{latest}/server && cmake --build . --use-stderr --config Release --target install
 ;; requires libclang
 (use-package irony
   :defer t
@@ -741,9 +740,8 @@ BEG END"
   :defer t
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python3" . python-mode)
-  :init
-  (setq-default python-indent-offset 4)
   :config
+  (setq-default python-indent-offset 4)
   (setq gud-pdb-command-name "python3 -m pdb")
   ;; problem with ipython 5+ prompt
   (setq python-shell-interpreter "ipython3"
@@ -753,18 +751,14 @@ BEG END"
 
 ;; Start with M-x elpy-enable
 (use-package elpy
-  :defer t
-  :init
-  ;; calling elpy-enable at init damages init time
-  ;; instead load it once when a python buffer opens
-  (with-eval-after-load 'python
-    (elpy-enable))
+  :after (python)
   :config
   (setq elpy-rpc-python-command "python3")
   (setq elpy-rpc-backend "jedi")
   ;; prefer flycheck to flymake
   (remove-hook 'elpy-modules 'elpy-module-flymake)
-  (elpy-use-ipython))
+  (elpy-use-ipython)
+  (elpy-enable))
 
 
 ;;; Ruby
@@ -969,13 +963,6 @@ BEG END"
   (use-package company-ansible
     :defer t
     :init (add-to-list 'company-backends 'company-ansible)))
-
-
-;;; gnuplot mode
-;; (add-to-list 'auto-mode-alist '("\\.gp\\'" . gnuplot-mode))
-(use-package gnuplot-mode
-  :defer t
-  :mode "\\.gp\\'")
 
 
 ;;; emacs theme and modeline

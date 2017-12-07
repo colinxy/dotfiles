@@ -4,7 +4,7 @@
 ;;; Commentary:
 ;;
 ;; run Emacs as
-;; command emacs -nw -q --load ~/.emacs.min
+;; \emacs -nw -q --load ~/.emacs.min
 
 ;;; Code:
 
@@ -80,8 +80,6 @@ BEG END"
 (column-number-mode t)
 (show-paren-mode 1)
 (global-hl-line-mode)
-(when (not window-system)
-  (set-face-attribute hl-line-face nil :underline t))
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
 ;; line-number-mode-hook
 

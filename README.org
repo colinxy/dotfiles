@@ -34,6 +34,16 @@ and make sure executable bit is on
 
 #+END_SRC
 
+Disable some slow GUI components.
+Reference: https://github.com/raxod502/radian/issues/180
+
+#+BEGIN_SRC bash
+
+  defaults write org.gnu.Emacs Emacs.ToolBar -string no
+  defaults write org.gnu.Emacs Emacs.ScrollBar -string no
+
+#+END_SRC
+
 ** Emacs in Terminal
 
 control sequence get pasted with =Command-v=
