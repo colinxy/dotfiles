@@ -135,6 +135,11 @@ BEG END"
 ;; vc
 (setq vc-follow-symlinks t)
 
+;; some forgotten navigation and marking commands
+;; C-M-f   : forward-sexp
+;; C-M-b   : backward-sexp
+;; C-M-SPC : mark-sexp
+
 ;; isearch magic
 ;; IN isearch-mode-map
 ;; C-w   : isearch-yank-word-or-char
@@ -351,14 +356,22 @@ BEG END"
   )
 
 
+;; deprecate neotree in favor of dired-sidebar
 ;;; neotree
-(use-package neotree
+;; (use-package neotree
+;;   :defer t
+;;   :bind ("C-x C-d" . neotree-toggle)
+;;   :config
+;;   (setq neo-smart-open t)
+;;   (setq neo-autorefresh nil)
+;;   (setq neo-theme (if window-system 'icons 'arrow)))
+
+(use-package dired-sidebar
   :defer t
-  :bind ("C-x C-d" . neotree-toggle)
+  :bind ("C-x C-d" . dired-sidebar-toggle-sidebar)
+  :commands (dired-sidebar-toggle-sidebar)
   :config
-  (setq neo-smart-open t)
-  (setq neo-autorefresh nil)
-  (setq neo-theme (if window-system 'icons 'arrow)))
+  (setq dired-sidebar-use-custom-font nil))
 
 
 ;;; ag (silver searcher)
@@ -438,10 +451,10 @@ BEG END"
 ;;; interactively do things (ido)
 (use-package ido
   :init (ido-mode 1)
+  :bind ("C-x C-v" . ff-find-other-file)
   :config
   (setq ido-enable-flex-matching t)
-  (ido-everywhere t)
-  (global-set-key (kbd "C-x C-v") 'ff-find-other-file))
+  (ido-everywhere t))
 
 ;; maybe try ivy for a while ?
 ;; (ivy-mode 1)
@@ -510,9 +523,10 @@ BEG END"
 ;; M-x shell
 ;; M-x term
 ;; M-x ansi-term
+;; TODO : get rid of term
 (use-package term
   :defer t
-  :bind (("M-t" . ansi-term)
+  :bind (("C-c t" . ansi-term)
          :map term-mode-map
          ("M-p" . term-send-up)
          ("M-n" . term-send-down)
