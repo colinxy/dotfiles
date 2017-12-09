@@ -136,17 +136,17 @@ BEG END"
 (setq vc-follow-symlinks t)
 
 ;; some forgotten navigation and marking commands
-;; C-M-f   : forward-sexp
-;; C-M-b   : backward-sexp
-;; C-M-SPC : mark-sexp
+;; C-M-f   `forward-sexp'
+;; C-M-b   `backward-sexp'
+;; C-M-SPC `mark-sexp'
 
 ;; isearch magic
 ;; IN isearch-mode-map
-;; C-w   : isearch-yank-word-or-char
-;; C-M-w : isearch-del-char
-;; C-M-y : isearch-yank-char
-;; M-c   : isearch-toggle-case-fold
-;; M-s e : isearch-edit-string
+;; C-w   `isearch-yank-word-or-char'
+;; C-M-w `isearch-del-char'
+;; C-M-y `isearch-yank-char'
+;; M-c   `isearch-toggle-case-fold'
+;; M-s e `isearch-edit-string'
 (define-key isearch-mode-map (kbd "C-d") 'isearch-forward-symbol-at-point)
 ;; or M-s . outside of isearch mode
 
@@ -293,7 +293,7 @@ BEG END"
 
 
 ;; with modification, from https://www.emacswiki.org/emacs/DavidBoon#toc4
-(defun my-dired-ediff-marked-files ()
+(defun dired-ediff-marked-files ()
   "Run ediff on marked files."
   (interactive)
   (let ((marked-files (dired-get-marked-files)))
@@ -316,6 +316,13 @@ BEG END"
              (ediff-files current-file other-file)))
           (t (message "Mark no more than 3 files to ediff")))))
 
+(defun find-file-around (orig-find-file &rest args)
+  "Advice `find-file'.  ORIG-FIND-FILE original find file function.  ARGS."
+  (if (eq major-mode 'dired-mode)
+      (let ((default-directory (dired-current-directory)))
+        (apply orig-find-file args))
+    (apply orig-find-file args)))
+
 (use-package dired
   :defer t
   :ensure nil
@@ -323,7 +330,7 @@ BEG END"
          :map dired-mode-map
          ("C-s" . dired-isearch-filenames)
          ("C-M-s" . dired-isearch-filenames-regexp)
-         ("=" . my-dired-ediff-marked-files)
+         ("=" . dired-ediff-marked-files)
          ;; needs dired+
          ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
          )
@@ -331,11 +338,6 @@ BEG END"
   (setq dired-listing-switches "-alh")
   (setq dired-dwim-target t)
   ;; useful when dired buffer contains subtree
-  (defun find-file-around (orig-find-file &rest args)
-    (if (eq major-mode 'dired-mode)
-        (let ((default-directory (dired-current-directory)))
-          (apply orig-find-file args))
-      (apply orig-find-file args)))
   ;; tied with ido
   (advice-add 'ido-find-file :around #'find-file-around)
 
@@ -445,7 +447,7 @@ BEG END"
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
-;; C-c C-o: org-open-at-point
+;; C-c C-o  `org-open-at-point'
 
 
 ;;; interactively do things (ido)
@@ -461,9 +463,9 @@ BEG END"
 
 
 ;;; undo tree
-;; C-x u     (`undo-tree-visualize')
-;; C-_  C-/  (`undo-tree-undo')
-;; M-_  C-?  (`undo-tree-redo')
+;; C-x u     `undo-tree-visualize'
+;; C-_  C-/  `undo-tree-undo'
+;; M-_  C-?  `undo-tree-redo'
 (use-package undo-tree
   :defer t
   :diminish undo-tree-mode
@@ -471,6 +473,14 @@ BEG END"
   :config
   (setq undo-tree-visualizer-timestamps t)
   (setq undo-tree-visualizer-diff t))
+
+
+;;; winner-mode
+;; C-c left  `winner-undo'
+;; C-c right `winner-redo'
+(use-package winner-mode
+  :defer 5
+  :config (winner-mode 1))
 
 
 ;; clipboard problems
@@ -607,7 +617,6 @@ BEG END"
   (setq async-bytecomp-allowed-packages '(all)))
 
 ;;; magit
-;; (global-set-key (kbd "C-x g") 'magit-status)
 (use-package magit
   :defer t
   :bind ("C-x g" . magit-status))
@@ -820,7 +829,7 @@ BEG END"
 ;; M-x run-geiser
 (use-package geiser
   :defer t
-  :defines geiser-active-implementations
+  :defines (geiser-active-implementations)
   ;; racket has great documentation
   :config
   (setq geiser-active-implementations
@@ -916,6 +925,7 @@ BEG END"
 (use-package tex
   :defer t
   :ensure auctex
+  :functions (TeX-revert-document-buffer)
   :init
   (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
   ;; Update PDF buffers after successful LaTeX runs
