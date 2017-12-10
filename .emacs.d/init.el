@@ -28,7 +28,7 @@
       inhibit-startup-echo-area-message "colinxy")
 
 ;; less frequent garbage collection
-(setq gc-cons-threshold 10000000)        ;10MB
+(setq gc-cons-threshold 100000000)        ;100MB
 
 ;; backup files
 (setq backup-directory-alist '(("." . "~/.saves"))
@@ -480,7 +480,7 @@ BEG END"
 ;; C-c right `winner-redo'
 (use-package winner-mode
   :defer 5
-  :config (winner-mode 1))
+  :init (winner-mode 1))
 
 
 ;; clipboard problems
@@ -650,6 +650,8 @@ BEG END"
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
   (setq company-idle-delay 0.1))
+;; company-dabbrev-code completes in code
+;; company-dabbrev completes in comments/strings
 (use-package company-dabbrev
   :defer t
   :ensure company
@@ -989,6 +991,13 @@ BEG END"
     :init (add-to-list 'company-backends 'company-ansible)))
 
 
+;;; gnuplot mode
+;; (add-to-list 'auto-mode-alist '("\\.gp\\'" . gnuplot-mode))
+(use-package gnuplot-mode
+  :defer t
+  :mode "\\.gp\\'")
+
+
 ;;; emacs theme and modeline
 
 ;; allow command line switches to choose startup theme
@@ -1037,5 +1046,8 @@ BEG END"
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
+
+(setq gc-cons-threshold 10000000)        ;10MB
+
 
 ;;; init.el ends here
