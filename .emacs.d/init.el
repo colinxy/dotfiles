@@ -222,9 +222,13 @@ BEG END"
 (package-initialize)
 
 ;; http://cachestocaches.com/2015/8/getting-started-use-package/
-(unless (package-installed-p 'use-package)
+(unless (and (package-installed-p 'use-package)
+             (package-installed-p 'diminish)
+             (package-installed-p 'bind-key))
   (package-refresh-contents)
-  (package-install 'use-package))
+  (package-install 'use-package)
+  (package-install 'diminish)
+  (package-install 'bind-key))
 
 (require 'use-package)
 (require 'diminish)
@@ -480,6 +484,7 @@ BEG END"
 ;; C-c right `winner-redo'
 (use-package winner-mode
   :defer 5
+  :ensure winner
   :init (winner-mode 1))
 
 
@@ -699,6 +704,7 @@ BEG END"
 (use-package cc-mode
   :defer t
   ;; :mode ("\\.h\\'" . c++-mode)
+  :hook (java-mode . subword-mode)
   :config
   (setq-default c-basic-offset 4
                 c-default-style "k&r")
@@ -742,9 +748,6 @@ BEG END"
 ;; TODO : replace irony with rtags
 
 
-(use-package java
-  :defer t
-  :init (add-hook 'java-mode-hook 'subword-mode))
 (defun java-meghanada ()
   "Start meghanada on demand."
   (interactive)
