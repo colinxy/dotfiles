@@ -60,8 +60,23 @@ fi
 unset bash_completion
 
 # tmux
-alias tmux-copy='tmux load-buffer -'   # loadb
-alias tmux-paste='tmux save-buffer -'  # saveb
+alias tmux-copy='tmux load-buffer -'   # loadb, copy
+alias tmux-paste='tmux save-buffer -'  # saveb, paste
+copy-tmux() {
+    local copy=
+    if type -P xclip &>/dev/null; then
+        copy='xclip -selection clipboard'
+    elif type -P pbcopy &>/dev/null; then
+        copy=pbcopy
+    else
+        >&2 echo 'xclip/pbcopy does not exist'
+        return 1
+    fi
+
+    ( tmux save-buffer - | $copy )
+    # text copied from tmux now exists in system clipboard
+}
+# for paste, use `xclip -o -selection clipboard' or `pbpaste'
 
 # vim color hightlighter as less
 vless_setup() {
