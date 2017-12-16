@@ -235,15 +235,18 @@ vshutdown() { VBoxManage controlvm "$1" acpipowerbutton; }
 
 export PYTHONSTARTUP="$HOME/.pythonrc"
 pip3upgradeall() {
-    pip3 list --outdated | tail -n +3 | awk '{print $1}' | xargs pip3 install -U
+    python3 -m pip list --outdated | tail -n +3 | awk '{print $1}' | xargs python3 -m pip install -U
 }
 pipupgradeall() {
-    pip list --outdated | tail -n +3 | awk '{print $1}' | xargs pip install -U
+    python -m pip list --outdated | tail -n +3 | awk '{print $1}' | xargs python -m pip install -U
 }
 
 # personal accounts
 # shellcheck source=/dev/null
 [ -f "$HOME"/.accounts ] && . "$HOME"/.accounts
+
+# shellcheck source=/dev/null
+[ -f "$HOME"/.bash_colors ] && . "$HOME"/.bash_colors
 
 set-title() {
     echo -e "\033];$*\007"
