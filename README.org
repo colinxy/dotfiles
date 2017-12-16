@@ -52,7 +52,8 @@ bracketed paste mode https://cirw.in/blog/bracketed-paste
 
 https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard/issues/31
 
-=xclip-mode= solves the problem?
+=xclip-mode= solves the problem? It replied on =pbcopy/pbpaste= on
+mac, and =xclip= on linux (=sudo apt-get install xclip=).
 
 
 * Tmux

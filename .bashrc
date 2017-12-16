@@ -1,10 +1,19 @@
 
+# If not running interactively, don't do anything
+# case $- in
+#     *i*) ;;
+#       *) return;;
+# esac
+
 set -o emacs
 
 # allow parallel history
 shopt -s histappend
+shopt -s checkwinsize
 export HISTSIZE=100000
-export HISTFILESIZE=100000
+export HISTFILESIZE=500000
+# don't put duplicate lines or lines starting with space in the history.
+export HISTCONTROL=ignoreboth
 
 # command prompt
 export PS1="\u:\w \$ "
@@ -14,8 +23,15 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     export LSCOLORS=GxFxCxDxBxegedabagaced
     alias ls='ls -G'
 else
+    [ -x "$(type -P dircolors)" ] && {
+        {
+            [ -r ~/.dircolors ] && eval "$(dircolors -b ~/.dircolors)"
+        } || eval "$(dircolors -b)"
+    }
     alias ls='ls --color=auto'
 fi
+export LESS='-R'
+
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -26,31 +42,41 @@ alias la='ls -A'
 alias ll='ls -alF'
 alias l='ls -CF'
 alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
 alias more='more -R'
-alias less='less -R'
 alias les=less
 alias le=less
 alias lesss=less
 alias tree='tree -C'
 
 # programmable completion
-MY_BASH_COMPLETION=/etc/bash_completion
+bash_completion=/etc/bash_completion
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    MY_BASH_COMPLETION="$(brew --prefix)${MY_BASH_COMPLETION}"
+    bash_completion="$(brew --prefix)${bash_completion}"
 fi
-[ -f "$MY_BASH_COMPLETION" ] && . "$MY_BASH_COMPLETION"
-unset MY_BASH_COMPLETION
+# shellcheck source=/dev/null
+[ -f "$bash_completion" ] && . "$bash_completion"
+unset bash_completion
 
 # tmux
 alias tmux-copy='tmux load-buffer -'   # loadb
 alias tmux-paste='tmux save-buffer -'  # saveb
 
 # vim color hightlighter as less
-if [ -f /usr/share/vim/vim74/macros/less.vim ]; then
-    alias vless='vim -u /usr/share/vim/vim74/macros/less.vim -'
-elif [ -f /usr/share/vim/vim73/macros/less.vim ]; then
-    alias vless='vim -u /usr/share/vim/vim73/macros/less.vim -'
-fi
+vless_setup() {
+    local vers=(80 74 73)
+    for ver in "${vers[@]}"; do
+        if [ -f "/usr/share/vim/vim${ver}/macros/less.vim" ]; then
+            # shellcheck disable=SC2139
+            # expansion of ${ver} at define time is intended
+            alias vless="vim -u /usr/share/vim/vim${ver}/macros/less.vim -"
+            break
+        fi
+    done
+}
+vless_setup
+unset -f vless_setup
 
 startprocess() {
     nohup "$@" >/dev/null 2>&1 &
@@ -207,8 +233,6 @@ vshutdown() { VBoxManage controlvm "$1" acpipowerbutton; }
 # vargrant completion offered through contrib/bash/completion.sh
 # complete -W "$(vagrant --help | awk '/^[[:space:]]/ {print $1}')" vagrant
 
-# python virtual environment
-[ -r /usr/local/opt/autoenv/activate.sh ] && . /usr/local/opt/autoenv/activate.sh
 export PYTHONSTARTUP="$HOME/.pythonrc"
 pip3upgradeall() {
     pip3 list --outdated | tail -n +3 | awk '{print $1}' | xargs pip3 install -U
@@ -218,6 +242,7 @@ pipupgradeall() {
 }
 
 # personal accounts
+# shellcheck source=/dev/null
 [ -f "$HOME"/.accounts ] && . "$HOME"/.accounts
 
 set-title() {
@@ -228,5 +253,4 @@ set-title() {
 # history | awk '{a[$2]++} END {for(i in a){print a[i] " " i}}' | sort -rn | head
 # nc -v -l 8080 < afile
 # fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1)
-# nc -v -l 8080 < afile
 # telnet telehack.com
