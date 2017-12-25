@@ -117,22 +117,27 @@ BEG END"
 ;; vc
 (setq vc-follow-symlinks t)
 
+;; some forgotten navigation and marking commands
+;; C-M-f   `forward-sexp'
+;; C-M-b   `backward-sexp'
+;; C-M-SPC `mark-sexp'
+
 ;; isearch magic
 ;; IN isearch-mode-map
-;; C-w   : isearch-yank-word-or-char
-;; C-M-w : isearch-del-char
-;; C-M-y : isearch-yank-char
-;; M-c   : isearch-toggle-case-fold
-;; M-s e : isearch-edit-string
+;; C-w   `isearch-yank-word-or-char'
+;; C-M-w `isearch-del-char'
+;; C-M-y `isearch-yank-char'
+;; M-c   `isearch-toggle-case-fold'
+;; M-s e `isearch-edit-string'
 (define-key isearch-mode-map (kbd "C-d") 'isearch-forward-symbol-at-point)
 ;; or M-s . outside of isearch mode
 
 (setq split-width-threshold 150) ;split horizontally if at least <> columns
 
-;; no tool bar, no scroll bar
-(when (fboundp 'tool-bar-mode)
+;; for window
+(when tool-bar-mode
   (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode)
+(when scroll-bar-mode
   (scroll-bar-mode -1))
 
 ;; tango-dark is a good theme

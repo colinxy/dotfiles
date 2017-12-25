@@ -88,8 +88,8 @@ BEG END"
 (column-number-mode t)
 (show-paren-mode 1)
 (global-hl-line-mode)
-(when (not window-system)
-  (set-face-attribute hl-line-face nil :underline t))
+;; (setq line-number-display-limit-width 5) ; line number in mode line
+;; line-number-mode-hook
 
 ;; use DEL to delete selected text
 (delete-selection-mode 1)
@@ -103,7 +103,9 @@ BEG END"
 ;; modifier key
 (when (eq system-type 'darwin)
   (setq mac-option-modifier 'meta)
-  (setq mac-command-modifier 'super))
+  (setq mac-command-modifier 'super)
+  (global-set-key (kbd "s-c") 'kill-ring-save)
+  (global-set-key (kbd "s-v") 'yank))
 
 ;; auto insert pair
 ;; M-( ; insert ()
@@ -123,22 +125,27 @@ BEG END"
 ;; vc
 (setq vc-follow-symlinks t)
 
+;; some forgotten navigation and marking commands
+;; C-M-f   `forward-sexp'
+;; C-M-b   `backward-sexp'
+;; C-M-SPC `mark-sexp'
+
 ;; isearch magic
 ;; IN isearch-mode-map
-;; C-w   : isearch-yank-word-or-char
-;; C-M-w : isearch-del-char
-;; C-M-y : isearch-yank-char
-;; M-c   : isearch-toggle-case-fold
-;; M-s e : isearch-edit-string
+;; C-w   `isearch-yank-word-or-char'
+;; C-M-w `isearch-del-char'
+;; C-M-y `isearch-yank-char'
+;; M-c   `isearch-toggle-case-fold'
+;; M-s e `isearch-edit-string'
 (define-key isearch-mode-map (kbd "C-d") 'isearch-forward-symbol-at-point)
 ;; or M-s . outside of isearch mode
 
 (setq split-width-threshold 150) ;split horizontally if at least <> columns
 
-;; no tool bar, no scroll bar
-(when (fboundp 'tool-bar-mode)
+;; for window
+(when tool-bar-mode
   (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode)
+(when scroll-bar-mode
   (scroll-bar-mode -1))
 
 (when (not window-system)
@@ -175,13 +182,19 @@ BEG END"
         ("melpa-stable" . "https://stable.melpa.org/packages/")))
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
+;; http://cachestocaches.com/2015/8/getting-started-use-package/
+(unless (and (package-installed-p 'use-package)
+             (package-installed-p 'diminish)
+             (package-installed-p 'bind-key))
   (package-refresh-contents)
-  (package-install 'use-package))
+  (package-install 'use-package)
+  (package-install 'diminish)
+  (package-install 'bind-key))
 
 (require 'use-package)
 (require 'diminish)
 (require 'bind-key)
+;; (setq use-package-always-ensure t)
 
 (diminish 'abbrev-mode)
 
@@ -209,7 +222,7 @@ BEG END"
 
 
 ;; with modification, from https://www.emacswiki.org/emacs/DavidBoon#toc4
-(defun my-dired-ediff-marked-files ()
+(defun dired-ediff-marked-files ()
   "Run ediff on marked files."
   (interactive)
   (let ((marked-files (dired-get-marked-files)))
@@ -232,6 +245,13 @@ BEG END"
              (ediff-files current-file other-file)))
           (t (message "Mark no more than 3 files to ediff")))))
 
+(defun find-file-around (orig-find-file &rest args)
+  "Advice `find-file'.  ORIG-FIND-FILE original find file function.  ARGS."
+  (if (eq major-mode 'dired-mode)
+      (let ((default-directory (dired-current-directory)))
+        (apply orig-find-file args))
+    (apply orig-find-file args)))
+
 (use-package dired
   :defer t
   :ensure nil
@@ -239,7 +259,7 @@ BEG END"
          :map dired-mode-map
          ("C-s" . dired-isearch-filenames)
          ("C-M-s" . dired-isearch-filenames-regexp)
-         ("=" . my-dired-ediff-marked-files)
+         ("=" . dired-ediff-marked-files)
          ;; needs dired+
          ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
          )
@@ -247,11 +267,6 @@ BEG END"
   (setq dired-listing-switches "-alh")
   (setq dired-dwim-target t)
   ;; useful when dired buffer contains subtree
-  (defun find-file-around (orig-find-file &rest args)
-    (if (eq major-mode 'dired-mode)
-        (let ((default-directory (dired-current-directory)))
-          (apply orig-find-file args))
-      (apply orig-find-file args)))
   ;; tied with ido
   (advice-add 'ido-find-file :around #'find-file-around)
 
@@ -261,12 +276,10 @@ BEG END"
     :if (not (eq system-type 'gnu/linux))
     :config (setq ls-lisp-use-insert-directory-program nil))
   (use-package dired-narrow
-    :ensure t
     :defer t
     :bind (:map dired-mode-map
                 ("/" . dired-narrow)))
   (use-package dired-subtree
-    :ensure t
     :defer t
     :bind (:map dired-mode-map
                 ("i" . dired-subtree-insert)
@@ -277,16 +290,16 @@ BEG END"
 ;;; interactively do things (ido)
 (use-package ido
   :init (ido-mode 1)
+  :bind ("C-x C-v" . ff-find-other-file)
   :config
   (setq ido-enable-flex-matching t)
-  (ido-everywhere t)
-  (global-set-key (kbd "C-x C-v") 'ff-find-other-file))
+  (ido-everywhere t))
 
 
 ;;; undo tree
-;; C-x u     (`undo-tree-visualize')
-;; C-_  C-/  (`undo-tree-undo')
-;; M-_  C-?  (`undo-tree-redo')
+;; C-x u     `undo-tree-visualize'
+;; C-_  C-/  `undo-tree-undo'
+;; M-_  C-?  `undo-tree-redo'
 (use-package undo-tree
   :ensure t
   :defer t
@@ -301,7 +314,11 @@ BEG END"
 (use-package imenu
   :defer t
   :config
-  (setq imenu-auto-rescan 1))
+  (setq imenu-auto-rescan t)
+  (defun imenu-rescan ()
+    "Force imenu rescan by flushing imenu cache."
+    (interactive)
+    (setq imenu--index-alist nil)))
 
 ;;; popup-imenu
 (use-package popup-imenu
@@ -318,8 +335,8 @@ BEG END"
 
 
 (use-package company
-  :ensure t
   :defer t
+  :ensure t
   :diminish company-mode
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
@@ -327,15 +344,24 @@ BEG END"
 ;; company-dabbrev-code completes in code
 ;; company-dabbrev completes in comments/strings
 (use-package company-dabbrev
-  :ensure company
   :defer t
+  :ensure company
   :config (setq company-dabbrev-downcase nil))
+(use-package company-clang
+  :defer t
+  :ensure company
+  :config
+  (add-hook 'c++-mode-hook
+            (lambda () (setq company-clang-arguments '("-std=c++11")))))
 
 
 (use-package flycheck
-  :ensure t
   :defer t
-  :init (add-hook 'after-init-hook 'global-flycheck-mode))
+  :ensure t
+  :init (add-hook 'after-init-hook 'global-flycheck-mode)
+  :config
+  (add-hook 'c++-mode-hook
+            (lambda () (setq flycheck-clang-language-standard "c++11"))))
 
 
 ;; c/c++
