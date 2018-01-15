@@ -249,12 +249,12 @@ vshutdown() { VBoxManage controlvm "$1" acpipowerbutton; }
 # complete -W "$(vagrant --help | awk '/^[[:space:]]/ {print $1}')" vagrant
 
 export PYTHONSTARTUP="$HOME/.pythonrc"
-pip3upgradeall() {
-    python3 -m pip list --outdated | tail -n +3 | awk '{print $1}' | xargs python3 -m pip install -U
-}
-pipupgradeall() {
-    python -m pip list --outdated | tail -n +3 | awk '{print $1}' | xargs python -m pip install -U
-}
+# pip3upgradeall() {
+#     python3 -m pip list --outdated | tail -n +3 | awk '{print $1}' | xargs python3 -m pip install -U # --user
+# }
+# pipupgradeall() {
+#     python -m pip list --outdated | tail -n +3 | awk '{print $1}' | xargs python -m pip install -U # --user
+# }
 
 # personal accounts
 # shellcheck source=/dev/null

@@ -782,10 +782,8 @@ BEG END"
   :after (python)
   :config
   (setq elpy-rpc-python-command "python3")
-  (setq elpy-rpc-backend "jedi")
   ;; prefer flycheck to flymake
   (remove-hook 'elpy-modules 'elpy-module-flymake)
-  (elpy-use-ipython)
   (elpy-enable))
 
 
@@ -937,6 +935,7 @@ BEG END"
   (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
             #'TeX-revert-document-buffer)
   (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
   :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
@@ -949,23 +948,42 @@ BEG END"
   (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
         TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
         TeX-source-correlate-start-server t)
+
   (use-package latex
     :defer t
     :ensure auctex
     :config
     ;; insert {}, [], ()
-    (setq LaTeX-electric-left-right-brace t)))
-;; LaTeX compile   C-c C-a
-;; LaTeX math mode C-c ~
-;; LaTeX insert environment C-c C-e
-;; LaTeX insert item        C-c C-j
+    (setq LaTeX-electric-left-right-brace t))
+
+  (use-package reftex
+    :defer t
+    :config (setq reftex-plug-into-AUCTeX t))
+  )
+;; C-M-a   `LaTeX-find-matching-begin'
+;; C-M-e   `LaTeX-find-matching-end'
+;; C-c =   `reftex-toc' (table of contents, sections)
+
+;; C-c C-a `TeX-command-run-all' (compile all and view)
+;; C-c ~   `LaTeX-math-mode'
+;; C-c C-m `TeX-insert-macro'
+;; C-c C-e `LaTeX-environment' (insert environment)
+;; C-u C-c C-e change current environment (with prefix arg)
+;; C-c .   `LaTeX-mark-environment'
+;; C-c *   `LaTeX-mark-section'
+;; C-c ]   `LaTeX-close-environment'
+;; "C-c C-j" or "M-RET" `LaTeX-insert-item'
+
+;; C-c C-p C-p `preview-at-point'
+;; C-c C-p C-e `preview-environment'
+;; C-c C-p C-r `preview-region'
 
 
 (defun my-latex-setup ()
-    "To be set as mode hook for latex and org modes."
-    (setq-local company-backends
-                (append '((company-math-symbols-latex company-latex-commands))
-                        company-backends)))
+  "To be set as mode hook for latex and org modes."
+  (setq-local company-backends
+              (append '((company-math-symbols-latex company-latex-commands))
+                      company-backends)))
 (use-package company-math
   :defer t
   :init
