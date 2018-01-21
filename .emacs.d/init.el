@@ -974,6 +974,12 @@ BEG END"
 ;; C-c ]   `LaTeX-close-environment'
 ;; "C-c C-j" or "M-RET" `LaTeX-insert-item'
 
+;; C-c C-f     `TeX-font'
+;; C-c C-f C-b (bold text) \textbf{}
+;; C-c C-f C-i (italics text) \textit{}
+;; C-c C-f C-e (emphasized text) \emph{}
+;; C-c C-f C-t (typewriter text) \texttt{}
+
 ;; C-c C-p C-p `preview-at-point'
 ;; C-c C-p C-e `preview-environment'
 ;; C-c C-p C-r `preview-region'

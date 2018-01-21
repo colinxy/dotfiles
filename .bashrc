@@ -16,7 +16,7 @@ export HISTFILESIZE=500000
 export HISTCONTROL=ignoreboth
 
 # command prompt
-export PS1="\u:\w \$ "
+export PS1='\u:\w \$ '
 
 # ls color flag
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -174,6 +174,8 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 # -v : verbose
 # -w : -w "%{http_code} %{content_type} %{size_download}\n"
 #         "%{time_starttransfer}" (time to first byte)
+# -F : form submission, Content-Type: multipart/form-data;
+#      @ file upload, < contents for text field from file
 
 # networking
 alias traceroute='traceroute -n' # don't do reverse lookup
@@ -264,7 +266,7 @@ export PYTHONSTARTUP="$HOME/.pythonrc"
 [ -f "$HOME"/.bash_colors ] && . "$HOME"/.bash_colors
 
 set-title() {
-    echo -e "\033];$*\007"
+    echo -e '\033];'"$*"'\007'
 }
 
 # fun
