@@ -610,7 +610,13 @@ BEG END"
 
 ;;; YASnippet
 (use-package yasnippet
-  :defer t)
+  :defer t
+  :diminish yas-minor-mode
+  :init
+  (add-hook 'java-mode-hook #'yas-minor-mode)
+  (add-hook 'c++-mode-hook #'yas-minor-mode)
+  :config
+  (yas-reload-all))
 
 ;;; async compilation of melpa package
 (use-package async-bytecomp
