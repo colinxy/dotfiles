@@ -27,5 +27,13 @@
   :init (global-nlinum-mode)
   :config (setq nlinum-highlight-current-line t))
 
+(use-package neotree
+  :defer t
+  :bind ("C-x C-d" . neotree-toggle)
+  :config
+  (setq neo-smart-open t)
+  (setq neo-autorefresh nil)
+  (setq neo-theme (if window-system 'icons 'arrow)))
+
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (add-hook 'after-init-hook 'neotree-toggle)

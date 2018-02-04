@@ -7,4 +7,4 @@
                     ----------\n
          time_total:  %{time_total}\n
 
-# curl --limit-rate 1M -w "@curl-profile.txt" -o /dev/null -s http://localhost:12345\n
+# curl --limit-rate 1M -w "@curl-profile.txt" -o /dev/null -s %{url_effective}\n

@@ -73,18 +73,18 @@
 
 ;; https://emacs.stackexchange.com/questions/2347/kill-or-copy-current-line-with-minimal-keystrokes
 ;; C-w : kill current line
-(defun slick-cut (beg end)
+(defun slick-cut (beg end &optional region)
   "When called interactively with no active region, kill a single line instead.
-BEG END"
+BEG END REGION"
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-beginning-position 2)))))
 (advice-add 'kill-region :before #'slick-cut)
 ;; M-w : copy current line
-(defun slick-copy (beg end)
+(defun slick-copy (beg end &optional region)
   "When called interactively with no active region, copy a single line instead.
-BEG END"
+BEG END REGION"
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))
@@ -342,7 +342,7 @@ BEG END"
   (setq dired-listing-switches "-alh")
   (setq dired-dwim-target t)
   ;; useful when dired buffer contains subtree
-  ;; tied with ido
+  ;; TODO: tied with ido
   (advice-add 'ido-find-file :around #'find-file-around)
 
   ;; BSD ls does not support --dired
@@ -361,16 +361,6 @@ BEG END"
                 ("r" . dired-subtree-remove)))
   )
 
-
-;; deprecate neotree in favor of dired-sidebar
-;;; neotree
-;; (use-package neotree
-;;   :defer t
-;;   :bind ("C-x C-d" . neotree-toggle)
-;;   :config
-;;   (setq neo-smart-open t)
-;;   (setq neo-autorefresh nil)
-;;   (setq neo-theme (if window-system 'icons 'arrow)))
 
 (use-package dired-sidebar
   :defer t
@@ -458,6 +448,7 @@ BEG END"
 (use-package ido
   :init (ido-mode 1)
   :bind ("C-x C-v" . ff-find-other-file)
+  :functions ido-everywhere
   :config
   (setq ido-enable-flex-matching t)
   (ido-everywhere t))
@@ -471,7 +462,6 @@ BEG END"
 ;; C-_  C-/  `undo-tree-undo'
 ;; M-_  C-?  `undo-tree-redo'
 (use-package undo-tree
-  :defer t
   :diminish undo-tree-mode
   :init (global-undo-tree-mode)
   :config
@@ -691,6 +681,7 @@ BEG END"
   :bind (:map ggtags-global-mode-map
          ;; also kill buffer
          ("q" . quit-window-kill-buffer))
+  :functions ggtags-eldoc-function
   :init
   (add-hook 'c-mode-common-hook
             (lambda ()
@@ -750,8 +741,6 @@ BEG END"
     :defer t
     :init (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))
   )
-
-;; TODO : replace irony with rtags
 
 
 (defun java-meghanada ()
@@ -827,12 +816,12 @@ BEG END"
   (add-hook 'json-mode-hook 'rainbow-delimiters-mode))
 (use-package slime
   :defer t
-  :init
-  ;; so that M-x run-lisp can work
-  (setq inferior-lisp-program (executable-find "sbcl"))
   :config
-  ;; TODO : requires slime-company
-  (setq slime-contribs '(slime-fancy slime-company)))
+  (setq inferior-lisp-program (executable-find "sbcl"))
+  ;; requires slime-company
+  (setq slime-contribs '(slime-fancy slime-company))
+  (use-package slime-company
+    :defer t))
 
 ;;; Scheme
 ;; M-x run-geiser
@@ -867,7 +856,9 @@ BEG END"
 (use-package utop
   ;; opam install utop
   :defer t
-  :config (setq utop-command "opam config exec -- utop -emacs"))
+  :config
+  ;; `opam config exec' doesn't work
+  (setq utop-command "sh -c \"eval $(opam config env) && utop -emacs\""))
 
 
 ;;; Javascript & HTML & CSS
@@ -942,6 +933,8 @@ BEG END"
             #'TeX-revert-document-buffer)
   (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (add-hook 'TeX-mode-hook 'prettify-symbols-mode)
+  (setq prettify-symbols-unprettify-at-point 'right-edge)
   :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
@@ -1022,6 +1015,10 @@ BEG END"
   (use-package company-ansible
     :defer t
     :init (add-to-list 'company-backends 'company-ansible)))
+
+
+(use-package csv-mode
+  :defer t)
 
 
 ;;; gnuplot mode
