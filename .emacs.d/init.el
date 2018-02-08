@@ -94,10 +94,16 @@ BEG END REGION"
 
 ;; show line number and column number
 (column-number-mode t)
+
+;; show parens without delay
+(setq show-paren-delay 0.0)
 (show-paren-mode 1)
+
 (global-hl-line-mode)
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
 ;; line-number-mode-hook
+
+(transient-mark-mode t)
 
 ;; use DEL to delete selected text
 (delete-selection-mode 1)
@@ -324,6 +330,7 @@ BEG END REGION"
   "Advice `find-file'.  ORIG-FIND-FILE original find file function.  ARGS."
   (if (eq major-mode 'dired-mode)
       (let ((default-directory (dired-current-directory)))
+        ;; dynamic scoping
         (apply orig-find-file args))
     (apply orig-find-file args)))
 
@@ -332,8 +339,6 @@ BEG END REGION"
   :ensure nil
   :bind (("C-x C-j" . dired-jump)
          :map dired-mode-map
-         ("C-s" . dired-isearch-filenames)
-         ("C-M-s" . dired-isearch-filenames-regexp)
          ("=" . dired-ediff-marked-files)
          ;; needs dired+
          ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
@@ -350,6 +355,9 @@ BEG END REGION"
     :ensure nil
     :if (not (eq system-type 'gnu/linux))
     :config (setq ls-lisp-use-insert-directory-program nil))
+  (use-package dired-aux
+    :ensure nil
+    :config (setq dired-isearch-filenames 'dwim))
   (use-package dired-narrow
     :defer t
     :bind (:map dired-mode-map
@@ -528,7 +536,6 @@ BEG END REGION"
 ;; M-x shell
 ;; M-x term
 ;; M-x ansi-term
-;; TODO : get rid of term
 (use-package term
   :defer t
   :bind (("C-c t" . ansi-term)
@@ -553,28 +560,6 @@ BEG END REGION"
     (term-send-left)))
 ;; C-c C-j switch to line mode
 ;; C-c C-k switch to char mode
-(use-package eshell
-  :defer t
-  :config
-  (use-package em-alias
-    :defer t
-    :ensure eshell
-    :config
-    (eshell/alias "vi" "find-file $1")
-    (eshell/alias "ll" "ls -al $*")
-    (eshell/alias "la" "ls -A $*"))
-  (use-package em-hist
-    :defer t
-    :ensure eshell
-    :config
-    (setq eshell-hist-ignoredups t))
-  (use-package em-term
-    :defer t
-    :ensure eshell
-    :config
-    (add-to-list 'eshell-visual-commands "ssh")
-    (add-to-list 'eshell-visual-commands "tail"))
-  )
 
 
 ;;; mutiple cursor
@@ -601,6 +586,7 @@ BEG END REGION"
 ;;; YASnippet
 (use-package yasnippet
   :defer t
+  :functions yas-reload-all
   :diminish yas-minor-mode
   :init
   (add-hook 'java-mode-hook #'yas-minor-mode)
