@@ -470,6 +470,7 @@ BEG END REGION"
 ;; C-_  C-/  `undo-tree-undo'
 ;; M-_  C-?  `undo-tree-redo'
 (use-package undo-tree
+  :ensure t
   :diminish undo-tree-mode
   :init (global-undo-tree-mode)
   :config
