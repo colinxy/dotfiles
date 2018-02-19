@@ -4,6 +4,7 @@
 .emacs.*d/tramp
 .emacs.*d/auto-save-list/
 .emacs.*d/elpa/
+.emacs.*d/lisp/
 .emacs.*d/eshell/
 .emacs.*d/url/
 .emacs.*d/games/

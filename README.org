@@ -344,6 +344,11 @@ amazing c++ documentation, from https://github.com/jeaye/stdman
 more stuff to do
  - http://powerline.readthedocs.io/en/master/usage/shell-prompts.html#bash-prompt
  - fonts
+   #+BEGIN_SRC sh
+
+     sudo apt-get install fonts-powerline
+
+   #+END_SRC
  - http://powerline.readthedocs.io/en/master/configuration.html#quick-setup-guide
  - potiential problem:
    - exit code, git status not showing up

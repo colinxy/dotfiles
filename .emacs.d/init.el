@@ -358,15 +358,26 @@ BEG END REGION"
   (use-package dired-aux
     :ensure nil
     :config (setq dired-isearch-filenames 'dwim))
-  (use-package dired-narrow
-    :defer t
-    :bind (:map dired-mode-map
-                ("/" . dired-narrow)))
+  ;; (use-package dired-narrow
+  ;;   :defer t
+  ;;   :bind (:map dired-mode-map
+  ;;               ("/" . dired-narrow)))
   (use-package dired-subtree
     :defer t
     :bind (:map dired-mode-map
                 ("i" . dired-subtree-insert)
-                ("r" . dired-subtree-remove)))
+                ("k" . dired-subtree-remove)))
+  (use-package dired-filter
+    :defer t
+    :bind (:map dired-mode-map
+                ("." . dired-filter-group-mode))
+    :config
+    (setq dired-filter-group-saved-groups
+          '(("default"
+             ("PDF" (extension . "pdf"))
+             ("LaTeX" (extension "tex" "bib" "sty"))
+             ("Org" (extension . "org"))
+             ("Archives" (extension "zip" "rar" "gz" "bz2" "tar"))))))
   )
 
 
