@@ -1,6 +1,6 @@
 [user]
-	name = Colin Yang
-	email = colinxy@linux.ucla.edu
+    name = Colin Yang
+    email = colinxy@linux.ucla.edu
 [grep]
     lineNumber = true
 [alias]
