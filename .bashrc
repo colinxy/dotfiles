@@ -273,5 +273,5 @@ set-title() {
 # fun
 # history | awk '{a[$2]++} END {for(i in a){print a[i] " " i}}' | sort -rn | head
 # nc -v -l 8080 < afile
-# fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1)
+# fortune | cowsay -f $(find /usr/share/cowsay/ -name '*.cow' | shuf -n1)
 # telnet telehack.com

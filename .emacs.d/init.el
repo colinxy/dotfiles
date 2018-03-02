@@ -476,6 +476,10 @@ BEG END REGION"
 ;; (ivy-mode 1)
 
 
+;; find-file-in-project
+;; (use-package find-file-in-project)
+
+
 ;;; undo tree
 ;; C-x u     `undo-tree-visualize'
 ;; C-_  C-/  `undo-tree-undo'
@@ -775,6 +779,10 @@ BEG END REGION"
   :after (python)
   :config
   (setq elpy-rpc-python-command "python3")
+  (define-key elpy-mode-map (kbd "C-<left>") nil)
+  (define-key elpy-mode-map (kbd "C-<right>") nil)
+  (define-key elpy-mode-map (kbd "C-<up>") nil)
+  (define-key elpy-mode-map (kbd "C-<down>") nil)
   ;; prefer flycheck to flymake
   (remove-hook 'elpy-modules 'elpy-module-flymake)
   (elpy-enable))
