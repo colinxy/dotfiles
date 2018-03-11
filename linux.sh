@@ -11,6 +11,8 @@ battery() { acpi -i; }
 
 # tcp
 # sudo tcptrack -i wlp3s0
+# dns
+# sudo dnscap -i wlp3s0 -g
 
 
 # linux kernel
