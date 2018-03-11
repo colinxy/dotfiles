@@ -9,6 +9,9 @@ _platform="$(python -mplatform)"
 
 battery() { acpi -i; }
 
+# tcp
+# sudo tcptrack -i wlp3s0
+
 
 # linux kernel
 _syscallnum_unistd() {
