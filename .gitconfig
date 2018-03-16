@@ -5,4 +5,5 @@
     lineNumber = true
 [alias]
     st = status
+    di = diff
     dif = diff

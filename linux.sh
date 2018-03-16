@@ -21,7 +21,7 @@ _syscallnum_unistd() {
     # this file also works: <prefix>/arch/x86/entry/syscalls/syscall_64.tbl
     echo "$_platform" | grep -qi ubuntu &&
         unistd=/usr/src/linux-headers-$(uname -r)/include/uapi/asm-generic/unistd.h
-    echo "$_platform" | grep -qi fedora &&
+    echo "$_platform" | grep -qi -e fedora -e redhat &&
         unistd=/usr/src/kernels/$(uname -r)/include/uapi/asm-generic/unistd.h
 
     [ -z "$unistd" ] && { echo "Unknown platform: $_platform" >&2; return 2; }
