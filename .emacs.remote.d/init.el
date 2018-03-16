@@ -66,18 +66,18 @@
 
 ;; https://emacs.stackexchange.com/questions/2347/kill-or-copy-current-line-with-minimal-keystrokes
 ;; C-w : kill current line
-(defun slick-cut (beg end)
+(defun slick-cut (beg end &optional region)
   "When called interactively with no active region, kill a single line instead.
-BEG END"
+BEG END REGION"
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-beginning-position 2)))))
 (advice-add 'kill-region :before #'slick-cut)
 ;; M-w : copy current line
-(defun slick-copy (beg end)
+(defun slick-copy (beg end &optional region)
   "When called interactively with no active region, copy a single line instead.
-BEG END"
+BEG END REGION"
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))
@@ -86,10 +86,14 @@ BEG END"
 (advice-add 'kill-ring-save :before #'slick-copy)
 
 (column-number-mode t)
+;; show parens without delay
+(setq show-paren-delay 0.0)
 (show-paren-mode 1)
 (global-hl-line-mode)
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
 ;; line-number-mode-hook
+
+(transient-mark-mode t)
 
 ;; use DEL to delete selected text
 (delete-selection-mode 1)
@@ -249,6 +253,7 @@ BEG END"
   "Advice `find-file'.  ORIG-FIND-FILE original find file function.  ARGS."
   (if (eq major-mode 'dired-mode)
       (let ((default-directory (dired-current-directory)))
+        ;; dynamic scoping
         (apply orig-find-file args))
     (apply orig-find-file args)))
 
@@ -257,8 +262,6 @@ BEG END"
   :ensure nil
   :bind (("C-x C-j" . dired-jump)
          :map dired-mode-map
-         ("C-s" . dired-isearch-filenames)
-         ("C-M-s" . dired-isearch-filenames-regexp)
          ("=" . dired-ediff-marked-files)
          ;; needs dired+
          ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
@@ -275,6 +278,9 @@ BEG END"
     :ensure nil
     :if (not (eq system-type 'gnu/linux))
     :config (setq ls-lisp-use-insert-directory-program nil))
+  (use-package dired-aux
+    :ensure nil
+    :config (setq dired-isearch-filenames 'dwim))
   (use-package dired-narrow
     :defer t
     :bind (:map dired-mode-map
@@ -283,7 +289,7 @@ BEG END"
     :defer t
     :bind (:map dired-mode-map
                 ("i" . dired-subtree-insert)
-                ("r" . dired-subtree-remove)))
+                ("k" . dired-subtree-remove)))
   )
 
 
@@ -302,7 +308,6 @@ BEG END"
 ;; M-_  C-?  `undo-tree-redo'
 (use-package undo-tree
   :ensure t
-  :defer t
   :diminish undo-tree-mode
   :init (global-undo-tree-mode)
   :config
@@ -353,6 +358,10 @@ BEG END"
   :config
   (add-hook 'c++-mode-hook
             (lambda () (setq company-clang-arguments '("-std=c++11")))))
+(defun company-enable-dabbrev ()
+  "Enable company dabbrev on demand."
+  (interactive)
+  (add-to-list 'company-backends '(company-capf company-dabbrev)))
 
 
 (use-package flycheck

@@ -94,11 +94,9 @@ BEG END REGION"
 
 ;; show line number and column number
 (column-number-mode t)
-
 ;; show parens without delay
 (setq show-paren-delay 0.0)
 (show-paren-mode 1)
-
 (global-hl-line-mode)
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
 ;; line-number-mode-hook
@@ -665,6 +663,10 @@ BEG END REGION"
   :config
   (add-hook 'c++-mode-hook
             (lambda () (setq company-clang-arguments '("-std=c++11")))))
+(defun company-enable-dabbrev ()
+  "Enable company dabbrev on demand."
+  (interactive)
+  (add-to-list 'company-backends '(company-capf company-dabbrev)))
 
 
 (use-package flycheck
