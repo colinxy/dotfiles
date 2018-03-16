@@ -399,7 +399,7 @@ Also, switch to that buffer."
 
 
 ;; themes
-(use-package ample
+(use-package ample-theme
   :ensure ample-theme
   :init
   (load-theme 'ample t))
