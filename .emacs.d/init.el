@@ -463,21 +463,37 @@ BEG END REGION"
 
 
 ;;; interactively do things (ido)
-(use-package ido
-  :init (ido-mode 1)
-  :bind ("C-x C-v" . ff-find-other-file)
-  :functions ido-everywhere
-  :config
-  (setq ido-enable-flex-matching t)
-  (ido-everywhere t))
-
-;; (use-package ivy
-;;   :diminish
+;; (use-package ido
+;;   :init (ido-mode 1)
+;;   :bind ("C-x C-v" . ff-find-other-file)
+;;   :functions ido-everywhere
 ;;   :config
-;;   (ivy-mode 1))
+;;   (setq ido-enable-flex-matching t)
+;;   (ido-everywhere t))
 
-;; (use-package counsel
-;;   :after ivy)
+(use-package flx)                       ;for fuzzy matching
+(use-package ivy
+  :diminish
+  :config
+  (ivy-mode 1)
+  :custom
+  (ivy-use-virtual-buffers t)
+  (ivy-count-format "(%d/%d) "))
+;; when minibuffer is active: C-o  `hydra-ivy/body'
+
+(use-package counsel
+  :after ivy
+  :bind (("M-x" . counsel-M-x)))
+;; C-M-j  `ivy-immediate-done'
+
+(use-package counsel-projectile
+  :after (ivy projectile)
+  :bind (("C-c C-f" . counsel-projectile-find-file)
+         ("C-c C-s" . counsel-projectile-ag)
+         ("C-c b" . counsel-projectile-switch-to-buffer))
+  :config
+  (counsel-projectile-mode))
+;; start projectile with  M-x `projectile-mode'
 
 
 ;;; undo tree
