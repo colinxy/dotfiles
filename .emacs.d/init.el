@@ -368,6 +368,7 @@ BEG END REGION"
   (use-package dired-filter
     :defer t
     :bind (:map dired-mode-map
+                ("," . dired-filter-mode)
                 ("." . dired-filter-group-mode))
     :config
     (setq dired-filter-group-saved-groups
@@ -470,12 +471,13 @@ BEG END REGION"
   (setq ido-enable-flex-matching t)
   (ido-everywhere t))
 
-;; maybe try ivy for a while ?
-;; (ivy-mode 1)
+;; (use-package ivy
+;;   :diminish
+;;   :config
+;;   (ivy-mode 1))
 
-
-;; find-file-in-project
-;; (use-package find-file-in-project)
+;; (use-package counsel
+;;   :after ivy)
 
 
 ;;; undo tree
@@ -564,11 +566,11 @@ BEG END REGION"
          ("M-\"" . my-term-send-left-doublequote))
   :config
   (ansi-color-for-comint-mode-on)
-  (defun my-term-send-left-paren ()
+  (defun my/term-send-left-paren ()
     (interactive)
     (term-send-raw-string "()")
     (term-send-left))
-  (defun my-term-send-left-doublequote ()
+  (defun my/term-send-left-doublequote ()
     (interactive)
     (term-send-raw-string "\"\"")
     (term-send-left)))
@@ -600,7 +602,6 @@ BEG END REGION"
 ;;; YASnippet
 (use-package yasnippet
   :defer t
-  :functions yas-reload-all
   :diminish yas-minor-mode
   :init
   (add-hook 'java-mode-hook #'yas-minor-mode)
@@ -992,7 +993,7 @@ BEG END REGION"
 ;; C-c C-p C-r `preview-region'
 
 
-(defun my-latex-setup ()
+(defun my/latex-setup ()
   "To be set as mode hook for latex and org modes."
   (setq-local company-backends
               (append '((company-math-symbols-latex company-latex-commands))
@@ -1072,12 +1073,12 @@ BEG END REGION"
        (load-file my-theme-terminal))
       (t
        (load-theme 'tango-dark t)))
-(defun my-themes (_theme)
+(defun my/themes (_theme)
   "Command line switch placeholder.")
-(add-to-list 'command-switch-alist '("dark" . my-themes))
-(add-to-list 'command-switch-alist '("light" . my-themes))
-(add-to-list 'command-switch-alist '("modern" . my-themes))
-(add-to-list 'command-switch-alist '("terminal" . my-themes))
+(add-to-list 'command-switch-alist '("dark" . my/themes))
+(add-to-list 'command-switch-alist '("light" . my/themes))
+(add-to-list 'command-switch-alist '("modern" . my/themes))
+(add-to-list 'command-switch-alist '("terminal" . my/themes))
 
 
 ;; custom file load at last
