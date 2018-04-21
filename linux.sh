@@ -8,6 +8,7 @@ _platform="$(python -mplatform)"
 
 
 battery() { acpi -i; }
+alias cpufreq='watch -n1 "cat /proc/cpuinfo | grep \"^[c]pu MHz\""'
 
 # tcp
 # sudo tcptrack -i wlp3s0

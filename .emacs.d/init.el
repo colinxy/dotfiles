@@ -488,8 +488,8 @@ BEG END REGION"
 
 (use-package counsel-projectile
   :after (ivy projectile)
-  :bind (("C-c C-f" . counsel-projectile-find-file)
-         ("C-c C-s" . counsel-projectile-ag)
+  :bind (("C-c f" . counsel-projectile-find-file)
+         ("C-c s" . counsel-projectile-ag)
          ("C-c b" . counsel-projectile-switch-to-buffer))
   :config
   (counsel-projectile-mode))
