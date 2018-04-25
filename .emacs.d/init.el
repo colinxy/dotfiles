@@ -81,6 +81,7 @@ BEG END REGION"
        (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-beginning-position 2)))))
 (advice-add 'kill-region :before #'slick-cut)
+
 ;; M-w : copy current line
 (defun slick-copy (beg end &optional region)
   "When called interactively with no active region, copy a single line instead.
@@ -89,6 +90,7 @@ BEG END REGION"
    (if mark-active
        (list (region-beginning) (region-end))
      (message "Copied line")
+     (push-mark)                 ;avoid point jumping to previous mark
      (list (line-beginning-position) (line-beginning-position 2)))))
 (advice-add 'kill-ring-save :before #'slick-copy)
 
@@ -301,7 +303,7 @@ BEG END REGION"
 
 
 ;; with modification, from https://www.emacswiki.org/emacs/DavidBoon#toc4
-(defun dired-ediff-marked-files ()
+(defun my/dired-ediff-marked-files ()
   "Run ediff on marked files."
   (interactive)
   (let ((marked-files (dired-get-marked-files)))
@@ -329,7 +331,7 @@ BEG END REGION"
   :ensure nil
   :bind (("C-x C-j" . dired-jump)
          :map dired-mode-map
-         ("=" . dired-ediff-marked-files)
+         ("=" . my/dired-ediff-marked-files)
          ;; needs dired+
          ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
          )
@@ -373,9 +375,8 @@ BEG END REGION"
   :defer t
   :bind ("C-x C-d" . dired-sidebar-toggle-sidebar)
   :commands (dired-sidebar-toggle-sidebar)
-  :config
-  (setq dired-sidebar-use-custom-font nil)
   :custom
+  (dired-sidebar-use-custom-font nil)
   (dired-sidebar-width 18))
 
 
@@ -496,7 +497,7 @@ BEG END REGION"
 (use-package counsel-projectile
   :after (ivy projectile)
   :bind (("C-c f" . counsel-projectile-find-file)
-         ("C-c s" . counsel-projectile-rg)
+         ("C-c s" . counsel-projectile-rg) ;ripgrep
          ("C-c b" . counsel-projectile-switch-to-buffer))
   :config
   (counsel-projectile-mode))
@@ -538,7 +539,7 @@ BEG END REGION"
   :defer t
   :config
   (setq imenu-auto-rescan t)
-  (defun imenu-rescan ()
+  (defun my/imenu-rescan ()
     "Force imenu rescan by flushing imenu cache."
     (interactive)
     (setq imenu--index-alist nil)))
@@ -584,8 +585,8 @@ BEG END REGION"
          ("M-p" . term-send-up)
          ("M-n" . term-send-down)
          ("C-y" . term-paste)
-         ("M-(" . my-term-send-left-paren)
-         ("M-\"" . my-term-send-left-doublequote))
+         ("M-(" . my/term-send-left-paren)
+         ("M-\"" . my/term-send-left-doublequote))
   :config
   (ansi-color-for-comint-mode-on)
   (defun my/term-send-left-paren ()
@@ -686,7 +687,7 @@ BEG END REGION"
   :config
   (add-hook 'c++-mode-hook
             (lambda () (setq company-clang-arguments '("-std=c++11")))))
-(defun company-enable-dabbrev ()
+(defun my/company-enable-dabbrev ()
   "Enable company dabbrev on demand."
   (interactive)
   (add-to-list 'company-backends '(company-capf company-dabbrev)))
@@ -707,7 +708,7 @@ BEG END REGION"
 (use-package ggtags
   :bind (:map ggtags-global-mode-map
          ;; also kill buffer
-         ("q" . quit-window-kill-buffer))
+         ("q" . my/quit-window-kill-buffer))
   :functions ggtags-eldoc-function
   :init
   (add-hook 'c-mode-common-hook
@@ -719,7 +720,7 @@ BEG END REGION"
                 (setq-local imenu-create-index-function
                             #'ggtags-build-imenu-index))))
   :config
-  (defun quit-window-kill-buffer ()
+  (defun my/quit-window-kill-buffer ()
     (interactive)
     (quit-window t)))
 
@@ -770,9 +771,10 @@ BEG END REGION"
   )
 
 
-(defun java-meghanada ()
+(defun my/java-meghanada ()
   "Start meghanada on demand."
   (interactive)
+  (meghanada-mode t)
   (add-hook 'java-mode-hook
             '(lambda ()
                (meghanada-mode t))))
