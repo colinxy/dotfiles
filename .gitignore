@@ -11,6 +11,7 @@
 .emacs*.d/image-dired
 .emacs*.d/.org-id-locations
 .emacs*.d/.cask/
+.emacs.d/projectile*
 
 profile-dotemacs.el
 package.el
@@ -20,7 +21,6 @@ package.el
 .emacs*.d/.mc-lists.el
 .emacs*.d/abbrev_defs
 .emacs*.d/network-security.data
-.emacs*.d/projectile-bookmarks.eld
 .emacs*.d/bookmarks
 .emacs*.d/recentf
 .emacs*.d/request

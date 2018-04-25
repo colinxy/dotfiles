@@ -385,7 +385,9 @@ BEG END REGION"
   :bind ("C-x C-d" . dired-sidebar-toggle-sidebar)
   :commands (dired-sidebar-toggle-sidebar)
   :config
-  (setq dired-sidebar-use-custom-font nil))
+  (setq dired-sidebar-use-custom-font nil)
+  :custom
+  (dired-sidebar-width 18))
 
 
 ;;; ag (silver searcher)
@@ -396,6 +398,11 @@ BEG END REGION"
   (setq ag-highlight-search t)
   (setq ag-reuse-window t)
   (setq ag-reuse-buffers t))
+
+
+(use-package rg
+  :defer t
+  :commands rg)
 
 
 ;;; quickrun
@@ -474,7 +481,8 @@ BEG END REGION"
 (use-package flx)                       ;for fuzzy matching
 (use-package ivy
   :diminish
-  :config
+  :bind (("C-c C-r" . ivy-resume))
+  :init
   (ivy-mode 1)
   :custom
   (ivy-use-virtual-buffers t)
@@ -484,16 +492,19 @@ BEG END REGION"
 (use-package counsel
   :after ivy
   :bind (("M-x" . counsel-M-x)))
-;; C-M-j  `ivy-immediate-done'
+;; C-M-j   `ivy-immediate-done'
+;; C-c C-o `ivy-occur': put the current candidates into a new buffer
 
 (use-package counsel-projectile
   :after (ivy projectile)
   :bind (("C-c f" . counsel-projectile-find-file)
-         ("C-c s" . counsel-projectile-ag)
+         ("C-c s" . counsel-projectile-rg)
          ("C-c b" . counsel-projectile-switch-to-buffer))
   :config
   (counsel-projectile-mode))
-;; start projectile with  M-x `projectile-mode'
+;; start projectile ON DEMAND with  M-x `projectile-mode'
+
+(use-package projectile)
 
 
 ;;; undo tree
@@ -884,6 +895,14 @@ BEG END REGION"
   :config
   ;; `opam config exec' doesn't work
   (setq utop-command "sh -c \"eval $(opam config env) && utop -emacs\""))
+
+
+;; Haskell
+(use-package haskell-mode)
+(use-package intero-mode
+  :hook haskell-mode)
+(use-package hindent
+  :hook haskell-mode)
 
 
 ;;; Javascript & HTML & CSS
