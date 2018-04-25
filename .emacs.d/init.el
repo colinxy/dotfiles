@@ -324,14 +324,6 @@ BEG END REGION"
              (ediff-files current-file other-file)))
           (t (message "Mark no more than 3 files to ediff")))))
 
-(defun find-file-around (orig-find-file &rest args)
-  "Advice `find-file'.  ORIG-FIND-FILE original find file function.  ARGS."
-  (if (eq major-mode 'dired-mode)
-      (let ((default-directory (dired-current-directory)))
-        ;; dynamic scoping
-        (apply orig-find-file args))
-    (apply orig-find-file args)))
-
 (use-package dired
   :defer t
   :ensure nil
@@ -344,9 +336,6 @@ BEG END REGION"
   :config
   (setq dired-listing-switches "-alh")
   (setq dired-dwim-target t)
-  ;; useful when dired buffer contains subtree
-  ;; TODO: tied with ido
-  (advice-add 'ido-find-file :around #'find-file-around)
 
   ;; BSD ls does not support --dired
   (use-package ls-lisp
@@ -394,10 +383,10 @@ BEG END REGION"
 (use-package ag
   :defer t
   :commands ag
-  :config
-  (setq ag-highlight-search t)
-  (setq ag-reuse-window t)
-  (setq ag-reuse-buffers t))
+  :custom
+  (ag-highlight-search t)
+  (ag-reuse-window t)
+  (ag-reuse-buffers t))
 
 
 (use-package rg
@@ -486,14 +475,23 @@ BEG END REGION"
   (ivy-mode 1)
   :custom
   (ivy-use-virtual-buffers t)
-  (ivy-count-format "(%d/%d) "))
-;; when minibuffer is active: C-o  `hydra-ivy/body'
+  (ivy-count-format "(%d/%d) ")
+  (ivy-format-function 'ivy-format-function-line))
+;; when minibuffer is active:
+;; C-o     `hydra-ivy/body'
+;; C-M-j   `ivy-immediate-done'
+;; C-c C-o `ivy-occur': put the current candidates into a new buffer
+;;                      useful with counsel-projectile-rg
+;; M-n     `ivy-next-history-element': also picks thing-at-point
+;; M-j     `ivy-yank-word': insert sub-word at point
 
 (use-package counsel
   :after ivy
   :bind (("M-x" . counsel-M-x)))
-;; C-M-j   `ivy-immediate-done'
-;; C-c C-o `ivy-occur': put the current candidates into a new buffer
+
+(use-package projectile
+  :defer t)
+;; start projectile ON DEMAND with  M-x `projectile-mode'
 
 (use-package counsel-projectile
   :after (ivy projectile)
@@ -502,9 +500,6 @@ BEG END REGION"
          ("C-c b" . counsel-projectile-switch-to-buffer))
   :config
   (counsel-projectile-mode))
-;; start projectile ON DEMAND with  M-x `projectile-mode'
-
-(use-package projectile)
 
 
 ;;; undo tree
@@ -651,13 +646,13 @@ BEG END REGION"
   :bind ("C-x g" . magit-status))
 
 ;;; highlight changes
-(use-package diff-hl
-  :defer t
-  :init
-  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-  ;; (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-  ;; (global-diff-hl-mode 1)
-  )
+;; (use-package diff-hl
+;;   :defer t
+;;   :init
+;;   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+;;   ;; (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+;;   ;; (global-diff-hl-mode 1)
+;;   )
 
 ;;; dumb-jump: jump to definition based on regexp
 (use-package dumb-jump
@@ -1036,8 +1031,8 @@ BEG END REGION"
 (use-package company-math
   :defer t
   :init
-  (add-hook 'org-mode-hook 'my-latex-setup)
-  (add-hook 'TeX-mode-hook 'my-latex-setup)
+  (add-hook 'org-mode-hook 'my/latex-setup)
+  (add-hook 'TeX-mode-hook 'my/latex-setup)
   :config
   (add-to-list 'company-backends 'company-math-symbols-unicode))
 
@@ -1046,8 +1041,7 @@ BEG END REGION"
 (use-package yaml-mode
   :defer t
   :bind (:map yaml-mode-map
-         ("C-m" . newline-and-indent)
-         ("C-c C-d" . ansible-doc))
+         ("C-m" . newline-and-indent))
   :config
   ;; requires highlight-indentation
   (add-hook 'yaml-mode-hook 'highlight-indentation-mode)
