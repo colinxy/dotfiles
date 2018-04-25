@@ -27,8 +27,17 @@
 (setq inhibit-startup-message t
       inhibit-startup-echo-area-message "colinxy")
 
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "Emacs ready in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
+
 ;; less frequent garbage collection
-(setq gc-cons-threshold 100000000)        ;100MB
+(setq gc-cons-threshold (* 50 1000 1000))
+(setq gc-cons-percentage 0.6)
 
 ;; backup files
 (setq backup-directory-alist '(("." . "~/.saves"))
@@ -58,9 +67,6 @@
 ;; (setq blink-cursor-blinks 1)
 ;; show prefix key in echo area quicker
 (setq echo-keystrokes 0.1)
-
-;; auto revert if file changes on disk
-(global-auto-revert-mode)
 
 ;; do not indent with tabs
 (setq-default indent-tabs-mode nil)
@@ -171,21 +177,19 @@ BEG END REGION"
   (menu-bar-mode -1))
 (when window-system
   (setq frame-title-format "%b")
-  ;; set font
-  (cond
-   ((member "DejaVu Sans Mono" (font-family-list))
-    (set-face-attribute 'default nil
-                        :font "DejaVu Sans Mono"))
-   ((member "Monaco" (font-family-list))
-    (set-face-attribute 'default nil
-                        :font "Monaco 13")))
-  ;; for Mac OS X >= 10.7
+  ;; ;; set font
+  ;; (cond
+  ;;  ((member "DejaVu Sans Mono" (font-family-list))
+  ;;   (set-face-attribute 'default nil
+  ;;                       :font "DejaVu Sans Mono"))
+  ;;  ((member "Monaco" (font-family-list))
+  ;;   (set-face-attribute 'default nil
+  ;;                       :font "Monaco 13")))
+
   ;; toggle-frame-maximized binded with M-<f10>
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
   ;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
   ;; toggle-frame-fullscreen binded with <f11> (default)
-  ;; (set-frame-parameter nil 'fullscreen 'fullboth) ; alternative
-  ;; <f11> conflicts with mac command, bind it to M-<f11>
   (when (eq system-type 'darwin)
     (global-set-key (kbd "M-<f11>") 'toggle-frame-fullscreen)))
 
@@ -243,6 +247,11 @@ BEG END REGION"
 
 ;; hide useless strings from modeline
 (diminish 'abbrev-mode)
+
+;; auto revert if file changes on disk
+(use-package autorevert
+  :defer 1
+  :config (global-auto-revert-mode))
 
 ;;; jump to position within visible text
 (use-package avy
@@ -468,10 +477,13 @@ BEG END REGION"
 ;;   (setq ido-enable-flex-matching t)
 ;;   (ido-everywhere t))
 
-(use-package flx)                       ;for fuzzy matching
+;; for fuzzy matching
+(use-package flx
+  :defer t)
 (use-package ivy
   :diminish
   :bind (("C-c C-r" . ivy-resume))
+  :defer 1
   :init
   (ivy-mode 1)
   :custom
@@ -510,6 +522,7 @@ BEG END REGION"
 (use-package undo-tree
   :ensure t
   :diminish undo-tree-mode
+  :defer 2
   :init (global-undo-tree-mode)
   :config
   (setq undo-tree-visualizer-timestamps t)
@@ -527,6 +540,7 @@ BEG END REGION"
 
 ;; clipboard problems
 (use-package xclip
+  :defer 1
   :if (cond ((eq system-type 'darwin)
              (executable-find "pbcopy"))
             ((eq system-type 'gnu/linux)
@@ -895,11 +909,14 @@ BEG END REGION"
 
 
 ;; Haskell
-(use-package haskell-mode)
-(use-package intero-mode
-  :hook haskell-mode)
-(use-package hindent
-  :hook haskell-mode)
+(use-package haskell-mode
+  :defer t)
+;; (use-package intero-mode
+;;   :defer t
+;;   :hook haskell-mode)
+;; (use-package hindent
+;;   :defer t
+;;   :hook haskell-mode)
 
 
 ;;; Javascript & HTML & CSS
@@ -1117,7 +1134,7 @@ BEG END REGION"
 (when (file-exists-p custom-file)
   (load custom-file))
 
-(setq gc-cons-threshold 10000000)        ;10MB
+(setq gc-cons-threshold (* 5 1000 1000))
 
 
 ;;; init.el ends here
