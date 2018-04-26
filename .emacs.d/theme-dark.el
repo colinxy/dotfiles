@@ -21,29 +21,53 @@
   (setq solarized-emphasize-indicators t)
   (load-theme 'solarized-dark t))
 
+;;; modeline colors
+;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
+;; works best with dark themes
+(set-face-attribute 'mode-line nil
+                    :underline nil
+                    :overline nil
+                    :foreground "#fdf6e3"
+                    :background "#2aa198"
+                    :box nil)
+(set-face-attribute 'mode-line-inactive nil
+                    :underline nil
+                    :overline nil
+                    :foreground "#fdf6e3"
+                    :background "#1a655f"
+                    :box nil)
+
+;; TODO:
+;; spaceline is the bottleneck to emacs init time, taking 0.5s to load
+
+;;; telephone line does not look as good as spaceline
+
+;; (use-package telephone-line
+;;   :init
+;;   (setq telephone-line-lhs
+;;         '((evil   . (telephone-line-buffer-segment))
+;;           (accent . (telephone-line-major-mode-segment))
+;;           (nil    . (telephone-line-minor-mode-segment))))
+;;   (setq telephone-line-rhs
+;;         '((nil    . (telephone-line-misc-info-segment))
+;;           (accent . (telephone-line-vc-segment))
+;;           (evil   . (telephone-line-airline-position-segment))))
+;;   (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
+;;         telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-left
+;;         telephone-line-primary-right-separator 'telephone-line-cubed-right
+;;         telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
+;;   (telephone-line-mode t))
+
 
 ;;; spaceline
 ;; depends on powerline
+
 (use-package spaceline-config
   :ensure spaceline
   :config
   ;; mac specific, see https://github.com/milkypostman/powerline/issues/54
   (when (eq system-type 'darwin)
     (setq ns-use-srgb-colorspace nil))
-  ;; https://github.com/arranger1044/emacs.d/blob/master/rano/rano-customization.el
-  ;; works best with dark themes
-  (set-face-attribute 'mode-line nil
-                      :underline nil
-                      :overline nil
-                      :foreground "#fdf6e3"
-                      :background "#2aa198"
-                      :box nil)
-  (set-face-attribute 'mode-line-inactive nil
-                      :underline nil
-                      :overline nil
-                      :foreground "#fdf6e3"
-                      :background "#1a655f"
-                      :box nil)
   (setq powerline-default-separator (if window-system 'wave 'bar))
 
   ;; adding page number to line-column segment
