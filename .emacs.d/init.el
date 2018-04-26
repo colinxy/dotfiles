@@ -240,6 +240,7 @@ BEG END REGION"
 (require 'diminish)
 (require 'bind-key)
 ;; (setq use-package-always-ensure t)
+(setq use-package-verbose t)
 
 ;; hide useless strings from modeline
 (diminish 'abbrev-mode)
@@ -379,7 +380,7 @@ BEG END REGION"
 (use-package dired-sidebar
   :defer t
   :bind ("C-x C-d" . dired-sidebar-toggle-sidebar)
-  :commands (dired-sidebar-toggle-sidebar)
+  :commands dired-sidebar-toggle-sidebar
   :custom
   (dired-sidebar-use-custom-font nil)
   (dired-sidebar-width 18))
@@ -500,6 +501,7 @@ BEG END REGION"
 
 (use-package projectile
   :defer t
+  :diminish projectile-mode
   :bind (("C-c v" . projectile-find-other-file)))
 ;; start projectile ON DEMAND with  M-x `projectile-mode'
 
@@ -631,8 +633,9 @@ BEG END REGION"
   :config
   (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "XXX"))
   (defun my/fic-small-file ()
-    "Fontifying a large file is slow."
-    (when (< (buffer-size) (* 10 1024))
+    "Fontifying a large C++ file is slow."
+    (unless (and (derived-mode-p 'c-mode 'c++-mode)
+                 (> (buffer-size) (* 10 1024)))
       (fic-mode))))
 
 
@@ -685,7 +688,7 @@ BEG END REGION"
 (use-package company
   :defer t
   :ensure t
-  ;; :diminish company-mode
+  :diminish company-mode
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
   (setq company-idle-delay 0.1))
