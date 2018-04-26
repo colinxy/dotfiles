@@ -44,6 +44,20 @@ Reference: https://github.com/raxod502/radian/issues/180
 
 #+END_SRC
 
+** Emacs on Linux
+
+Disable useless GUI components. Reference same as above, also
+https://www.gnu.org/software/emacs/manual/html_node/emacs/Table-of-Resources.html
+
+See =.Xresources= for details. Use the below command to reload the
+resource file.
+
+#+BEGIN_SRC bash
+
+  xrdb -merge ~/.Xresources
+
+#+END_SRC
+
 ** Emacs in Terminal
 
 control sequence get pasted with =Command-v=

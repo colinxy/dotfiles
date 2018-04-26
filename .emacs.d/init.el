@@ -36,8 +36,11 @@
                      gcs-done)))
 
 ;; less frequent garbage collection
-(setq gc-cons-threshold (* 50 1000 1000))
+(setq gc-cons-threshold (* 50 1024 1024))
 (setq gc-cons-percentage 0.6)
+(run-with-idle-timer
+ 1 nil
+ (lambda () (setq gc-cons-threshold (* 5 1024 1024))))
 
 ;; backup files
 (setq backup-directory-alist '(("." . "~/.saves"))
@@ -177,14 +180,7 @@ BEG END REGION"
   (menu-bar-mode -1))
 (when window-system
   (setq frame-title-format "%b")
-  ;; ;; set font
-  ;; (cond
-  ;;  ((member "DejaVu Sans Mono" (font-family-list))
-  ;;   (set-face-attribute 'default nil
-  ;;                       :font "DejaVu Sans Mono"))
-  ;;  ((member "Monaco" (font-family-list))
-  ;;   (set-face-attribute 'default nil
-  ;;                       :font "Monaco 13")))
+  ;; set fonts using X resources on Linux
 
   ;; toggle-frame-maximized binded with M-<f10>
   ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -1133,8 +1129,6 @@ BEG END REGION"
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
-
-(setq gc-cons-threshold (* 5 1000 1000))
 
 
 ;;; init.el ends here
