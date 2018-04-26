@@ -499,11 +499,11 @@ BEG END REGION"
   :bind (("M-x" . counsel-M-x)))
 
 (use-package projectile
-  :defer t)
+  :defer t
+  :bind (("C-c v" . projectile-find-other-file)))
 ;; start projectile ON DEMAND with  M-x `projectile-mode'
 
 (use-package counsel-projectile
-  :after (ivy projectile)
   :bind (("C-c f" . counsel-projectile-find-file)
          ("C-c s" . counsel-projectile-rg) ;ripgrep
          ("C-c b" . counsel-projectile-switch-to-buffer))
@@ -627,9 +627,13 @@ BEG END REGION"
 ;;; highlight TODO/FIXME
 (use-package fic-mode
   :defer t
-  :init (add-hook 'prog-mode-hook 'fic-mode)
+  :hook (prog-mode . my/fic-small-file)
   :config
-  (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "XXX")))
+  (setq fic-highlighted-words '("FIXME" "TODO" "BUG" "XXX"))
+  (defun my/fic-small-file ()
+    "Fontifying a large file is slow."
+    (when (< (buffer-size) (* 10 1024))
+      (fic-mode))))
 
 
 ;;; YASnippet
