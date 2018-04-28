@@ -16,11 +16,11 @@
   :init
   (setq telephone-line-lhs
         '((accent . (telephone-line-buffer-segment))
-          (nil    . (telephone-line-airline-position-segment))
+          (nil    . (telephone-line-vc-segment))
           (accent . (telephone-line-minor-mode-segment))
           (nil    . (telephone-line-misc-info-segment))))
   (setq telephone-line-rhs
-        '((nil    . (telephone-line-vc-segment))
+        '((nil    . (telephone-line-position-segment))
           (accent . (telephone-line-major-mode-segment))))
   (let* ((style (if window-system "cubed" "utf-abs"))
          (primary-left    (intern (concat "telephone-line-" style "-left")))
@@ -36,3 +36,7 @@
 
 ;; (require 'hl-line)
 ;; (set-face-attribute hl-line-face nil :background "color-16")
+
+
+(provide 'theme-terminal)
+;;; theme-terminal ends here

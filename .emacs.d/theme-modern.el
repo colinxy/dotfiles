@@ -37,3 +37,7 @@
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (add-hook 'after-init-hook 'neotree-toggle)
+
+
+(provide 'theme-modern)
+;;; theme-modern ends here

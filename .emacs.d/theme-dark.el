@@ -75,3 +75,7 @@
   (spaceline-toggle-buffer-id-on)
   (spaceline-toggle-which-function-on)
   )
+
+
+(provide 'theme-dark)
+;;; theme-dark ends here

@@ -688,7 +688,7 @@ BEG END REGION"
   :defer t
   :ensure t
   :diminish company-mode
-  :init (add-hook 'after-init-hook 'global-company-mode)
+  :hook (after-init . global-company-mode)
   :config
   (setq company-idle-delay 0.1))
 ;; company-dabbrev-code completes in code
