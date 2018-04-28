@@ -16,6 +16,7 @@
 ;; When starting Emacs for the first time, uncomment
 ;; (setq use-package-always-ensure t), and all the packages will be
 ;; installed automatically
+;;
 ;;; Code:
 
 
@@ -250,16 +251,16 @@ BEG END REGION"
   :defer 1
   :config (global-auto-revert-mode))
 
-;;; jump to position within visible text
-(use-package avy
-  :defer t
-  :bind ("C-;" . avy-goto-char-2))
-
 ;; EasyPG Assistant
 (use-package epa
   :defer 5
   ;; enter passphrase through the minibuffer
   :config (setq epa-pinentry-mode 'loopback))
+
+(use-package recentf
+  :defer 1
+  :custom
+  (recentf-max-saved-items 500))
 
 ;; ibuffer instead of buffer list
 (use-package ibuffer
@@ -269,15 +270,8 @@ BEG END REGION"
          ("U" . ibuffer-unmark-all))
   :config
   ;; from http://martinowen.net/blog/2010/02/03/tips-for-emacs-ibuffer.html
-  (add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode)
-  ;; (add-hook 'ibuffer-mode-hook
-  ;;           (lambda ()
-  ;;             (ibuffer-switch-to-saved-filter-groups "default")))
-  ;; (setq ibuffer-saved-filter-groups
-  ;;       '(("default"
-  ;;          ("Special" (name . "^\*.*\*$")))))
-  ;; (setq ibuffer-show-empty-filter-groups nil)
-  )
+  ;; automatically keeps the buffer list up to date
+  (add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode))
 (use-package ibuffer-vc
   :defer t
   :init
@@ -290,6 +284,11 @@ BEG END REGION"
          ("M-v" . View-scroll-half-page-backward)
          ;; use with prefix argument: C-u 50 C-%
          ("C-%" . View-goto-percent)))
+
+(use-package which-func
+  :defer 1
+  :config
+  (which-function-mode t))
 
 ;; compile
 (global-set-key (kbd "M-g M-c") 'compile)
@@ -480,7 +479,6 @@ BEG END REGION"
 (use-package ivy
   :diminish
   :bind (("C-c C-r" . ivy-resume))
-  :defer 1
   :init
   (ivy-mode 1)
   :custom
@@ -499,6 +497,11 @@ BEG END REGION"
   :after ivy
   :bind (("M-x" . counsel-M-x)))
 
+;;; jump to position within visible text
+(use-package avy
+  :defer t
+  :bind ("C-;" . avy-goto-char-2))
+
 (use-package projectile
   :defer t
   :diminish projectile-mode
@@ -508,9 +511,7 @@ BEG END REGION"
 (use-package counsel-projectile
   :bind (("C-c f" . counsel-projectile-find-file)
          ("C-c s" . counsel-projectile-rg) ;ripgrep
-         ("C-c b" . counsel-projectile-switch-to-buffer))
-  :config
-  (counsel-projectile-mode))
+         ("C-c b" . counsel-projectile-switch-to-buffer)))
 
 
 ;;; undo tree
@@ -520,20 +521,19 @@ BEG END REGION"
 (use-package undo-tree
   :ensure t
   :diminish undo-tree-mode
-  :defer 2
-  :init (global-undo-tree-mode)
+  :defer 1
   :config
   (setq undo-tree-visualizer-timestamps t)
-  (setq undo-tree-visualizer-diff t))
+  (setq undo-tree-visualizer-diff t)
+  (global-undo-tree-mode))
 
 
 ;;; winner-mode
-;; C-c left  `winner-undo'
-;; C-c right `winner-redo'
-(use-package winner-mode
+;; C-c <left>  `winner-undo'
+;; C-c <right> `winner-redo'
+(use-package winner
   :defer 5
-  :ensure winner
-  :init (winner-mode 1))
+  :config (winner-mode 1))
 
 
 ;; clipboard problems
@@ -543,7 +543,7 @@ BEG END REGION"
              (executable-find "pbcopy"))
             ((eq system-type 'gnu/linux)
              (executable-find "xclip")))
-  :init (xclip-mode 1))
+  :config (xclip-mode 1))
 
 
 ;; imenu
@@ -643,20 +643,17 @@ BEG END REGION"
 (use-package yasnippet
   :defer t
   :diminish yas-minor-mode
-  :init
-  (add-hook 'java-mode-hook #'yas-minor-mode)
-  (add-hook 'c++-mode-hook #'yas-minor-mode)
+  :hook ((java-mode . yas-minor-mode)
+         (c++-mode  . yas-minor-mode))
   :config
   (yas-reload-all))
 
 ;;; async compilation of melpa package
 (use-package async-bytecomp
-  :defer 5
-  :ensure async
-  :init
-  (async-bytecomp-package-mode 1)
+  :defer 3
   :config
-  (setq async-bytecomp-allowed-packages '(all)))
+  (setq async-bytecomp-allowed-packages '(all))
+  (async-bytecomp-package-mode 1))
 
 ;;; magit
 (use-package magit
@@ -713,7 +710,7 @@ BEG END REGION"
 (use-package flycheck
   :defer t
   :ensure t
-  :init (add-hook 'after-init-hook 'global-flycheck-mode)
+  :hook (after-init . global-flycheck-mode)
   :config
   (add-hook 'c++-mode-hook
             (lambda () (setq flycheck-clang-language-standard "c++11"))))
@@ -726,7 +723,6 @@ BEG END REGION"
   :bind (:map ggtags-global-mode-map
          ;; also kill buffer
          ("q" . my/quit-window-kill-buffer))
-  :functions ggtags-eldoc-function
   :init
   (add-hook 'c-mode-common-hook
             (lambda ()
@@ -763,7 +759,7 @@ BEG END REGION"
 ;; requires libclang
 (use-package irony
   :defer t
-  :init
+  ;; :init
   ;; (add-hook 'c++-mode-hook 'irony-mode)
   ;; (add-hook 'c-mode-hook 'irony-mode)
   ;; LOAD IRONY MODE ON DEMAND WITH M-x irony-mode
@@ -772,7 +768,6 @@ BEG END REGION"
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
   ;; company version >= `0.8.4' include these commands by default
   ;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-
   (use-package irony-eldoc
     :defer t
     :init (add-hook 'irony-mode-hook 'irony-eldoc))
@@ -788,16 +783,15 @@ BEG END REGION"
   )
 
 
+;; a java development environment that just works
+(use-package meghanada
+  :defer t)
+;; load meghanada on demand
 (defun my/java-meghanada ()
   "Start meghanada on demand."
   (interactive)
   (meghanada-mode t)
-  (add-hook 'java-mode-hook
-            '(lambda ()
-               (meghanada-mode t))))
-;; a java development environment that just works
-(use-package meghanada
-  :defer t)
+  (add-hook 'java-mode-hook (lambda () (meghanada-mode t))))
 
 ;; groovy-mode works well for gradle
 (use-package groovy-mode
@@ -818,7 +812,7 @@ BEG END REGION"
         ;; pip3 install rlipython
         python-shell-interpreter-args "-i --TerminalIPythonApp.interactive_shell_class=rlipython.TerminalInteractiveShell"))
 
-;; Start with M-x elpy-enable
+;; TODO: start elpy on demand with M-x elpy-enable
 (use-package elpy
   :after (python)
   :config
@@ -834,6 +828,7 @@ BEG END REGION"
 
 ;;; Ruby
 ;; inf-ruby: repl integration
+;; (inf-ruby-console-auto)
 ;; M-x inf-ruby (or C-c C-s) to start ruby process
 ;; robe-mode: code navigation, completion
 ;; M-x robe-start (after inf-ruby is running)
@@ -844,14 +839,7 @@ BEG END REGION"
   :bind (:map ruby-mode-map
          ("C-M-p" . backward-list)
          ("C-M-n" . forward-list))
-  ;; :init (inf-ruby-console-auto)
-  :config
-  (add-hook 'ruby-mode-hook 'eldoc-mode))
-(use-package robe
-  :defer t
-  :init (add-hook 'ruby-mode-hook 'robe-mode)
-  ;; company-robe contained within robe package
-  :config (add-to-list 'company-backends 'company-robe))
+  :hook (ruby-mode . eldoc-mode))
 
 
 ;;; Common Lisp
@@ -860,10 +848,9 @@ BEG END REGION"
 ;; (setq lisp-indent-function 'common-lisp-indent-function)
 (use-package rainbow-delimiters
   :defer t
-  :init
-  (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'json-mode-hook 'rainbow-delimiters-mode))
+  :hook ((lisp-mode       . rainbow-delimiters-mode)
+         (emacs-lisp-mode . rainbow-delimiters-mode)
+         (json-mode       . rainbow-delimiters-mode)))
 (use-package slime
   :defer t
   :config
@@ -885,8 +872,6 @@ BEG END REGION"
           ;; guile
           ))
   )
-;; when using minimal racket from homebrew
-;; brew install racket
 ;; raco pkg install compatibility-lib --auto  # not so complete
 ;; raco pkg install drracket                  # everything
 
@@ -900,7 +885,7 @@ BEG END REGION"
 (use-package merlin
   ;; opam install merlin
   :defer t
-  :init (add-hook 'tuareg-mode-hook 'merlin-mode)
+  :hook (tuareg-mode . merlin-mode)
   ;; merlin-company added by merlin.el
   )
 (use-package utop
@@ -909,17 +894,6 @@ BEG END REGION"
   :config
   ;; `opam config exec' doesn't work
   (setq utop-command "sh -c \"eval $(opam config env) && utop -emacs\""))
-
-
-;; Haskell
-(use-package haskell-mode
-  :defer t)
-;; (use-package intero-mode
-;;   :defer t
-;;   :hook haskell-mode)
-;; (use-package hindent
-;;   :defer t
-;;   :hook haskell-mode)
 
 
 ;;; Javascript & HTML & CSS
@@ -931,13 +905,6 @@ BEG END REGION"
   ;; :init (add-hook 'js2-mode-hook 'subword-mode)
   :config
   (setq js-indent-level 2)
-  ;; requires tern: npm install -g tern
-  ;; add ~/.tern-project to get tern working
-  (add-hook 'js2-mode-hook 'tern-mode)
-  ;; company-tern
-  (use-package company-tern
-    :defer t
-    :init (add-to-list 'company-backends 'company-tern))
   ;; flycheck support for eslint
   ;; flycheck will automatically load eslint if .eslintrc exists
   ;; (flycheck-add-mode 'javascript-eslint 'js2-mode)
@@ -987,16 +954,15 @@ BEG END REGION"
   :defer t
   :ensure auctex
   :functions (TeX-revert-document-buffer)
-  :init
-  (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
-  ;; Update PDF buffers after successful LaTeX runs
-  (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
-            #'TeX-revert-document-buffer)
-  (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-  (add-hook 'TeX-mode-hook 'prettify-symbols-mode)
-  (setq prettify-symbols-unprettify-at-point 'right-edge)
+  :hook ((LaTeX-mode . outline-minor-mode)
+         ;; Update PDF buffers after successful LaTeX runs
+         (TeX-after-TeX-LaTeX-command-finished . TeX-revert-document-buffer)
+         ;; synctex
+         (LaTeX-mode . TeX-source-correlate-mode)
+         (LaTeX-mode . turn-on-reftex)
+         (TeX-mode   . prettify-symbols-mode))
   :config
+  (setq prettify-symbols-unprettify-at-point 'right-edge)
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq TeX-PDF-mode t)                 ;pdflatex
@@ -1052,9 +1018,8 @@ BEG END REGION"
                       company-backends)))
 (use-package company-math
   :defer t
-  :init
-  (add-hook 'org-mode-hook 'my/latex-setup)
-  (add-hook 'TeX-mode-hook 'my/latex-setup)
+  :hook ((org-mode . my/latex-setup)
+         (TeX-mode . my/latex-setup))
   :config
   (add-to-list 'company-backends 'company-math-symbols-unicode))
 
@@ -1075,10 +1040,6 @@ BEG END REGION"
   (use-package company-ansible
     :defer t
     :init (add-to-list 'company-backends 'company-ansible)))
-
-
-(use-package csv-mode
-  :defer t)
 
 
 ;;; gnuplot mode
