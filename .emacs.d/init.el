@@ -691,7 +691,8 @@ BEG END REGION"
   :diminish company-mode
   :hook (after-init . global-company-mode)
   :config
-  (setq company-idle-delay 0.1))
+  (setq company-idle-delay 0.1)
+  (setq company-tooltip-align-annotations t))
 ;; company-dabbrev-code completes in code
 ;; company-dabbrev completes in comments/strings
 (use-package company-dabbrev
@@ -829,22 +830,6 @@ BEG END REGION"
   (elpy-enable))
 
 
-;;; Ruby
-;; inf-ruby: repl integration
-;; (inf-ruby-console-auto)
-;; M-x inf-ruby (or C-c C-s) to start ruby process
-;; robe-mode: code navigation, completion
-;; M-x robe-start (after inf-ruby is running)
-;; then C-c C-l to load current ruby file
-;; (add-hook 'ruby-mode-hook 'subword-mode)
-(use-package ruby-mode
-  :defer t
-  :bind (:map ruby-mode-map
-         ("C-M-p" . backward-list)
-         ("C-M-n" . forward-list))
-  :hook (ruby-mode . eldoc-mode))
-
-
 ;;; Common Lisp
 ;; M-x slime
 ;; slime handles indent correctly
@@ -879,6 +864,26 @@ BEG END REGION"
 ;; raco pkg install drracket                  # everything
 
 
+(use-package rust
+  :defer t
+  :hook (rust-mode . flycheck-rust-setup))
+(use-package flycheck-rust
+  :after (rust))
+;; could be slow (compiling stuff), load racer on demand
+(use-package racer
+  :hook ((racer-mode . eldoc-mode)
+         (racer-mode . company-mode))
+  :config
+  (setq racer-rust-src-path
+        (concat (string-trim (shell-command-to-string "rustc --print sysroot"))
+                "/lib/rustlib/src/rust/src")))
+(defun my/rust-racer ()
+  "Start rust racer on demand."
+  (interactive)
+  (racer-mode)
+  (add-hook 'rust-mode-hook racer-mode))
+
+
 ;;; OCaml
 ;; tuareg, merlin (minor mode)
 ;; install opam
@@ -897,6 +902,22 @@ BEG END REGION"
   :config
   ;; `opam config exec' doesn't work
   (setq utop-command "sh -c \"eval $(opam config env) && utop -emacs\""))
+
+
+;;; Ruby
+;; inf-ruby: repl integration
+;; (inf-ruby-console-auto)
+;; M-x inf-ruby (or C-c C-s) to start ruby process
+;; robe-mode: code navigation, completion
+;; M-x robe-start (after inf-ruby is running)
+;; then C-c C-l to load current ruby file
+;; (add-hook 'ruby-mode-hook 'subword-mode)
+(use-package ruby-mode
+  :defer t
+  :bind (:map ruby-mode-map
+         ("C-M-p" . backward-list)
+         ("C-M-n" . forward-list))
+  :hook (ruby-mode . eldoc-mode))
 
 
 ;;; Javascript & HTML & CSS
