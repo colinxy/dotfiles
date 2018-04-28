@@ -249,6 +249,7 @@ BEG END REGION"
 ;; auto revert if file changes on disk
 (use-package autorevert
   :defer 1
+  :diminish auto-revert-mode
   :config (global-auto-revert-mode))
 
 ;; EasyPG Assistant

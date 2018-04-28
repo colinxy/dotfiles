@@ -40,25 +40,6 @@
 ;; TODO:
 ;; spaceline is the bottleneck to emacs init time, taking 0.5s to load
 
-;;; telephone line does not look as good as spaceline
-
-;; (use-package telephone-line
-;;   :init
-;;   (setq telephone-line-lhs
-;;         '((evil   . (telephone-line-buffer-segment))
-;;           (accent . (telephone-line-major-mode-segment))
-;;           (nil    . (telephone-line-minor-mode-segment))))
-;;   (setq telephone-line-rhs
-;;         '((nil    . (telephone-line-misc-info-segment))
-;;           (accent . (telephone-line-vc-segment))
-;;           (evil   . (telephone-line-airline-position-segment))))
-;;   (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
-;;         telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-left
-;;         telephone-line-primary-right-separator 'telephone-line-cubed-right
-;;         telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
-;;   (telephone-line-mode t))
-
-
 ;;; spaceline
 ;; depends on powerline
 
