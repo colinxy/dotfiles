@@ -15,7 +15,8 @@
 ;;
 ;; When starting Emacs for the first time, uncomment
 ;; (setq use-package-always-ensure t), and all the packages will be
-;; installed automatically
+;; installed automatically.
+;; Uncomment (setq use-package-verbose t) to debug package loading.
 ;;
 ;;; Code:
 
@@ -241,7 +242,7 @@ BEG END REGION"
 (require 'diminish)
 (require 'bind-key)
 ;; (setq use-package-always-ensure t)
-(setq use-package-verbose t)
+;; (setq use-package-verbose t)
 
 ;; hide useless strings from modeline
 (diminish 'abbrev-mode)

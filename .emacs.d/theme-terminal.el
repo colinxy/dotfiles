@@ -22,10 +22,15 @@
   (setq telephone-line-rhs
         '((nil    . (telephone-line-vc-segment))
           (accent . (telephone-line-major-mode-segment))))
-  (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
-        telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-left
-        telephone-line-primary-right-separator 'telephone-line-cubed-right
-        telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
+  (let* ((style (if window-system "cubed" "utf-abs"))
+         (primary-left    (intern (concat "telephone-line-" style "-left")))
+         (secondary-left  (intern (concat "telephone-line-" style "-hollow-left")))
+         (primary-right   (intern (concat "telephone-line-" style "-right")))
+         (secondary-right (intern (concat "telephone-line-" style "-hollow-right"))))
+    (setq telephone-line-primary-left-separator    primary-left
+          telephone-line-secondary-left-separator  secondary-left
+          telephone-line-primary-right-separator   primary-right
+          telephone-line-secondary-right-separator secondary-right))
   (telephone-line-mode t))
 
 
