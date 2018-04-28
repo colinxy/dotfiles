@@ -34,9 +34,5 @@
   (telephone-line-mode t))
 
 
-;; (require 'hl-line)
-;; (set-face-attribute hl-line-face nil :background "color-16")
-
-
 (provide 'theme-terminal)
 ;;; theme-terminal ends here

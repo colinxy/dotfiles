@@ -653,6 +653,7 @@ BEG END REGION"
 ;;; async compilation of melpa package
 (use-package async-bytecomp
   :defer 3
+  :ensure async
   :config
   (setq async-bytecomp-allowed-packages '(all))
   (async-bytecomp-package-mode 1))
