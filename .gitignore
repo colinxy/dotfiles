@@ -5,7 +5,8 @@
 .emacs*.d/auto-save-list/
 .emacs*.d/elpa/
 .emacs*.d/lisp/
-.emacs*.d/eshell/
+.emacs*.d/eshell/*
+!.emacs*.d/eshell/alias
 .emacs*.d/url/
 .emacs*.d/games/
 .emacs*.d/image-dired

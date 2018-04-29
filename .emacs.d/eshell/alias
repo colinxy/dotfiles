@@ -1,0 +1,4 @@
+alias la ls -A $*
+alias ll ls -alh $*
+alias emacs find-file $1
+alias vi find-file $1

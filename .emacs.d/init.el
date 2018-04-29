@@ -585,34 +585,34 @@ BEG END REGION"
 
 
 ;;; shell integration
-;; M-x eshell
-;; M-x shell
-;; M-x term
-;; M-x ansi-term
+;; M-x eshell : quick shell session with lisp capability
+;; M-x term   : (or ansi-term) available for eshell-visual-command
 (use-package term
   :defer t
-  :bind (("C-c t" . ansi-term)
-         :map term-mode-map
+  :bind (:map term-mode-map
          ("M-p" . term-send-up)
          ("M-n" . term-send-down)
          :map term-raw-map
          ("M-p" . term-send-up)
          ("M-n" . term-send-down)
-         ("C-y" . term-paste)
-         ("M-(" . my/term-send-left-paren)
-         ("M-\"" . my/term-send-left-doublequote))
+         ("C-y" . term-paste))
   :config
-  (ansi-color-for-comint-mode-on)
-  (defun my/term-send-left-paren ()
-    (interactive)
-    (term-send-raw-string "()")
-    (term-send-left))
-  (defun my/term-send-left-doublequote ()
-    (interactive)
-    (term-send-raw-string "\"\"")
-    (term-send-left)))
-;; C-c C-j switch to line mode
-;; C-c C-k switch to char mode
+  (ansi-color-for-comint-mode-on))
+;; C-c C-j  `term-line-mode'   edit as in emacs
+;; C-c C-k  `term-char-mode'  "raw mode", just term commands
+(use-package eshell
+  :defer t
+  :defines (eshell-hist-ignoredups eshell-visual-commands)
+  :hook (eshell-mode . (lambda ()
+                         ;; BUT they make emacs slow (emacs buffers I/O)
+                         ;; switch to term when executing these commands
+                         (add-to-list 'eshell-visual-commands "ssh")
+                         (add-to-list 'eshell-visual-commands "tail")
+                         (add-to-list 'eshell-visual-commands "htop")))
+  :config
+  ;; eshell history
+  (setq eshell-hist-ignoredups t)
+  (setq eshell-scroll-to-bottom-on-input t))
 
 
 ;;; mutiple cursor
@@ -662,15 +662,6 @@ BEG END REGION"
 (use-package magit
   :defer t
   :bind ("C-x g" . magit-status))
-
-;;; highlight changes
-;; (use-package diff-hl
-;;   :defer t
-;;   :init
-;;   (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-;;   ;; (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-;;   ;; (global-diff-hl-mode 1)
-;;   )
 
 ;;; dumb-jump: jump to definition based on regexp
 (use-package dumb-jump
