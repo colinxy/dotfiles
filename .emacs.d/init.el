@@ -81,6 +81,7 @@
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
 ;; (global-unset-key (kbd "M-)"))
+(global-unset-key (kbd "C-x C-n"))
 
 ;; https://emacs.stackexchange.com/questions/2347/kill-or-copy-current-line-with-minimal-keystrokes
 ;; C-w : kill current line
@@ -480,7 +481,10 @@ BEG END REGION"
   :defer t)
 (use-package ivy
   :diminish
-  :bind (("C-c C-r" . ivy-resume))
+  :bind (("C-c C-r" . ivy-resume)
+         :map ivy-occur-mode-map
+         ("n" . ivy-occur-next-line)
+         ("p" . ivy-occur-previous-line))
   :init
   (ivy-mode 1)
   :custom
@@ -497,7 +501,9 @@ BEG END REGION"
 
 (use-package counsel
   :after ivy
-  :bind (("M-x" . counsel-M-x)))
+  :bind (("M-x"   . counsel-M-x)
+         ("C-c g" . counsel-git-grep)
+         ("C-c i" . counsel-imenu)))
 
 ;;; jump to position within visible text
 (use-package avy
@@ -508,7 +514,6 @@ BEG END REGION"
   :defer t
   :diminish projectile-mode
   :bind (("C-c v" . projectile-find-other-file)))
-;; start projectile ON DEMAND with  M-x `projectile-mode'
 
 (use-package counsel-projectile
   :bind (("C-c f" . counsel-projectile-find-file)
@@ -934,6 +939,7 @@ BEG END REGION"
          ("\\.xml\\'" . web-mode)
          ("\\.css\\'" . web-mode)
          ("\\.scss\\'" . web-mode)
+         ("\\.php\\'" . web-mode)
          ("\\.erb\\'" . web-mode))
   :config
   (setq web-mode-markup-indent-offset 2)

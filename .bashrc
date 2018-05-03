@@ -50,6 +50,8 @@ alias le=less
 alias lesss=less
 alias tree='tree -C'
 
+sudok() { sudo "$@"; sudo -K; } # sudo -K clears cached credentials
+
 # programmable completion
 bash_completion=/etc/bash_completion
 if [[ "$OSTYPE" == "darwin"* ]]; then
