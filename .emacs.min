@@ -13,7 +13,11 @@
       inhibit-startup-echo-area-message "colinxy")
 
 ;; less frequent garbage collection
-(setq gc-cons-threshold 10000000)        ;10MB
+(setq gc-cons-threshold (* 50 1024 1024))
+(setq gc-cons-percentage 0.6)
+(run-with-idle-timer
+ 1 nil
+ (lambda () (setq gc-cons-threshold (* 5 1024 1024))))
 
 ;; backup files
 (setq backup-directory-alist '(("." . "~/.saves"))
@@ -55,33 +59,60 @@
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
 ;; (global-unset-key (kbd "M-)"))
+(global-unset-key (kbd "C-x C-n"))
 
-;; https://emacs.stackexchange.com/questions/2347/kill-or-copy-current-line-with-minimal-keystrokes
-;; C-w : kill current line
-(defun slick-cut (beg end)
+;; ;; C-w : kill current line
+;; (defun slick-cut (beg end &optional region)
+;;   "When called interactively with no active region, kill a single line instead.
+;; BEG END REGION"
+;;   (interactive
+;;    (if mark-active
+;;        (list (region-beginning) (region-end))
+;;      (list (line-beginning-position) (line-beginning-position 2)))))
+;; (advice-add 'kill-region :before #'slick-cut)
+;; ;; M-w : copy current line
+;; (defun slick-copy (beg end &optional region)
+;;   "When called interactively with no active region, copy a single line instead.
+;; BEG END REGION"
+;;   (interactive
+;;    (if mark-active
+;;        (list (region-beginning) (region-end))
+;;      (message "Copied line")
+;;      (push-mark)                 ;avoid point jumping to previous mark
+;;      (list (line-beginning-position) (line-beginning-position 2)))))
+;; (advice-add 'kill-ring-save :before #'slick-copy)
+
+;; portable in older emacs without `advice-add'
+(defadvice kill-region (before click-cut (beg end &optional region))
   "When called interactively with no active region, kill a single line instead.
-BEG END"
+BEG END REGION"
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-beginning-position 2)))))
-(advice-add 'kill-region :before #'slick-cut)
-;; M-w : copy current line
-(defun slick-copy (beg end)
+(ad-activate 'kill-region)
+
+(defadvice kill-ring-save (before slick-copy (beg end &optional region))
   "When called interactively with no active region, copy a single line instead.
-BEG END"
+BEG END REGION"
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))
      (message "Copied line")
+     (push-mark)                 ;avoid point jumping to previous mark
      (list (line-beginning-position) (line-beginning-position 2)))))
-(advice-add 'kill-ring-save :before #'slick-copy)
+(ad-activate 'kill-ring-save)
 
+;; show line number and column number
 (column-number-mode t)
+;; show parens without delay
+(setq show-paren-delay 0.0)
 (show-paren-mode 1)
 (global-hl-line-mode)
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
 ;; line-number-mode-hook
+
+(transient-mark-mode t)
 
 ;; use DEL to delete selected text
 (delete-selection-mode 1)
