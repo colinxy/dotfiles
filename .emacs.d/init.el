@@ -177,7 +177,7 @@ BEG END REGION"
 ;; for window
 (when tool-bar-mode
   (tool-bar-mode -1))
-(when scroll-bar-mode
+(when (fboundp 'scroll-bar-mode)
   (scroll-bar-mode -1))
 (unless (memq window-system '(mac ns))
   (menu-bar-mode -1))

@@ -168,13 +168,13 @@ BEG END REGION"
 ;; for window
 (when tool-bar-mode
   (tool-bar-mode -1))
-(when scroll-bar-mode
+(when (fboundp 'scroll-bar-mode)
   (scroll-bar-mode -1))
-
-;; tango-dark is a good theme
 (when (not window-system)
   (menu-bar-mode -1)
-  (load-theme 'tango-dark t))
+  ;; tango-dark is a good theme
+  ;; (load-theme 'tango-dark t)
+  )
 
 ;; move between windows
 (if (display-graphic-p)
