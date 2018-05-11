@@ -21,7 +21,11 @@
       inhibit-startup-echo-area-message "colinxy")
 
 ;; less frequent garbage collection
-(setq gc-cons-threshold 10000000)        ;10MB
+(setq gc-cons-threshold (* 50 1024 1024))
+(setq gc-cons-percentage 0.6)
+(run-with-idle-timer
+ 1 nil
+ (lambda () (setq gc-cons-threshold (* 5 1024 1024))))
 
 ;; backup files
 (setq backup-directory-alist '(("." . "~/.saves"))
@@ -52,9 +56,6 @@
 ;; show prefix key in echo area quicker
 (setq echo-keystrokes 0.1)
 
-;; auto revert if file changes on disk
-(global-auto-revert-mode)
-
 ;; do not indent with tabs
 (setq-default indent-tabs-mode nil)
 ;; (setq-default tab-width 4)
@@ -63,28 +64,51 @@
 ;; some keys are easy to mispress
 (global-unset-key (kbd "C-o"))
 ;; (global-unset-key (kbd "M-)"))
+(global-unset-key (kbd "C-x C-n"))
 
-;; https://emacs.stackexchange.com/questions/2347/kill-or-copy-current-line-with-minimal-keystrokes
-;; C-w : kill current line
-(defun slick-cut (beg end &optional region)
+;; ;; C-w : kill current line
+;; (defun slick-cut (beg end &optional region)
+;;   "When called interactively with no active region, kill a single line instead.
+;; BEG END REGION"
+;;   (interactive
+;;    (if mark-active
+;;        (list (region-beginning) (region-end))
+;;      (list (line-beginning-position) (line-beginning-position 2)))))
+;; (advice-add 'kill-region :before #'slick-cut)
+;; ;; M-w : copy current line
+;; (defun slick-copy (beg end &optional region)
+;;   "When called interactively with no active region, copy a single line instead.
+;; BEG END REGION"
+;;   (interactive
+;;    (if mark-active
+;;        (list (region-beginning) (region-end))
+;;      (message "Copied line")
+;;      (push-mark)                 ;avoid point jumping to previous mark
+;;      (list (line-beginning-position) (line-beginning-position 2)))))
+;; (advice-add 'kill-ring-save :before #'slick-copy)
+
+;; portable in older emacs without `advice-add'
+(defadvice kill-region (before click-cut (beg end &optional region))
   "When called interactively with no active region, kill a single line instead.
 BEG END REGION"
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))
      (list (line-beginning-position) (line-beginning-position 2)))))
-(advice-add 'kill-region :before #'slick-cut)
-;; M-w : copy current line
-(defun slick-copy (beg end &optional region)
+(ad-activate 'kill-region)
+
+(defadvice kill-ring-save (before slick-copy (beg end &optional region))
   "When called interactively with no active region, copy a single line instead.
 BEG END REGION"
   (interactive
    (if mark-active
        (list (region-beginning) (region-end))
      (message "Copied line")
+     (push-mark)                 ;avoid point jumping to previous mark
      (list (line-beginning-position) (line-beginning-position 2)))))
-(advice-add 'kill-ring-save :before #'slick-copy)
+(ad-activate 'kill-ring-save)
 
+;; show line number and column number
 (column-number-mode t)
 ;; show parens without delay
 (setq show-paren-delay 0.0)
@@ -144,12 +168,18 @@ BEG END REGION"
 (define-key isearch-mode-map (kbd "C-d") 'isearch-forward-symbol-at-point)
 ;; or M-s . outside of isearch mode
 
+;; compile
+(global-set-key (kbd "M-g M-c") 'compile)
+
+;; word count
+(global-set-key (kbd "M-s M-c") 'count-words)
+
 (setq split-width-threshold 150) ;split horizontally if at least <> columns
 
 ;; for window
 (when tool-bar-mode
   (tool-bar-mode -1))
-(when scroll-bar-mode
+(when (fboundp 'scroll-bar-mode)
   (scroll-bar-mode -1))
 
 (when (not window-system)
@@ -199,8 +229,16 @@ BEG END REGION"
 (require 'diminish)
 (require 'bind-key)
 ;; (setq use-package-always-ensure t)
+;; (setq use-package-verbose t)
 
+;; hide useless strings from modeline
 (diminish 'abbrev-mode)
+
+;; auto revert if file changes on disk
+(use-package autorevert
+  :defer 1
+  :diminish auto-revert-mode
+  :config (global-auto-revert-mode))
 
 (use-package view
   :bind (("C-v" . View-scroll-half-page-forward)
@@ -208,11 +246,15 @@ BEG END REGION"
          ;; use with prefix argument: C-u 50 C-%
          ("C-%" . View-goto-percent)))
 
-;; compile
-(global-set-key (kbd "M-g M-c") 'compile)
+(use-package recentf
+  :defer 1
+  :custom
+  (recentf-max-saved-items 500))
 
-;; word count
-(global-set-key (kbd "M-s M-c") 'count-words)
+(use-package which-func
+  :defer 1
+  :config
+  (which-function-mode t))
 
 ;;; ediff
 (use-package ediff
@@ -226,7 +268,7 @@ BEG END REGION"
 
 
 ;; with modification, from https://www.emacswiki.org/emacs/DavidBoon#toc4
-(defun dired-ediff-marked-files ()
+(defun my/dired-ediff-marked-files ()
   "Run ediff on marked files."
   (interactive)
   (let ((marked-files (dired-get-marked-files)))
@@ -249,29 +291,18 @@ BEG END REGION"
              (ediff-files current-file other-file)))
           (t (message "Mark no more than 3 files to ediff")))))
 
-(defun find-file-around (orig-find-file &rest args)
-  "Advice `find-file'.  ORIG-FIND-FILE original find file function.  ARGS."
-  (if (eq major-mode 'dired-mode)
-      (let ((default-directory (dired-current-directory)))
-        ;; dynamic scoping
-        (apply orig-find-file args))
-    (apply orig-find-file args)))
-
 (use-package dired
   :defer t
   :ensure nil
   :bind (("C-x C-j" . dired-jump)
          :map dired-mode-map
-         ("=" . dired-ediff-marked-files)
+         ("=" . my/dired-ediff-marked-files)
          ;; needs dired+
          ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
          )
   :config
   (setq dired-listing-switches "-alh")
   (setq dired-dwim-target t)
-  ;; useful when dired buffer contains subtree
-  ;; tied with ido
-  (advice-add 'ido-find-file :around #'find-file-around)
 
   ;; BSD ls does not support --dired
   (use-package ls-lisp
@@ -294,12 +325,57 @@ BEG END REGION"
 
 
 ;;; interactively do things (ido)
-(use-package ido
-  :init (ido-mode 1)
-  :bind ("C-x C-v" . ff-find-other-file)
-  :config
-  (setq ido-enable-flex-matching t)
-  (ido-everywhere t))
+;; (use-package ido
+;;   :init (ido-mode 1)
+;;   :bind ("C-x C-v" . ff-find-other-file)
+;;   :functions ido-everywhere
+;;   :config
+;;   (setq ido-enable-flex-matching t)
+;;   (ido-everywhere t))
+
+;; for fuzzy matching
+(use-package flx
+  :defer t)
+(use-package ivy
+  :diminish
+  :bind (("C-c C-r" . ivy-resume)
+         :map ivy-occur-mode-map
+         ("n" . ivy-occur-next-line)
+         ("p" . ivy-occur-previous-line))
+  :init
+  (ivy-mode 1)
+  :custom
+  (ivy-use-virtual-buffers t)
+  (ivy-count-format "(%d/%d) ")
+  (ivy-format-function 'ivy-format-function-line))
+;; when minibuffer is active:
+;; C-o     `hydra-ivy/body'
+;; C-M-j   `ivy-immediate-done'
+;; C-c C-o `ivy-occur': put the current candidates into a new buffer
+;;                      useful with counsel-projectile-rg
+;; M-n     `ivy-next-history-element': also picks thing-at-point
+;; M-j     `ivy-yank-word': insert sub-word at point
+
+(use-package counsel
+  :after ivy
+  :bind (("M-x"   . counsel-M-x)
+         ("C-c g" . counsel-git-grep)
+         ("C-c i" . counsel-imenu)))
+
+;;; jump to position within visible text
+(use-package avy
+  :defer t
+  :bind ("C-;" . avy-goto-char-2))
+
+(use-package projectile
+  :defer t
+  :diminish projectile-mode
+  :bind (("C-c v" . projectile-find-other-file)))
+
+(use-package counsel-projectile
+  :bind (("C-c f" . counsel-projectile-find-file)
+         ("C-c s" . counsel-projectile-rg) ;ripgrep
+         ("C-c b" . counsel-projectile-switch-to-buffer)))
 
 
 ;;; undo tree
@@ -309,10 +385,11 @@ BEG END REGION"
 (use-package undo-tree
   :ensure t
   :diminish undo-tree-mode
-  :init (global-undo-tree-mode)
+  :defer 1
   :config
   (setq undo-tree-visualizer-timestamps t)
-  (setq undo-tree-visualizer-diff t))
+  (setq undo-tree-visualizer-diff t)
+  (global-undo-tree-mode))
 
 
 ;; imenu
@@ -320,32 +397,26 @@ BEG END REGION"
   :defer t
   :config
   (setq imenu-auto-rescan t)
-  (defun imenu-rescan ()
+  (defun my/imenu-rescan ()
     "Force imenu rescan by flushing imenu cache."
     (interactive)
     (setq imenu--index-alist nil)))
 
 ;;; popup-imenu
 (use-package popup-imenu
-  :ensure t
   :defer t
   :bind ("M-s M-i" . popup-imenu)
   :config (setq popup-imenu-style 'indent))
-
-(use-package which-func
-  :defer t
-  :init
-  (require 'which-func)         ;make sure which-func-modes is defined
-  (which-func-mode))
 
 
 (use-package company
   :defer t
   :ensure t
   :diminish company-mode
-  :init (add-hook 'after-init-hook 'global-company-mode)
+  :hook (after-init . global-company-mode)
   :config
-  (setq company-idle-delay 0.1))
+  (setq company-idle-delay 0.1)
+  (setq company-tooltip-align-annotations t))
 ;; company-dabbrev-code completes in code
 ;; company-dabbrev completes in comments/strings
 (use-package company-dabbrev
@@ -358,7 +429,7 @@ BEG END REGION"
   :config
   (add-hook 'c++-mode-hook
             (lambda () (setq company-clang-arguments '("-std=c++11")))))
-(defun company-enable-dabbrev ()
+(defun my/company-enable-dabbrev ()
   "Enable company dabbrev on demand."
   (interactive)
   (add-to-list 'company-backends '(company-capf company-dabbrev)))
@@ -367,7 +438,7 @@ BEG END REGION"
 (use-package flycheck
   :defer t
   :ensure t
-  :init (add-hook 'after-init-hook 'global-flycheck-mode)
+  :hook (after-init . global-flycheck-mode)
   :config
   (add-hook 'c++-mode-hook
             (lambda () (setq flycheck-clang-language-standard "c++11"))))
@@ -393,7 +464,7 @@ Also, switch to that buffer."
 ;; (add-hook 'occur-hook 'occur-rename-buffer)
 (use-package python
   :defer t
-  :init
+  :config
   (setq-default python-indent-offset 4)
   :bind ("C-c C-o" . elpy-occur-definitions))
 
