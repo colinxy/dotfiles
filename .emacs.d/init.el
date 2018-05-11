@@ -139,8 +139,6 @@ BEG END REGION"
 (electric-pair-mode 1)
 
 ;; upcase/downcase region
-;; (put 'upcase-region 'disabled nil)
-;; (put 'downcase-region 'disabled nil)
 (global-set-key (kbd "M-u") 'upcase-dwim)
 (global-set-key (kbd "M-l") 'downcase-dwim)
 (global-set-key (kbd "M-c") 'capitalize-dwim)
@@ -167,6 +165,12 @@ BEG END REGION"
 ;; M-s e `isearch-edit-string'
 (define-key isearch-mode-map (kbd "C-d") 'isearch-forward-symbol-at-point)
 ;; or M-s . outside of isearch mode
+
+;; compile
+(global-set-key (kbd "M-g M-c") 'compile)
+
+;; word count
+(global-set-key (kbd "M-s M-c") 'count-words)
 
 ;;----------------------;;
 ;;; windows and moving ;;;
@@ -254,16 +258,37 @@ BEG END REGION"
   :diminish auto-revert-mode
   :config (global-auto-revert-mode))
 
-;; EasyPG Assistant
-(use-package epa
-  :defer 5
-  ;; enter passphrase through the minibuffer
-  :config (setq epa-pinentry-mode 'loopback))
+(use-package view
+  :bind (("C-v" . View-scroll-half-page-forward)
+         ("M-v" . View-scroll-half-page-backward)
+         ;; use with prefix argument: C-u 50 C-%
+         ("C-%" . View-goto-percent)))
 
 (use-package recentf
   :defer 1
   :custom
   (recentf-max-saved-items 500))
+
+(use-package which-func
+  :defer 1
+  :config
+  (which-function-mode t))
+
+;;; ediff
+(use-package ediff
+  :defer t
+  :config
+  (setq ediff-split-window-function 'split-window-horizontally
+        ediff-window-setup-function 'ediff-setup-windows-plain)
+  ;; create a new frame for ediff
+  (add-hook 'ediff-before-setup-hook 'make-frame)
+  (add-hook 'ediff-quit-hook 'delete-frame))
+
+;; EasyPG Assistant
+(use-package epa
+  :defer 5
+  ;; enter passphrase through the minibuffer
+  :config (setq epa-pinentry-mode 'loopback))
 
 ;; ibuffer instead of buffer list
 (use-package ibuffer
@@ -281,33 +306,6 @@ BEG END REGION"
   ;; NOTE: ibuffer-hook, not ibuffer-mode-hook, runs whenever ibuffer is called
   (add-hook 'ibuffer-hook 'ibuffer-vc-set-filter-groups-by-vc-root)
   (add-hook 'ibuffer-hook 'ibuffer-do-sort-by-filename/process))
-
-(use-package view
-  :bind (("C-v" . View-scroll-half-page-forward)
-         ("M-v" . View-scroll-half-page-backward)
-         ;; use with prefix argument: C-u 50 C-%
-         ("C-%" . View-goto-percent)))
-
-(use-package which-func
-  :defer 1
-  :config
-  (which-function-mode t))
-
-;; compile
-(global-set-key (kbd "M-g M-c") 'compile)
-
-;; word count
-(global-set-key (kbd "M-s M-c") 'count-words)
-
-;;; ediff
-(use-package ediff
-  :defer t
-  :config
-  (setq ediff-split-window-function 'split-window-horizontally
-        ediff-window-setup-function 'ediff-setup-windows-plain)
-  ;; create a new frame for ediff
-  (add-hook 'ediff-before-setup-hook 'make-frame)
-  (add-hook 'ediff-quit-hook 'delete-frame))
 
 
 ;; with modification, from https://www.emacswiki.org/emacs/DavidBoon#toc4
