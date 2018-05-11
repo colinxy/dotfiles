@@ -510,13 +510,18 @@ BEG END REGION"
 
 (use-package projectile
   :defer t
-  :diminish projectile-mode
-  :bind (("C-c v" . projectile-find-other-file)))
+  :diminish projectile-mode)
 
 (use-package counsel-projectile
-  :bind (("C-c f" . counsel-projectile-find-file)
-         ("C-c s" . counsel-projectile-rg) ;ripgrep
+  :bind (;; ("C-c f" . counsel-projectile-find-file)
+         ("C-c s" . counsel-projectile-ag)
          ("C-c b" . counsel-projectile-switch-to-buffer)))
+
+;; for finding files, use ffip
+(use-package find-file-in-project
+  :defer t
+  :bind (("C-c f" . find-file-in-project-by-selected)
+         ("C-c v" . find-file-with-similar-name)))
 
 
 ;;; undo tree
