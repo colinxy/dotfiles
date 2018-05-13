@@ -422,6 +422,12 @@ BEG END REGION"
   :config (setq popup-imenu-style 'indent))
 
 
+;;; magit
+(use-package magit
+  :defer t
+  :bind ("C-x g" . magit-status))
+
+
 (use-package company
   :defer t
   :ensure t
