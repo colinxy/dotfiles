@@ -434,7 +434,7 @@ BEG END REGION"
   :diminish company-mode
   :hook (after-init . global-company-mode)
   :config
-  (setq company-idle-delay 0.1)
+  (setq company-idle-delay 0.05)
   (setq company-tooltip-align-annotations t))
 ;; company-dabbrev-code completes in code
 ;; company-dabbrev completes in comments/strings

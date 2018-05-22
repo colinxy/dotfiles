@@ -272,7 +272,11 @@ BEG END REGION"
 (use-package which-func
   :defer 1
   :config
-  (which-function-mode t))
+  (which-function-mode t)
+  (defun my/which-function ()
+    "Calls which-function, which is not marked interactive."
+    (interactive)
+    (message (which-function))))
 
 ;;; ediff
 (use-package ediff
@@ -690,7 +694,7 @@ BEG END REGION"
   :diminish company-mode
   :hook (after-init . global-company-mode)
   :config
-  (setq company-idle-delay 0.1)
+  (setq company-idle-delay 0.05)
   (setq company-tooltip-align-annotations t))
 ;; company-dabbrev-code completes in code
 ;; company-dabbrev completes in comments/strings
