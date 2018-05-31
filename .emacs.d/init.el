@@ -159,10 +159,13 @@ BEG END REGION"
 ;; isearch magic
 ;; IN isearch-mode-map
 ;; C-w   `isearch-yank-word-or-char'
+;; M-s C-e `isearch-yank-line'
 ;; C-M-w `isearch-del-char'
 ;; C-M-y `isearch-yank-char'
-;; M-c   `isearch-toggle-case-fold'
 ;; M-s e `isearch-edit-string'
+;; M-s o `isearch-occur': run occur on last search string
+;; M-c   `isearch-toggle-case-fold'
+;; M-r   `isearch-toggle-regexp'
 (define-key isearch-mode-map (kbd "C-d") 'isearch-forward-symbol-at-point)
 ;; or M-s . outside of isearch mode
 
@@ -276,7 +279,23 @@ BEG END REGION"
   (defun my/which-function ()
     "Calls which-function, which is not marked interactive."
     (interactive)
-    (message (which-function))))
+    (message (which-function)))
+  (defun my/which-function-header-line ()
+    "Move which-function to header line.
+
+Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
+    (interactive)
+    (setq-default header-line-format
+                  '((which-func-mode ("" which-func-format " "))))
+    (setq mode-line-misc-info
+          ;; remove which function mode from the mode line
+          (assq-delete-all 'which-func-mode mode-line-misc-info)))
+  (defun my/which-function-mode-line ()
+    "Restore which-function to mode line."
+    (interactive)
+    (setq-default header-line-format nil)
+    (add-to-list 'mode-line-misc-info
+                 '(which-func-mode ("" which-func-format " ")))))
 
 ;;; ediff
 (use-package ediff
@@ -490,6 +509,7 @@ BEG END REGION"
   :init
   (ivy-mode 1)
   :custom
+  (ivy-height 6)
   (ivy-use-virtual-buffers t)
   (ivy-count-format "(%d/%d) ")
   (ivy-format-function 'ivy-format-function-line))
