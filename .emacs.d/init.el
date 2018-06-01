@@ -109,7 +109,7 @@ BEG END REGION"
 ;; show line number and column number
 (column-number-mode t)
 ;; show parens without delay
-(setq show-paren-delay 0.0)
+(custom-set-variables '(show-paren-delay 0.0))
 (show-paren-mode 1)
 (global-hl-line-mode)
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
@@ -201,6 +201,8 @@ BEG END REGION"
 
 ;; window management
 
+;; TODO: move all platform to shift prefixed key binding
+
 ;; move between windows
 (if (display-graphic-p)
     (cond ((eq system-type 'darwin)
@@ -215,11 +217,13 @@ BEG END REGION"
            (global-set-key (kbd "C-<left>") 'windmove-left)
            (global-set-key (kbd "C-<right>") 'windmove-right)))
   ;; terminal
+  (windmove-default-keybindings))
+
+(unless window-system
   (define-key input-decode-map "\e[1;2A" [S-up])
   (define-key input-decode-map "\e[1;2B" [S-down])
   (define-key input-decode-map "\e[1;2D" [S-left])
-  (define-key input-decode-map "\e[1;2C" [S-right])
-  (windmove-default-keybindings))
+  (define-key input-decode-map "\e[1;2C" [S-right]))
 
 
 ;;-------------------;;
