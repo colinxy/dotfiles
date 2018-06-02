@@ -597,6 +597,7 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
     (setq imenu--index-alist nil)))
 
 ;;; popup-imenu
+;; TODO: counsel-imenu has this feature already
 (use-package popup-imenu
   :defer t
   :bind ("M-s M-i" . popup-imenu)
@@ -607,6 +608,11 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   :defer t
   :bind ("M-s M-l" . imenu-list-smart-toggle)
   :config (setq imenu-list-focus-after-activation t))
+
+;;; imenu-anywhere
+(use-package imenu-anywhere
+  :defer t
+  :bind ("M-s M-a" . imenu-anywhere))
 
 
 (use-package helpful
