@@ -119,7 +119,7 @@ BEG END REGION"
 ;; show line number and column number
 (column-number-mode t)
 ;; show parens without delay
-(setq show-paren-delay 0.0)
+(custom-set-variables '(show-paren-delay 0.0))
 (show-paren-mode 1)
 (global-hl-line-mode)
 ;; (setq line-number-display-limit-width 5) ; line number in mode line
@@ -169,10 +169,13 @@ BEG END REGION"
 ;; isearch magic
 ;; IN isearch-mode-map
 ;; C-w   `isearch-yank-word-or-char'
+;; M-s C-e `isearch-yank-line'
 ;; C-M-w `isearch-del-char'
 ;; C-M-y `isearch-yank-char'
-;; M-c   `isearch-toggle-case-fold'
 ;; M-s e `isearch-edit-string'
+;; M-s o `isearch-occur': run occur on last search string
+;; M-c   `isearch-toggle-case-fold'
+;; M-r   `isearch-toggle-regexp'
 (define-key isearch-mode-map (kbd "C-d") 'isearch-forward-symbol-at-point)
 ;; or M-s . outside of isearch mode
 
@@ -207,11 +210,14 @@ BEG END REGION"
            (global-set-key (kbd "C-<left>") 'windmove-left)
            (global-set-key (kbd "C-<right>") 'windmove-right)))
   ;; terminal
+  (windmove-default-keybindings))
+
+(unless window-system
   (define-key input-decode-map "\e[1;2A" [S-up])
   (define-key input-decode-map "\e[1;2B" [S-down])
   (define-key input-decode-map "\e[1;2D" [S-left])
-  (define-key input-decode-map "\e[1;2C" [S-right])
-  (windmove-default-keybindings))
+  (define-key input-decode-map "\e[1;2C" [S-right]))
+
 
 
 ;; package.el
@@ -262,7 +268,27 @@ BEG END REGION"
 (use-package which-func
   :defer 1
   :config
-  (which-function-mode t))
+  (which-function-mode t)
+  (defun my/which-function ()
+    "Calls which-function, which is not marked interactive."
+    (interactive)
+    (message (which-function)))
+  (defun my/which-function-header-line ()
+    "Move which-function to header line.
+
+Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
+    (interactive)
+    (setq-default header-line-format
+                  '((which-func-mode ("" which-func-format " "))))
+    (setq mode-line-misc-info
+          ;; remove which function mode from the mode line
+          (assq-delete-all 'which-func-mode mode-line-misc-info)))
+  (defun my/which-function-mode-line ()
+    "Restore which-function to mode line."
+    (interactive)
+    (setq-default header-line-format nil)
+    (add-to-list 'mode-line-misc-info
+                 '(which-func-mode ("" which-func-format " ")))))
 
 ;;; ediff
 (use-package ediff
@@ -353,6 +379,7 @@ BEG END REGION"
   :init
   (ivy-mode 1)
   :custom
+  (ivy-height 6)
   (ivy-use-virtual-buffers t)
   (ivy-count-format "(%d/%d) ")
   (ivy-format-function 'ivy-format-function-line))
@@ -420,6 +447,17 @@ BEG END REGION"
   :defer t
   :bind ("M-s M-i" . popup-imenu)
   :config (setq popup-imenu-style 'indent))
+
+;;; imenu-list
+(use-package imenu-list
+  :defer t
+  :bind ("M-s M-l" . imenu-list-smart-toggle)
+  :config (setq imenu-list-focus-after-activation t))
+
+;;; imenu-anywhere
+(use-package imenu-anywhere
+  :defer t
+  :bind ("M-s M-a" . imenu-anywhere))
 
 
 ;;; magit
@@ -499,5 +537,6 @@ Also, switch to that buffer."
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
+
 
 ;;; init.el ends here
