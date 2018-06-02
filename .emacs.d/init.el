@@ -137,6 +137,10 @@ BEG END REGION"
 ;; M-( ; insert ()
 (setq parens-require-spaces nil)
 (electric-pair-mode 1)
+;; `insert-pair'
+;; (add-to-list 'insert-pair-alist (list ?\$ ?\$))
+;; (global-set-key (kbd "M-$") 'insert-pair)
+;; M-$ conflicts with `ispell-word'
 
 ;; upcase/downcase region
 (global-set-key (kbd "M-u") 'upcase-dwim)
@@ -423,11 +427,6 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   (ag-reuse-buffers t))
 
 
-(use-package rg
-  :defer t
-  :commands rg)
-
-
 ;;; quickrun
 (use-package quickrun
   :defer t
@@ -471,6 +470,9 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   (setq org-use-sub-superscripts '{})
   (setq org-support-shift-select t)
   ;; (setq org-capture-templates '())
+  ;; prettify symbols, toggle with: C-c C-x \ (`org-toggle-pretty-entities')
+  ;; entities can be found in variable `org-entities'
+  (setq org-pretty-entities t)
   )
 (use-package ox-latex                   ;export to latex
   :defer t
@@ -603,8 +605,14 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 ;;; imenu-list
 (use-package imenu-list
   :defer t
-  :bind ("C-'" . imenu-list-smart-toggle)
+  :bind ("M-s M-l" . imenu-list-smart-toggle)
   :config (setq imenu-list-focus-after-activation t))
+
+
+(use-package helpful
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)))
 
 
 (use-package doc-view
