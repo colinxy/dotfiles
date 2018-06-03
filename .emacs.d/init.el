@@ -473,6 +473,9 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   ;; prettify symbols, toggle with: C-c C-x \ (`org-toggle-pretty-entities')
   ;; entities can be found in variable `org-entities'
   (setq org-pretty-entities t)
+  ;; C-c C-x C-l `org-preview-latex-fragment'
+  (setq org-format-latex-options
+        (plist-put org-format-latex-options :scale 2.0))
   )
 (use-package ox-latex                   ;export to latex
   :defer t
