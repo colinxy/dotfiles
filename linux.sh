@@ -10,6 +10,10 @@ _platform="$(python -mplatform)"
 battery() { acpi -i; }
 alias cpufreq='watch -n1 "cat /proc/cpuinfo | grep \"^[c]pu MHz\""'
 
+# start subshell with address layout randomization disabled
+alias bash-no-rand='setarch $(uname -m) --addr-no-randomize /bin/bash -l'
+# gdb disables address space randomization on Linux by default
+
 # tcp
 # sudo tcptrack -i wlp3s0
 # dns

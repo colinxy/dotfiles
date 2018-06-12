@@ -496,6 +496,14 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 ;; C-c C-o  `org-open-at-point'
 
+;;; org latex export code with minted
+;; (add-to-list 'org-latex-packages-alist '("" "minted"))
+;; (setq org-latex-listings 'minted)
+;; (setq org-latex-pdf-process
+;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
 
 ;;; interactively do things (ido)
 ;; (use-package ido

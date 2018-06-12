@@ -13,7 +13,7 @@ shopt -s checkwinsize
 export HISTSIZE=100000
 export HISTFILESIZE=500000
 # don't put duplicate lines or lines starting with space in the history.
-export HISTCONTROL=ignoreboth
+export HISTCONTROL=ignoreboth:erasedups
 
 # command prompt
 export PS1='\u:\w \$ '
@@ -83,7 +83,7 @@ copy-tmux() {
 
 # vim color hightlighter as less
 vless_setup() {
-    local vers=(80 74 73)
+    local vers=(82 81 80 74 73)
     for ver in "${vers[@]}"; do
         if [ -f "/usr/share/vim/vim${ver}/macros/less.vim" ]; then
             # shellcheck disable=SC2139
@@ -247,9 +247,7 @@ alias df='df -h'
 
 # virtualbox
 alias vbox='VBoxManage list runningvms'
-alias ubuntu='VBoxManage startvm "ubuntu16" --type headless'
-alias centos='VBoxManage startvm "centos7" --type headless'
-alias freebsd='VBoxManage startvm "freebsd11" --type headless'
+vstart() { VBoxManage startvm "$1" --type headless; }
 vshutdown() { VBoxManage controlvm "$1" acpipowerbutton; }
 
 # vargrant completion offered through contrib/bash/completion.sh
