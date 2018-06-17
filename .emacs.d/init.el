@@ -867,8 +867,10 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
         ;; ipython with readline: https://github.com/ipython/rlipython
         ;; pip3 install rlipython
         python-shell-interpreter-args "-i --TerminalIPythonApp.interactive_shell_class=rlipython.TerminalInteractiveShell"))
+;; C-c <   `python-indent-shift-left'
+;; C-c >   `python-indent-shift-right'
 
-;; TODO: start elpy on demand with M-x elpy-enable
+;; M-x elpy-enable : start elpy on demand with
 (use-package elpy
   :after (python)
   :config
@@ -878,8 +880,7 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   (define-key elpy-mode-map (kbd "C-<up>") nil)
   (define-key elpy-mode-map (kbd "C-<down>") nil)
   ;; prefer flycheck to flymake
-  (remove-hook 'elpy-modules 'elpy-module-flymake)
-  (elpy-enable))
+  (remove-hook 'elpy-modules 'elpy-module-flymake))
 
 
 ;;; Common Lisp
