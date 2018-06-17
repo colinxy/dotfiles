@@ -268,8 +268,21 @@ export PYTHONSTARTUP="$HOME/.pythonrc"
 # shellcheck source=/dev/null
 [ -f "$HOME"/.bash_colors ] && . "$HOME"/.bash_colors
 
-set-title() {
+settitle() {
     echo -e '\033];'"$*"'\007'
+}
+
+pathmunge () {
+    case ":${PATH}:" in
+	*:"$1":*)
+	;;
+	*)
+	    if [ "$2" = "after" ] ; then
+		PATH=$PATH:$1
+	    else
+		PATH=$1:$PATH
+	    fi
+    esac
 }
 
 # fun
