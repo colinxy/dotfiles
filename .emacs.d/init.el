@@ -664,17 +664,25 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 (use-package eshell
   :defer t
   :defines (eshell-hist-ignoredups eshell-visual-commands)
-  :hook (eshell-mode . (lambda ()
-                         ;; BUT they make emacs slow (emacs buffers I/O)
-                         ;; switch to term when executing these commands
-                         (add-to-list 'eshell-visual-commands "ssh")
-                         (add-to-list 'eshell-visual-commands "tail")
-                         (add-to-list 'eshell-visual-commands "htop")))
   :config
+  ;; BUT they make emacs slow (emacs buffers I/O)
+  ;; switch to term when executing these commands
+  (add-to-list 'eshell-visual-commands "ssh")
+  (add-to-list 'eshell-visual-commands "tail")
+  (add-to-list 'eshell-visual-commands "htop")
   ;; eshell history
   (setq eshell-hist-ignoredups t)
   (setq eshell-scroll-to-bottom-on-input t))
-
+;; the biggest limitation to eshell is that it runs in TERM=dumb
+;; C-c C-p  `eshell-previous-prompt'   C-c C-n  `eshell-next-prompt'
+;; C-c C-b  `eshell-backward-argument' C-c C-f  `eshell-forward-argument'
+;; C-c C-r  `eshell-show-output'
+;; C-c C-o  `eshell-kill-output'
+;; C-c C-t  `eshell-truncate-buffer'
+;; C-c C-u  `eshell-kill-input'  like C-u
+;; M-p      `eshell-previous-matching-input-from-input'  also <up>
+;; M-r      `eshell-previous-matching-input'
+;; C-c M-b  `eshell-insert-buffer-name'
 
 ;;; mutiple cursor
 ;; Shift key does not work for terminal
