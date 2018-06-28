@@ -108,7 +108,7 @@ alias edit='startprocess "$(type -P emacs)" -q --load ~/.emacs.min'
 alias emacs='emacs -nw'
 # export EDITOR='emacsclient -t'
 export EDITOR='vim'
-# export ALTERNATE_EDITOR=''
+export ALTERNATE_EDITOR=''
 
 ect() {
     emacsclient -q -t "$@"   # &>/dev/null

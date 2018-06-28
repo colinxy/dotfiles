@@ -787,7 +787,9 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 ;; generate tags with: gtags --gtagslabel=ctags  # or pygments
 ;; https://github.com/syl20bnr/spacemacs/tree/master/layers/%2Btags/gtags
 (use-package ggtags
-  :bind (:map ggtags-global-mode-map
+  :bind (:map ggtags-mode-map
+         ("M-?" . ggtags-find-reference)
+         :map ggtags-global-mode-map
          ;; also kill buffer
          ("q" . my/quit-window-kill-buffer))
   :init
