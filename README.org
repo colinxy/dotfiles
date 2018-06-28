@@ -366,9 +366,10 @@ more stuff to do
  - http://powerline.readthedocs.io/en/master/configuration.html#quick-setup-guide
  - potiential problem:
    - exit code, git status not showing up
+     - https://github.com/powerline/powerline/issues/186#issuecomment-247810572
      - add =~/.config/powerline/config.json=
      - set
-         : shell.theme = "default_leftonly"
+         : ext.shell.theme = "default_leftonly"
 
 
 * Shell Scripting
