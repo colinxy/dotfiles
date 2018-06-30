@@ -226,7 +226,7 @@ BEG END REGION"
 (setq package-archives
       '(("elpa" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
-        ("melpa" . "http://melpa.milkbox.net/packages/")
+        ("melpa" . "https://melpa.org/packages/")
         ("melpa-stable" . "https://stable.melpa.org/packages/")))
 (package-initialize)
 
