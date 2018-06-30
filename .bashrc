@@ -63,23 +63,25 @@ fi
 unset bash_completion
 
 # tmux
-alias tmux-copy='tmux load-buffer -'   # loadb, copy
-alias tmux-paste='tmux save-buffer -'  # saveb, paste
-copy-tmux() {
+alias tmux-copy='tmux load-buffer -'   # loadb ($CMD | tmux-copy)
+alias tmux-paste='tmux save-buffer -'  # saveb (tmux-paste | $CMD)
+tmux-copy-from() {
     local copy=
     if type -P xclip &>/dev/null; then
         copy='xclip -selection clipboard'
     elif type -P pbcopy &>/dev/null; then
-        copy=pbcopy
+        copy='pbcopy'
     else
         >&2 echo 'xclip/pbcopy does not exist'
         return 1
     fi
-
     ( tmux save-buffer - | $copy )
     # text copied from tmux now exists in system clipboard
+    # for paste, use `xclip -o -selection clipboard' or `pbpaste'
 }
-# for paste, use `xclip -o -selection clipboard' or `pbpaste'
+tmux-ssh-env() {
+    eval $(tmux show-env | grep '^SSH_')
+}
 
 # vim color hightlighter as less
 vless_setup() {
