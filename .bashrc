@@ -80,7 +80,7 @@ tmux-copy-from() {
     # for paste, use `xclip -o -selection clipboard' or `pbpaste'
 }
 tmux-ssh-env() {
-    eval $(tmux show-env | grep '^SSH_')
+    eval "$(tmux show-env | grep '^SSH_')"
 }
 
 # vim color hightlighter as less

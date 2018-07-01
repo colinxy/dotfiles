@@ -950,6 +950,19 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   (add-hook 'rust-mode-hook racer-mode))
 
 
+(use-package go-mode
+  :bind (:map go-mode-map
+         ;; requires github.com/rogpeppe/godef
+         ("M-." . godef-jump))          ;M-,  pop mark
+  :hook (before-save . gofmt-before-save))
+;; C-c C-d   `godef-describe'
+;; C-c C-a   `go-import-add'
+;; C-c C-f n `go-goto-function-name'
+(use-package go-eldoc
+  :disabled                            ;requires github.com/nsf/gocode
+  :hook (go-mode . go-eldoc-setup))
+
+
 ;;; OCaml
 ;; tuareg, merlin (minor mode)
 ;; install opam
