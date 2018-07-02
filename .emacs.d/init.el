@@ -930,6 +930,7 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 ;; raco pkg install drracket                  # everything
 
 
+;; rustlang
 (use-package rust
   :defer t
   :hook (rust-mode . flycheck-rust-setup))
@@ -950,17 +951,31 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   (add-hook 'rust-mode-hook racer-mode))
 
 
+;; golang
 (use-package go-mode
   :bind (:map go-mode-map
+         ("C-c C-r" . go-remove-unused-imports)
          ;; requires github.com/rogpeppe/godef
          ("M-." . godef-jump))          ;M-,  pop mark
-  :hook (before-save . gofmt-before-save))
+  :hook ((before-save . gofmt-before-save)
+         (go-mode . yas-minor-mode)))
 ;; C-c C-d   `godef-describe'
 ;; C-c C-a   `go-import-add'
 ;; C-c C-f n `go-goto-function-name'
-(use-package go-eldoc
-  :disabled                            ;requires github.com/nsf/gocode
-  :hook (go-mode . go-eldoc-setup))
+;; C-c C-f a `go-goto-arguments'
+;; C-c C-f r `go-goto-return-values'
+(defun my/go-complete ()
+  "Start company-go eldoc-go (requires github.com/nsf/gocode) on demand."
+  (interactive)
+  ;; gocode runs as daemon
+  ;; company-go
+  (use-package company-go
+    :hook
+    (go-mode . (lambda ()
+                 (add-to-list 'company-backends 'company-go))))
+  ;; go-eldoc
+  (use-package go-eldoc
+    :hook (go-mode . go-eldoc-setup)))
 
 
 ;;; OCaml
