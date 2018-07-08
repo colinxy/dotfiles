@@ -50,6 +50,7 @@ alias le=less
 alias lesss=less
 alias tree='tree -C'
 
+alias ulimit='ulimit -S'
 sudok() { sudo "$@"; sudo -K; } # sudo -K clears cached credentials
 
 # programmable completion
@@ -183,6 +184,7 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 #      -d name=daniel -d skill-lousy
 # -F : form submission, Content-Type: multipart/form-data;
 #      @ file upload, < contents for text field from file
+urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
 
 # networking
 alias traceroute='traceroute -n' # don't do reverse lookup
