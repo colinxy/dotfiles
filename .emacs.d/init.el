@@ -1155,14 +1155,16 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   :config
   ;; requires highlight-indentation
   (add-hook 'yaml-mode-hook 'highlight-indentation-mode)
+
   ;; ansible minor mode
   ;; https://github.com/k1LoW/emacs-ansible
-  (add-hook 'yaml-mode-hook 'ansible)
+  ;; (add-hook 'yaml-mode-hook 'ansible)
   ;; requires ansible-doc-mode, https://github.com/lunaryorn/ansible-doc.el
   ;; (add-hook 'yaml-mode-hook 'ansible-doc-mode)
-  (use-package company-ansible
-    :defer t
-    :init (add-to-list 'company-backends 'company-ansible)))
+  ;; (use-package company-ansible
+  ;;   :defer t
+  ;;   :init (add-to-list 'company-backends 'company-ansible))
+  )
 
 
 ;;; gnuplot mode
