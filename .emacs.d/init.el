@@ -765,7 +765,15 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 (use-package company-dabbrev
   :defer t
   :ensure company
-  :config (setq company-dabbrev-downcase nil))
+  :config
+  (setq company-dabbrev-downcase nil)
+  (setq company-dabbrev-ignore-case t))
+(use-package company-dabbrev-code
+  :defer t
+  :ensure company
+  :config
+  ;; (setq company-dabbrev-code-modes t)
+  (setq company-dabbrev-code-everywhere t))
 (use-package company-clang
   :defer t
   :ensure company
@@ -773,7 +781,8 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   (add-hook 'c++-mode-hook
             (lambda () (setq company-clang-arguments '("-std=c++11")))))
 (defun my/company-enable-dabbrev ()
-  "Enable company dabbrev on demand."
+  "Enable company dabbrev on demand.
+Might be useful for modes not in `company-dabbrev-code-modes'."
   (interactive)
   (add-to-list 'company-backends '(company-capf company-dabbrev)))
 
