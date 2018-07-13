@@ -508,15 +508,6 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
           "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")))
 
 
-;;; interactively do things (ido)
-;; (use-package ido
-;;   :init (ido-mode 1)
-;;   :bind ("C-x C-v" . ff-find-other-file)
-;;   :functions ido-everywhere
-;;   :config
-;;   (setq ido-enable-flex-matching t)
-;;   (ido-everywhere t))
-
 ;; for fuzzy matching
 (use-package flx
   :defer t)
