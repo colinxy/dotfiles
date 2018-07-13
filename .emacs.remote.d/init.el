@@ -518,7 +518,6 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
 ;; stolen from elpy
 (defun elpy-occur-definitions ()
   "Display an occur buffer of all definitions in the current buffer.
-
 Also, switch to that buffer."
   (interactive)
   (let ((list-matching-lines-face nil))
@@ -530,9 +529,15 @@ Also, switch to that buffer."
 ;; (add-hook 'occur-hook 'occur-rename-buffer)
 (use-package python
   :defer t
+  :bind ("C-c C-o" . elpy-occur-definitions)
   :config
   (setq-default python-indent-offset 4)
-  :bind ("C-c C-o" . elpy-occur-definitions))
+  ;; sane defaults from elpy
+  ;; https://github.com/jorgenschaefer/elpy/blob/1.22.0/elpy.el#L3347
+  (set (make-local-variable 'forward-sexp-function) nil)
+  (set (make-local-variable 'comment-inline-offset) 2)
+  ;; pdb
+  (setq gud-pdb-command-name "python3 -m pdb"))
 
 
 ;; themes

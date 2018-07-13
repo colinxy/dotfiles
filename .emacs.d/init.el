@@ -887,12 +887,17 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
   :interpreter ("python3" . python-mode)
   :config
   (setq-default python-indent-offset 4)
-  (setq gud-pdb-command-name "python3 -m pdb")
+  ;; sane defaults from elpy
+  ;; https://github.com/jorgenschaefer/elpy/blob/1.22.0/elpy.el#L3347
+  (set (make-local-variable 'forward-sexp-function) nil)
+  (set (make-local-variable 'comment-inline-offset) 2)
   ;; problem with ipython 5+ prompt
   (setq python-shell-interpreter "ipython3"
         ;; ipython with readline: https://github.com/ipython/rlipython
         ;; pip3 install rlipython
-        python-shell-interpreter-args "-i --TerminalIPythonApp.interactive_shell_class=rlipython.TerminalInteractiveShell"))
+        python-shell-interpreter-args "-i --TerminalIPythonApp.interactive_shell_class=rlipython.TerminalInteractiveShell")
+  ;; pdb
+  (setq gud-pdb-command-name "python3 -m pdb"))
 ;; C-c <   `python-indent-shift-left'
 ;; C-c >   `python-indent-shift-right'
 
