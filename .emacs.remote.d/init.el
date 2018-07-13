@@ -521,14 +521,15 @@ Also, switch to that buffer."
 (use-package python
   :defer t
   :bind ("C-c C-o" . elpy-occur-definitions)
+  :init
+  (add-hook 'python-mode-hook
+            (lambda ()
+              ;; sane defaults from elpy
+              ;; https://github.com/jorgenschaefer/elpy/blob/1.22.0/elpy.el#L3347
+              (set (make-local-variable 'forward-sexp-function) nil)
+              (set (make-local-variable 'comment-inline-offset) 2)))
   :config
-  (setq-default python-indent-offset 4)
-  ;; sane defaults from elpy
-  ;; https://github.com/jorgenschaefer/elpy/blob/1.22.0/elpy.el#L3347
-  (set (make-local-variable 'forward-sexp-function) nil)
-  (set (make-local-variable 'comment-inline-offset) 2)
-  ;; pdb
-  (setq gud-pdb-command-name "python3 -m pdb"))
+  (setq-default python-indent-offset 4))
 
 
 ;; themes

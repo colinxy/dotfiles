@@ -876,12 +876,15 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
   :defer t
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python3" . python-mode)
+  :init
+  (add-hook 'python-mode-hook
+            (lambda ()
+              ;; sane defaults from elpy
+              ;; https://github.com/jorgenschaefer/elpy/blob/1.22.0/elpy.el#L3347
+              (set (make-local-variable 'forward-sexp-function) nil)
+              (set (make-local-variable 'comment-inline-offset) 2)))
   :config
   (setq-default python-indent-offset 4)
-  ;; sane defaults from elpy
-  ;; https://github.com/jorgenschaefer/elpy/blob/1.22.0/elpy.el#L3347
-  (set (make-local-variable 'forward-sexp-function) nil)
-  (set (make-local-variable 'comment-inline-offset) 2)
   ;; problem with ipython 5+ prompt
   (setq python-shell-interpreter "ipython3"
         ;; ipython with readline: https://github.com/ipython/rlipython
