@@ -50,6 +50,7 @@ alias le=less
 alias lesss=less
 alias tree='tree -C'
 export DATE_FMT='%Y-%m-%d_%H%M%S' # date +$DATE_FMT
+export ISO_FMT='%Y-%m-%dT%H:%M:%SZ'
 
 alias ulimit='ulimit -S'
 sudok() { sudo "$@"; sudo -K; } # sudo -K clears cached credentials

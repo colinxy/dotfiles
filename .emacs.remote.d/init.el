@@ -379,8 +379,9 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 ;; C-M-j   `ivy-immediate-done'
 ;; C-c C-o `ivy-occur': put the current candidates into a new buffer
 ;;                      useful with counsel-projectile-rg
+;; C-l     `ivy-call-and-recenter': recenter at result while staying in ivy
 ;; M-n     `ivy-next-history-element': also picks thing-at-point
-;; M-j     `ivy-yank-word': insert sub-word at point
+;; M-j     `ivy-yank-word': insert sub-word at point, like C-w in isearch-mode
 
 (use-package counsel
   :after ivy
