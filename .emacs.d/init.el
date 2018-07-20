@@ -796,7 +796,7 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
          ("M-?" . ggtags-find-reference)
          :map ggtags-global-mode-map
          ;; also kill buffer
-         ("q" . my/quit-window-kill-buffer))
+         ("q" . (lambda () (interactive) (quit-window t))))
   :init
   (add-hook 'c-mode-common-hook
             (lambda ()
@@ -806,11 +806,7 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
                             #'ggtags-eldoc-function)
                 (setq-local imenu-create-index-function
                             #'ggtags-build-imenu-index))))
-  :config
-  (defun my/quit-window-kill-buffer ()
-    (interactive)
-    (quit-window t)))
-
+  )
 
 ;;; cc-mode: mode for editing c/c++/java/awk
 (use-package cc-mode
