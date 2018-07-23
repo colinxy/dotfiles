@@ -550,6 +550,7 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 
 (use-package counsel-projectile
   :bind (;; ("C-c f" . counsel-projectile-find-file)
+         ("C-c d" . counsel-projectile-find-dir)
          ("C-c s" . counsel-projectile-ag)
          ("C-c b" . counsel-projectile-switch-to-buffer)))
 
