@@ -977,13 +977,17 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
 (defun my/go-complete ()
   "Start company-go eldoc-go (requires github.com/nsf/gocode) on demand."
   (interactive)
-  ;; gocode runs as daemon
+  ;; go get github.com/nsf/gocode (runs as daemon)
   ;; company-go
   (use-package company-go
     :hook
     (go-mode . (lambda ()
                  (add-to-list 'company-backends 'company-go))))
-  ;; go-eldoc
+  ;; go get golang.org/x/tools/cmd/guru
+  (use-package go-guru
+    :hook (go-mode . go-guru-hl-identifier-mode))
+  ;; set `go-projectile-project-gopath' for gopath override
+  (use-package go-projectile)
   (use-package go-eldoc
     :hook (go-mode . go-eldoc-setup)))
 
