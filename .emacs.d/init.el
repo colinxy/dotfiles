@@ -965,10 +965,14 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
 (use-package go-mode
   :bind (:map go-mode-map
          ("C-c C-r" . go-remove-unused-imports)
-         ;; requires github.com/rogpeppe/godef
+         ;; go get github.com/rogpeppe/godef
          ("M-." . godef-jump))          ;M-,  pop mark
   :hook ((before-save . gofmt-before-save)
-         (go-mode . yas-minor-mode)))
+         (go-mode . yas-minor-mode)
+         (go-mode . subword-mode))
+  :config
+  ;; go get golang.org/x/tools/cmd/goimports
+  (setq gofmt-command (or (executable-find "goimports") "gofmt")))
 ;; C-c C-d   `godef-describe'
 ;; C-c C-a   `go-import-add'
 ;; C-c C-f n `go-goto-function-name'
@@ -986,7 +990,7 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
   ;; go get golang.org/x/tools/cmd/guru
   (use-package go-guru
     :hook (go-mode . go-guru-hl-identifier-mode))
-  ;; set `go-projectile-project-gopath' for gopath override
+  ;; set `go-projectile-project-gopath' for GOPATH override
   (use-package go-projectile)
   (use-package go-eldoc
     :hook (go-mode . go-eldoc-setup)))
