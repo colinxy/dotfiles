@@ -159,6 +159,8 @@ BEG END REGION"
 ;; C-M-f   `forward-sexp'
 ;; C-M-b   `backward-sexp'
 ;; C-M-SPC `mark-sexp'
+;; C-M-d   `down-list': Move forward down one level of parentheses.
+;; C-M-u   `backward-up-list': Move backward out of one level of parentheses.
 
 ;; isearch magic
 ;; IN isearch-mode-map
@@ -971,6 +973,7 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
          (go-mode . yas-minor-mode)
          (go-mode . subword-mode))
   :config
+  ;; go get golang.org/x/tools/cmd/gorename
   ;; go get golang.org/x/tools/cmd/goimports
   (setq gofmt-command (or (executable-find "goimports") "gofmt")))
 ;; C-c C-d   `godef-describe'

@@ -11,7 +11,7 @@ set -o emacs
 shopt -s histappend
 shopt -s checkwinsize
 export HISTSIZE=100000
-export HISTFILESIZE=500000
+export HISTFILESIZE=1000000
 # don't put duplicate lines or lines starting with space in the history.
 export HISTCONTROL=ignoreboth:erasedups
 
@@ -146,6 +146,9 @@ export _CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare
        -fno-omit-frame-pointer'
 # for 2's complement arithmetic, use -fwrapv
 
+# Golang
+alias go-run='go run !(*_test).go'
+
 # LISP
 # repl readline wrapper
 alias scheme='rlwrap scheme'
@@ -183,9 +186,10 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 # -w : -w "%{http_code} %{content_type} %{size_download}\n"
 #         "%{time_starttransfer}" (time to first byte)
 # -d : POST, Content-Type: application/x-www-form-urlencoded
-#      -d name=daniel -d skill-lousy
+#      -d name=daniel -d skill=lousy
 # -F : form submission, Content-Type: multipart/form-data;
 #      @ file upload, < contents for text field from file
+#      -F name=John -F profile=@portrait.png -F "story=<hugefile.txt"
 urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
 
 # networking

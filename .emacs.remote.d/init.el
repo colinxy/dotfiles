@@ -165,6 +165,8 @@ BEG END REGION"
 ;; C-M-f   `forward-sexp'
 ;; C-M-b   `backward-sexp'
 ;; C-M-SPC `mark-sexp'
+;; C-M-d   `down-list': Move forward down one level of parentheses.
+;; C-M-u   `backward-up-list': Move backward out of one level of parentheses.
 
 ;; isearch magic
 ;; IN isearch-mode-map
