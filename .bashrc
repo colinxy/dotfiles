@@ -179,6 +179,7 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 # curl -svo /dev/null <url>
 # -s : silent, useful when piping output
 # -i : include header in reponse
+# -D - : dump header to stdout
 # -o : output to file
 # -I : HEAD
 # -L : follow redirect
@@ -187,9 +188,10 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 #         "%{time_starttransfer}" (time to first byte)
 # -d : POST, Content-Type: application/x-www-form-urlencoded
 #      -d name=daniel -d skill=lousy
-# -F : form submission, Content-Type: multipart/form-data;
+# -F : POST form submission, Content-Type: multipart/form-data
 #      @ file upload, < contents for text field from file
 #      -F name=John -F profile=@portrait.png -F "story=<hugefile.txt"
+# --trace-ascii - : dump all incoming and outgoing data to stdout
 urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
 
 # networking

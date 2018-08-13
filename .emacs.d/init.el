@@ -966,7 +966,7 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
 ;; golang
 (use-package go-mode
   :bind (:map go-mode-map
-         ("C-c C-r" . go-remove-unused-imports)
+         ("C-c C-s" . godoc-at-point)
          ;; go get github.com/rogpeppe/godef
          ("M-." . godef-jump))          ;M-,  pop mark
   :hook ((before-save . gofmt-before-save)
