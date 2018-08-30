@@ -538,7 +538,8 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 (use-package counsel
   :after ivy
   :bind (("M-x"   . counsel-M-x)
-         ("C-c g" . counsel-git-grep)
+         ("C-c g" . counsel-git)        ;git ls-files
+         ("C-c G" . counsel-git-grep)
          ("C-c i" . counsel-imenu)))
 
 ;;; jump to position within visible text

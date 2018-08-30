@@ -2,8 +2,10 @@
 #+AUTHOR: Colin Yang
 #+DATE:
 #+OPTIONS: toc:nil
-#+LATEX_HEADER: \usepackage{parskip}
 #+LATEX_HEADER: \usepackage[margin=0.5in]{geometry}
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \setlength{\parindent}{2em}
+#+LATEX_HEADER: \setlength{\parskip}{1em}
 
 # if writing math
 # #+LATEX_HEADER: \usepackage{amsmath}
