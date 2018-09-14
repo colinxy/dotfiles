@@ -420,6 +420,7 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 
 
 ;;; ag (silver searcher)
+;; TODO: consider replacing with counsel-ag
 (use-package ag
   :defer t
   :commands ag
@@ -950,6 +951,8 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
 (use-package flycheck-rust
   :after (rust))
 ;; could be slow (compiling stuff), load racer on demand
+;; requires rust nightly
+;; cargo +nightly install racer
 (use-package racer
   :hook ((racer-mode . eldoc-mode)
          (racer-mode . company-mode))
@@ -983,7 +986,7 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
 ;; C-c C-f a `go-goto-arguments'
 ;; C-c C-f r `go-goto-return-values'
 (defun my/go-complete ()
-  "Start company-go eldoc-go (requires github.com/nsf/gocode) on demand."
+  "Start company-go eldoc-go (requires gocode) on demand."
   (interactive)
   ;; go get github.com/nsf/gocode (runs as daemon)
   ;; company-go
