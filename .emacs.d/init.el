@@ -525,6 +525,7 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   :custom
   (ivy-height 6)
   (ivy-use-virtual-buffers t)
+  (ivy-use-selectable-prompt t)
   (ivy-count-format "(%d/%d) ")
   (ivy-format-function 'ivy-format-function-line))
 ;; when minibuffer is active:
@@ -539,6 +540,7 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 (use-package counsel
   :after ivy
   :bind (("M-x"   . counsel-M-x)
+         ("C-c e" . counsel-ag)
          ("C-c g" . counsel-git)        ;git ls-files
          ("C-c G" . counsel-git-grep)
          ("C-c i" . counsel-imenu)))
@@ -553,15 +555,17 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   :diminish projectile-mode)
 
 (use-package counsel-projectile
-  :bind (;; ("C-c f" . counsel-projectile-find-file)
+  :bind (("C-c f" . counsel-projectile-find-file)
          ("C-c d" . counsel-projectile-find-dir)
          ("C-c s" . counsel-projectile-ag)
          ("C-c b" . counsel-projectile-switch-to-buffer)))
 
 ;; for finding files, use ffip
 (use-package find-file-in-project
+  :disabled
   :defer t
   :bind (("C-c f" . find-file-in-project-by-selected)
+         ;; TODO: find better usage
          ("C-c v" . find-file-with-similar-name)))
 
 
@@ -1023,6 +1027,19 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
   (setq utop-command "sh -c \"eval $(opam config env) && utop -emacs\""))
 
 
+;;; Haskell
+(use-package haskell-mode
+  :defer t
+  :hook ((haskell-mode . haskell-doc-mode)
+         ;; only enable one of interactive-haskell-mode, intero-mode
+         ;; (haskell-mode . interactive-haskell-mode)
+         (haskell-mode . haskell-indentation-mode)
+         (haskell-mode . intero-mode)))
+;; make sure stack is installed
+(use-package intero-mode
+  :defer t)
+
+
 ;;; Ruby
 ;; inf-ruby: repl integration
 ;; (inf-ruby-console-auto)
@@ -1040,7 +1057,6 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
 
 
 ;;; Javascript & HTML & CSS
-
 (use-package js2-mode
   :defer t
   :mode (("\\.js\\'" . js2-mode)
