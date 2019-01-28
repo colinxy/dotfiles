@@ -403,6 +403,11 @@ stack overflow answer https://stackoverflow.com/a/18885461."
   (setq dired-listing-switches "-alh")
   (setq dired-dwim-target t)
 
+  (use-package dired-x
+    :ensure nil
+    :config
+    (setq dired-guess-shell-alist-user
+          `(("\\.pdf\\'" ,(if (eq system-type 'darwin) "open" "xdg-open")))))
   ;; BSD ls does not support --dired
   (use-package ls-lisp
     :ensure nil
