@@ -25,6 +25,7 @@ package.el
 .emacs*.d/bookmarks
 .emacs*.d/recentf
 .emacs*.d/request
+.emacs*.d/logview-cache.extmap
 
 .DS_Store
 *.elc
