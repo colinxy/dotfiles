@@ -406,8 +406,10 @@ stack overflow answer https://stackoverflow.com/a/18885461."
   (use-package dired-x
     :ensure nil
     :config
-    (setq dired-guess-shell-alist-user
-          `(("\\.pdf\\'" ,(if (eq system-type 'darwin) "open" "xdg-open")))))
+    (let ((open (if (eq system-type 'darwin) "open" "xdg-open")))
+      (setq dired-guess-shell-alist-user
+            `(("\\.pdf\\'" ,open)
+              ("\\.[^.]+\\'" ,open)))))
   ;; BSD ls does not support --dired
   (use-package ls-lisp
     :ensure nil
@@ -1032,6 +1034,7 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
   (use-package go-guru
     :hook (go-mode . go-guru-hl-identifier-mode))
   ;; set `go-projectile-project-gopath' for GOPATH override
+  ;; or call `go-projectile-set-gopath'
   (use-package go-projectile)
   (use-package go-eldoc
     :hook (go-mode . go-eldoc-setup)))

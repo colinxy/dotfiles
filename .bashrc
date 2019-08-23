@@ -10,8 +10,8 @@ set -o emacs
 # allow parallel history
 shopt -s histappend
 shopt -s checkwinsize
-export HISTSIZE=100000
-export HISTFILESIZE=1000000
+export HISTSIZE=500000
+export HISTFILESIZE=5000000
 # don't put duplicate lines or lines starting with space in the history.
 export HISTCONTROL=ignoreboth:erasedups
 

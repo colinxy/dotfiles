@@ -12,7 +12,8 @@
 .emacs*.d/image-dired
 .emacs*.d/.org-id-locations
 .emacs*.d/.cask/
-.emacs.d/projectile*
+.emacs*.d/projectile*
+.emacs*.d/transient/
 
 profile-dotemacs.el
 package.el

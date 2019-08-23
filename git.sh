@@ -17,10 +17,10 @@ git_prompt() {
     local BRANCH
     BRANCH=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/*\(.*\)/\1/')
 
-    if [ ! -z "$BRANCH" ]; then
+    if [ -n "$BRANCH" ]; then
         echo -n "(${_YELLOW}${BRANCH}${_RESET}"
 
-        if [ ! -z "$(git status --short)" ]; then
+        if [ -n "$(git status --short)" ]; then
             echo -n "${_RED}✗${_RESET}"
         fi
         echo -n ' ) '

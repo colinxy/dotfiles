@@ -1,0 +1,32 @@
+#!/usr/bin/python3
+
+import re
+import sys
+import urllib.parse as urlparse
+
+
+for url in sys.argv[1:]:
+    orig_parsed = urlparse.urlparse(url)
+    if 'facebook.com' in orig_parsed.netloc:
+        after_redir = urlparse.parse_qs(orig_parsed.query)['u'][0]
+        parsed = urlparse.urlparse(after_redir)
+    else:
+        parsed = orig_parsed
+
+    rm_tracking = urlparse.parse_qs(parsed.query)
+    trackers = '|'.join(['(fbclid)', '(utm_.*)'])
+    rm_tracking = {
+        key: val for key, val in rm_tracking.items()
+        if not re.match(trackers, key)
+    }
+
+    clean = urlparse.ParseResult(
+        scheme=parsed.scheme,
+        netloc=parsed.netloc,
+        path=parsed.path,
+        params=parsed.params,
+        query=urlparse.urlencode(rm_tracking, doseq=True),
+        fragment=parsed.fragment,
+    )
+
+    print(urlparse.urlunparse(clean))
