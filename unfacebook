@@ -14,7 +14,7 @@ for url in sys.argv[1:]:
         parsed = orig_parsed
 
     rm_tracking = urlparse.parse_qs(parsed.query)
-    trackers = '|'.join(['(fbclid)', '(utm_.*)'])
+    trackers = '|'.join(['(fbclid)', '(utm_.*)', '(cm_.*)'])
     rm_tracking = {
         key: val for key, val in rm_tracking.items()
         if not re.match(trackers, key)
