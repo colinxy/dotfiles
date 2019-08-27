@@ -5,6 +5,11 @@
 #       *) return;;
 # esac
 
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+
 set -o emacs
 
 # allow parallel history
@@ -60,10 +65,10 @@ bash_completion=/etc/bash_completion
 if [[ "$OSTYPE" == "darwin"* ]]; then
     bash_completion="$(brew --prefix)${bash_completion}"
 fi
-[ -f "$bash_completion" ] || bash_completion=/etc/profile.d/bash_completion.sh
+# [ -f "$bash_completion" ] || bash_completion=/etc/profile.d/bash_completion.sh
 # shellcheck source=/dev/null
-[ -f "$bash_completion" ] && . "$bash_completion"
-unset bash_completion
+# [ -f "$bash_completion" ] && . "$bash_completion"
+# unset bash_completion
 
 # tmux
 alias tmux-copy='tmux load-buffer -'   # loadb ($CMD | tmux-copy)
