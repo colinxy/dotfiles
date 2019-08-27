@@ -20,7 +20,7 @@ file.
 #+BEGIN_SRC sh
 
   brew tap railwaycat/emacsmacport
-  brew install emacs-mac --with-gnutls --with-imagemagick --with-modules --with-xml2 --with-modern-icon
+  brew install emacs-mac --with-imagemagick --with-modules --with-xml2 --with-modern-icon
 
 #+END_SRC
 
@@ -347,7 +347,22 @@ amazing c++ documentation, from https://github.com/jeaye/stdman
    #+END_SRC
 
 
-* Bash Powerline
+* Bash
+
+** On Mac
+
+add =~/.bash_profile= with
+
+#+BEGIN_SRC bash
+
+  if [[ $- == *i* ]] && [ -r ~/.bashrc ]; then
+      . ~/.bashrc
+  fi
+
+#+END_SRC
+
+
+** Bash Powerline
 
 #+BEGIN_SRC sh
 
