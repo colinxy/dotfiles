@@ -981,7 +981,7 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
 
 
 ;; rustlang
-(use-package rust
+(use-package rust-mode
   :defer t
   :hook (rust-mode . flycheck-rust-setup))
 (use-package flycheck-rust
@@ -1069,7 +1069,7 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
          (haskell-mode . haskell-indentation-mode)
          (haskell-mode . intero-mode)))
 ;; make sure stack is installed
-(use-package intero-mode
+(use-package intero
   :defer t)
 
 
