@@ -199,26 +199,24 @@ BEG END REGION"
   (menu-bar-mode -1))
 
 ;; move between windows
-(if (display-graphic-p)
-    (cond ((eq system-type 'darwin)
-           (global-unset-key (kbd "s-q"))
-           (global-set-key (kbd "s-<up>") 'windmove-up)
-           (global-set-key (kbd "s-<down>") 'windmove-down)
-           (global-set-key (kbd "s-<left>") 'windmove-left)
-           (global-set-key (kbd "s-<right>") 'windmove-right))
-          ((eq system-type 'gnu/linux)
-           (global-set-key (kbd "C-<up>") 'windmove-up)
-           (global-set-key (kbd "C-<down>") 'windmove-down)
-           (global-set-key (kbd "C-<left>") 'windmove-left)
-           (global-set-key (kbd "C-<right>") 'windmove-right)))
-  ;; terminal
-  (windmove-default-keybindings))
-
-(unless window-system
-  (define-key input-decode-map "\e[1;2A" [S-up])
-  (define-key input-decode-map "\e[1;2B" [S-down])
-  (define-key input-decode-map "\e[1;2D" [S-left])
-  (define-key input-decode-map "\e[1;2C" [S-right]))
+(cond ((and (eq system-type 'darwin) (display-graphic-p))
+       (global-unset-key (kbd "s-q"))
+       (global-set-key (kbd "s-<up>") 'windmove-up)
+       (global-set-key (kbd "s-<down>") 'windmove-down)
+       (global-set-key (kbd "s-<left>") 'windmove-left)
+       (global-set-key (kbd "s-<right>") 'windmove-right))
+      ((eq system-type 'gnu/linux)
+       (global-set-key (kbd "C-<up>") 'windmove-up)
+       (global-set-key (kbd "C-<down>") 'windmove-down)
+       (global-set-key (kbd "C-<left>") 'windmove-left)
+       (global-set-key (kbd "C-<right>") 'windmove-right))
+      (t
+       (windmove-default-keybindings 'shift)
+       ;; for terminal
+       (define-key input-decode-map "\e[1;2A" [S-up])
+       (define-key input-decode-map "\e[1;2B" [S-down])
+       (define-key input-decode-map "\e[1;2D" [S-left])
+       (define-key input-decode-map "\e[1;2C" [S-right])))
 
 
 
@@ -534,6 +532,42 @@ Also, switch to that buffer."
               (set (make-local-variable 'comment-inline-offset) 2)))
   :config
   (setq-default python-indent-offset 4))
+
+;; golang
+(use-package go-mode
+  :bind (:map go-mode-map
+         ("C-c C-s" . godoc-at-point)
+         ;; go get github.com/rogpeppe/godef
+         ("M-." . godef-jump))          ;M-,  pop mark
+  :hook ((before-save . gofmt-before-save)
+         (go-mode . yas-minor-mode)
+         (go-mode . subword-mode))
+  :config
+  ;; go get golang.org/x/tools/cmd/gorename
+  ;; go get golang.org/x/tools/cmd/goimports
+  (setq gofmt-command (or (executable-find "goimports") "gofmt")))
+;; C-c C-d   `godef-describe'
+;; C-c C-a   `go-import-add'
+;; C-c C-f n `go-goto-function-name'
+;; C-c C-f a `go-goto-arguments'
+;; C-c C-f r `go-goto-return-values'
+(defun my/go-complete ()
+  "Start company-go eldoc-go (requires gocode) on demand."
+  (interactive)
+  ;; go get github.com/nsf/gocode (runs as daemon)
+  ;; company-go
+  (use-package company-go
+    :hook
+    (go-mode . (lambda ()
+                 (add-to-list 'company-backends 'company-go))))
+  ;; go get golang.org/x/tools/cmd/guru
+  (use-package go-guru
+    :hook (go-mode . go-guru-hl-identifier-mode))
+  ;; set `go-projectile-project-gopath' for GOPATH override
+  ;; or call `go-projectile-set-gopath'
+  (use-package go-projectile)
+  (use-package go-eldoc
+    :hook (go-mode . go-eldoc-setup)))
 
 
 ;; themes
