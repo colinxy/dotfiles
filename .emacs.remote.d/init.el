@@ -199,24 +199,13 @@ BEG END REGION"
   (menu-bar-mode -1))
 
 ;; move between windows
-(cond ((and (eq system-type 'darwin) (display-graphic-p))
-       (global-unset-key (kbd "s-q"))
-       (global-set-key (kbd "s-<up>") 'windmove-up)
-       (global-set-key (kbd "s-<down>") 'windmove-down)
-       (global-set-key (kbd "s-<left>") 'windmove-left)
-       (global-set-key (kbd "s-<right>") 'windmove-right))
-      ((eq system-type 'gnu/linux)
-       (global-set-key (kbd "C-<up>") 'windmove-up)
-       (global-set-key (kbd "C-<down>") 'windmove-down)
-       (global-set-key (kbd "C-<left>") 'windmove-left)
-       (global-set-key (kbd "C-<right>") 'windmove-right))
-      (t
-       (windmove-default-keybindings 'shift)
-       ;; for terminal
-       (define-key input-decode-map "\e[1;2A" [S-up])
-       (define-key input-decode-map "\e[1;2B" [S-down])
-       (define-key input-decode-map "\e[1;2D" [S-left])
-       (define-key input-decode-map "\e[1;2C" [S-right])))
+(windmove-default-keybindings 'shift)
+;; terminal
+(unless window-system
+  (define-key input-decode-map "\e[1;2A" [S-up])
+  (define-key input-decode-map "\e[1;2B" [S-down])
+  (define-key input-decode-map "\e[1;2D" [S-left])
+  (define-key input-decode-map "\e[1;2C" [S-right]))
 
 
 
