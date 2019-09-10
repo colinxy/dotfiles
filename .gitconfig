@@ -1,9 +1,9 @@
 [user]
     name = Colin Yang
-    email = colinxy@linux.ucla.edu
 [grep]
     lineNumber = true
 [alias]
     st = status
     di = diff
     dif = diff
+    l = log

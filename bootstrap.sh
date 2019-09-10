@@ -41,9 +41,6 @@ do
         tmux)
             configs+=(".tmux.conf")
             linknames+=(".tmux.conf");;
-        git)
-            configs+=(".gitconfig")
-            linknames+=(".gitconfig")
     esac
 done
 
