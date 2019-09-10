@@ -314,12 +314,37 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
              (ediff-files current-file other-file)))
           (t (message "Mark no more than 3 files to ediff")))))
 
+(defun my/dired-create-file (filename)
+  "Create a file called FILENAME.
+Adapted from `dired-create-directory' and
+stack overflow answer https://stackoverflow.com/a/18885461."
+  (interactive
+   (list (read-file-name "Create file: " (dired-current-directory))))
+  (let* ((expanded (expand-file-name filename))
+         (try expanded)
+	 (dir (directory-file-name (file-name-directory expanded)))
+         new)
+    (if (file-exists-p expanded)
+	(error "Cannot create file %s: file exists" expanded))
+    ;; Find the topmost nonexistent parent dir (variable `new')
+    (while (and try (not (file-exists-p try)) (not (equal new try)))
+      (setq new try
+	    try (directory-file-name (file-name-directory try))))
+    (when (not (file-exists-p dir))
+      (make-directory dir t))
+    (write-region "" nil expanded t)
+    (when new
+      (dired-add-file new)
+      (dired-move-to-filename)))
+  )
+
 (use-package dired
   :defer t
   :ensure nil
   :bind (("C-x C-j" . dired-jump)
          :map dired-mode-map
          ("=" . my/dired-ediff-marked-files)
+         ("_" . my/dired-create-file)   ;+ dired-create-directory
          ;; needs dired+
          ;; ("C-t C-t" . diredp-image-dired-display-thumbs-recursive)
          )
@@ -375,7 +400,9 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
 (use-package counsel
   :after ivy
   :bind (("M-x"   . counsel-M-x)
-         ("C-c g" . counsel-git-grep)
+         ("C-c e" . counsel-ag)
+         ("C-c g" . counsel-git)        ;git ls-files
+         ("C-c G" . counsel-git-grep)
          ("C-c i" . counsel-imenu)))
 
 ;;; jump to position within visible text
@@ -412,6 +439,14 @@ Reference: http://emacsredux.com/blog/2014/04/05/which-function-mode/"
   (setq undo-tree-visualizer-timestamps t)
   (setq undo-tree-visualizer-diff t)
   (global-undo-tree-mode))
+
+
+;;; winner-mode
+;; C-c <left>  `winner-undo'
+;; C-c <right> `winner-redo'
+(use-package winner
+  :defer 5
+  :config (winner-mode 1))
 
 
 ;; imenu
