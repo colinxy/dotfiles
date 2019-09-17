@@ -143,6 +143,9 @@ alias diff='diff -u'
 # -Z  --ignore-trailing-space
 # -b  --ignore-space-change
 # -w  --ignore-all-space
+# show only changes in the old/new file
+alias diff-left='\diff --unchanged-line-format= --old-line-format="%L" --new-line-format='
+alias diff-right='\diff --unchanged-line-format= --old-line-format= --new-line-format="%L"'
 
 # C++
 export _CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare
