@@ -7,3 +7,6 @@
     di = diff
     dif = diff
     l = log
+
+    ci = commit
+    cia = commit --amend
