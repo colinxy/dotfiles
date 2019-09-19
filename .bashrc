@@ -201,7 +201,22 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 #      @ file upload, < contents for text field from file
 #      -F name=John -F profile=@portrait.png -F "story=<hugefile.txt"
 # --trace-ascii - : dump all incoming and outgoing data to stdout
-urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
+
+# ${var//Pattern/Replacement} Global replacement
+urlencode() {
+    local LC_ALL=C
+    for ((i=0; i<${#1}; i++)); do
+        : "${1:i:1}"
+        case "$_" in
+            [a-zA-Z0-9.~_-])
+                printf '%s' "$_";;
+            *)
+                printf '%%%02X' "'$_";;
+        esac
+    done
+    printf '\n'
+}
+urldecode() { : "${*//+/ }"; printf '%b\n' "${_//%/\\x}"; }
 
 # networking
 alias traceroute='traceroute -n' # don't do reverse lookup
