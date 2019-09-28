@@ -1,26 +1,88 @@
 #!/usr/bin/python3
 
+import argparse
+import logging
 import re
-import sys
 import urllib.parse as urlparse
+import urllib.request as urlrequest
+from urllib.request import HTTPRedirectHandler
+
+REDIRECTOR = [
+    ('facebook.com', 'u'),
+    ('xg4ken.com', 'url[]'),
+]
+
+TRACKER = [
+    'trab.al',
+]
+
+TRACKER_PARAM_RE = re.compile(
+    '|'.join(['(fbclid)', '(ocid)', '(tpcc)', '(smid)', '(smtyp)',
+              '(utm_.*)', '(cm_.*)', '(ns_.*)'])
+)
+
+STOP_REDIR_RE = re.compile(
+    '({})$'.format('|'.join([r'\.com', r'\.org', r'\.net', r'\.co\.uk']))
+)
 
 
-for url in sys.argv[1:]:
-    orig_parsed = urlparse.urlparse(url)
-    if 'facebook.com' in orig_parsed.netloc:
-        after_redir = urlparse.parse_qs(orig_parsed.query)['u'][0]
-        parsed = urlparse.urlparse(after_redir)
-    else:
-        parsed = orig_parsed
+logging.basicConfig(level=logging.INFO,
+                    format='%(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('unfacebook')
+
+force = False
+
+
+def debug_request(req):
+    logger.debug(
+        'Sent request %s %s, headers %s',
+        req.get_method(), req.get_full_url(), req.header_items(),
+    )
+
+
+def should_stop(url):
+    host = urlparse.urlparse(url).netloc
+    return STOP_REDIR_RE.search(host)
+
+
+class UrlFound(Exception):
+    def __init__(self, url):
+        self.url = url
+
+
+class HTTPRedirectCleaner(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        debug_request(req)
+        logger.debug('After redirection: %s', newurl)
+
+        newurl = clean_url(newurl)
+        if not force and should_stop(newurl):
+            raise UrlFound(newurl)
+
+        req = super().redirect_request(req, fp, code, msg, headers, newurl)
+        req.method = 'HEAD'
+        return req
+
+
+def clean_url(url):
+    parsed = urlparse.urlparse(url)
+
+    clean = False
+    while not clean:
+        clean = True
+        for host, param in REDIRECTOR:
+            if host in parsed.netloc:
+                after_redir = urlparse.parse_qs(parsed.query)[param][0]
+                parsed = urlparse.urlparse(after_redir)
+                clean = False
 
     rm_tracking = urlparse.parse_qs(parsed.query)
-    trackers = '|'.join(['(fbclid)', '(utm_.*)', '(cm_.*)'])
     rm_tracking = {
-        key: val for key, val in rm_tracking.items()
-        if not re.match(trackers, key)
+        param: val for param, val in rm_tracking.items()
+        if not TRACKER_PARAM_RE.match(param)
     }
 
-    clean = urlparse.ParseResult(
+    cleaned = urlparse.ParseResult(
         scheme=parsed.scheme,
         netloc=parsed.netloc,
         path=parsed.path,
@@ -29,4 +91,48 @@ for url in sys.argv[1:]:
         fragment=parsed.fragment,
     )
 
-    print(urlparse.urlunparse(clean))
+    return urlparse.urlunparse(cleaned)
+
+
+def clean_url_recur(url, simple=False):
+    url = clean_url(url)
+    logger.debug('Cleaned up url: %s', url)
+
+    if simple:
+        return url
+    if not force and should_stop(url):
+        return url
+
+    opener = urlrequest.build_opener(HTTPRedirectCleaner)
+    opener.addheaders = [('User-Agent', 'Mozilla/5.0'), ('Accept', '*/*')]
+    urlrequest.install_opener(opener)
+
+    req = urlrequest.Request(url=url, method='HEAD')
+    debug_request(req)
+    try:
+        with urlrequest.urlopen(req) as resp:
+            logger.debug(resp.status)
+            logger.debug(resp.info())
+            return resp.geturl()
+    except UrlFound as e:
+        return e.url
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Clean up urls')
+    parser.add_argument('urls', nargs='*', help='urls to clean up')
+    parser.add_argument('--simple', '-s', action='store_true',
+                        help='do not connect to the internet')
+    parser.add_argument('--force', '-f', action='store_true',
+                        help='do not stop until hitting 2xx')
+    parser.add_argument('--verbose', '-v', action='count',
+                        help='increase debug level')
+    args = parser.parse_args()
+
+    force = args.force          # we are global here
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+
+    for url in args.urls:
+        # print(clean_url(url))
+        print(clean_url_recur(url, args.simple))
