@@ -10,3 +10,4 @@
 
     ci = commit
     cia = commit --amend
+    co = checkout
