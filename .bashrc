@@ -91,6 +91,12 @@ tmux-ssh-env() {
     eval "$(tmux show-env | grep '^SSH_')"
 }
 
+# fix ssh and detaching/reattaching tmux
+if [[ -S "$SSH_AUTH_SOCK" && ! -h "$SSH_AUTH_SOCK" ]]; then
+    ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock;
+fi
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock;
+
 # vim color hightlighter as less
 vless_setup() {
     local vers=(82 81 80 74 73)
