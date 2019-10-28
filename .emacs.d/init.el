@@ -995,14 +995,14 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
 (use-package go-mode
   :bind (:map go-mode-map
          ("C-c C-s" . godoc-at-point)
-         ;; go get github.com/rogpeppe/godef
+         ;; go get -u github.com/rogpeppe/godef
          ("M-." . godef-jump))          ;M-,  pop mark
   :hook ((before-save . gofmt-before-save)
          (go-mode . yas-minor-mode)
          (go-mode . subword-mode))
   :config
-  ;; go get golang.org/x/tools/cmd/gorename
-  ;; go get golang.org/x/tools/cmd/goimports
+  ;; go get -u golang.org/x/tools/cmd/gorename
+  ;; go get -u golang.org/x/tools/cmd/goimports
   (setq gofmt-command (or (executable-find "goimports") "gofmt")))
 ;; C-c C-d   `godef-describe'
 ;; C-c C-a   `go-import-add'
@@ -1012,13 +1012,13 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
 (defun my/go-complete ()
   "Start company-go eldoc-go (requires gocode) on demand."
   (interactive)
-  ;; go get github.com/nsf/gocode (runs as daemon)
+  ;; go get -u github.com/nsf/gocode (runs as daemon)
   ;; company-go
   (use-package company-go
     :hook
     (go-mode . (lambda ()
                  (add-to-list 'company-backends 'company-go))))
-  ;; go get golang.org/x/tools/cmd/guru
+  ;; go get -u golang.org/x/tools/cmd/guru
   (use-package go-guru
     :hook (go-mode . go-guru-hl-identifier-mode))
   ;; set `go-projectile-project-gopath' for GOPATH override
@@ -1026,6 +1026,9 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
   (use-package go-projectile)
   (use-package go-eldoc
     :hook (go-mode . go-eldoc-setup)))
+;; upgrade all golang tools:
+;; using [[:space:]] to avoid matching this command
+;; eval "$(grep 'go get -u[[:space:]]' ~/.emacs.d/init.el | sed 's/^.*\(go get -u[[:space:]][^ ]\+\).*$/echo \1; \1/')"
 
 
 ;;; OCaml
