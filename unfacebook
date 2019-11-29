@@ -14,15 +14,22 @@ REDIRECTOR = [
 
 TRACKER = [
     'trab.al',
+    'hubs.ly',
 ]
 
 TRACKER_PARAM_RE = re.compile(
     '|'.join(['(fbclid)', '(ocid)', '(tpcc)', '(smid)', '(smtyp)',
-              '(utm_.*)', '(cm_.*)', '(ns_.*)'])
+              '(utm_.*)', '(cm_.*)', '(ns_.*)', '(hsa_.*)'])
 )
 
 STOP_REDIR_RE = re.compile(
-    '({})$'.format('|'.join([r'\.com', r'\.org', r'\.net', r'\.co\.uk']))
+    '({})$'.format('|'.join([
+        r'\.com',
+        r'\.org',
+        r'\.net',
+        r'\.gov',
+        r'\.co\.uk',
+    ]))
 )
 
 
