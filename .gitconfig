@@ -8,6 +8,7 @@
     dif = diff
     l = log
 
+    br = branch
     ci = commit
     cia = commit --amend
     co = checkout
