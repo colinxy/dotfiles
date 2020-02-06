@@ -50,8 +50,8 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias more='more -R'
-alias les=less
 alias le=less
+alias les=less
 alias lesss=less
 alias tree='tree -C'
 export DATE_FMT='%Y-%m-%d_%H%M%S' # date +$DATE_FMT

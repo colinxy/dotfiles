@@ -14,3 +14,11 @@ $if mode=emacs
 "\ep": history-search-backward
 "\en": history-search-forward
 $endif
+
+# C-r reverse-search-history (incremental)
+# after that, use arrow key to select but not execute
+
+# M-# insert-comment : save the current command as comment
+
+# C-t transpose-chars
+# M-t transpose-words
