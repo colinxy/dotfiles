@@ -201,6 +201,7 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 # -w : -w "%{http_code} %{content_type} %{size_download}\n"
 #         "%{time_starttransfer}" (time to first byte)
 #          %{url_effective} (use with -L)
+# -G : append query params to the end of URL (use with --data-urlencode)
 # -d : POST, Content-Type: application/x-www-form-urlencoded
 #      -d name=daniel -d skill=lousy
 # -F : POST form submission, Content-Type: multipart/form-data
