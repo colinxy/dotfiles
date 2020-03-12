@@ -201,9 +201,10 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 # -w : -w "%{http_code} %{content_type} %{size_download}\n"
 #         "%{time_starttransfer}" (time to first byte)
 #          %{url_effective} (use with -L)
-# -G : append query params to the end of URL (use with --data-urlencode)
-# -d : POST, Content-Type: application/x-www-form-urlencoded
+# -G : append query params to the end of URL (use with --data/--data-urlencode)
+# -d (--data) : POST, Content-Type: application/x-www-form-urlencoded
 #      -d name=daniel -d skill=lousy
+# --data-urlencode : similar to --data, but encodes content part of 'name=content'
 # -F : POST form submission, Content-Type: multipart/form-data
 #      @ file upload, < contents for text field from file
 #      -F name=John -F profile=@portrait.png -F "story=<hugefile.txt"

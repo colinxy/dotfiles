@@ -384,7 +384,7 @@ stack overflow answer https://stackoverflow.com/a/18885461."
   :init
   (ivy-mode 1)
   :custom
-  (ivy-height 6)
+  (ivy-height 16)
   (ivy-use-virtual-buffers t)
   (ivy-count-format "(%d/%d) ")
   (ivy-format-function 'ivy-format-function-line))
