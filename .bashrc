@@ -232,11 +232,14 @@ alias traceroute='traceroute -n' # don't do reverse lookup
 # understand dns lookup process: +trace
 # whois
 # use whois to lookup ip to get more accurate results, example:
-# whois $(dig google.com +short | head -1)
+# $ whois $(dig google.com +short | head -1)
 whois() { "$(type -P whois)" "$@" | grep -vE '^(#|\s*$)'; }
 # GUI wirshark
 alias ws='startprocess wireshark'
-# check tcp connection with bash
+###
+# check tcp connection with ncat
+# $ nc -zv google.com 80  # is port 80 open on google.com
+### USE THE NC COMMAND ABOVE INSTEAD: check tcp connection with bash
 # http://stackoverflow.com/questions/9609130/quick-way-to-find-if-a-port-is-open-on-linux
 tcpconn() {
     [ -z "$1" ] && echo "tcpconn <ip> <port>" && return 1

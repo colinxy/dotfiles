@@ -559,6 +559,7 @@ Also, switch to that buffer."
 
 ;; golang
 (use-package go-mode
+  :defer t
   :bind (:map go-mode-map
          ("C-c C-s" . godoc-at-point)
          ;; go get github.com/rogpeppe/godef
@@ -592,6 +593,33 @@ Also, switch to that buffer."
   (use-package go-projectile)
   (use-package go-eldoc
     :hook (go-mode . go-eldoc-setup)))
+
+;; web-mode
+(use-package web-mode
+  :defer t
+  :mode (("\\.html?\\'" . web-mode)
+         ("\\.xml\\'" . web-mode)
+         ("\\.css\\'" . web-mode)
+         ("\\.scss\\'" . web-mode)
+         ("\\.php\\'" . web-mode)
+         ("\\.erb\\'" . web-mode))
+  :config
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  ;; web dev extra
+  (setq web-mode-enable-auto-pairing t)
+  (setq web-mode-enable-css-colorization t)
+  ;; template engine detection (put engine:<engine> at top of file)
+  (setq web-mode-enable-engine-detection t)
+  ;; html entities
+  (setq web-mode-enable-html-entities-fontification t)
+  ;; highlight
+  (setq web-mode-enable-current-element-highlight t)
+  (setq web-mode-enable-current-column-highlight t)
+  ;; keybinding within current tag
+  (define-key web-mode-map (kbd "M-n") 'web-mode-tag-next)
+  (define-key web-mode-map (kbd "M-p") 'web-mode-tag-previous))
 
 
 ;; themes
