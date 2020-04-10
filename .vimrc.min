@@ -27,3 +27,19 @@ set whichwrap+=<,>,h,l
 " vim command completion style
 set wildmode=longest,list,full
 set wildmenu
+
+
+"""""""""""""""""
+" For Reference:
+" useful commands
+"""""""""""""""""
+
+"" stop hightlighting for search
+" noh
+"" paste mode: paste to vim
+" set paste   " nopaste
+"" show invisible chars
+" set list    " nolist
+"" replace
+" %s/pattern1/pattern2/g
+" %s/pattern1/pattern2/gc    " replace interactively

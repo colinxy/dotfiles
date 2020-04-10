@@ -91,11 +91,15 @@ tmux-ssh-env() {
     eval "$(tmux show-env | grep '^SSH_')"
 }
 
-# fix ssh and detaching/reattaching tmux
-if [[ -S "$SSH_AUTH_SOCK" && ! -h "$SSH_AUTH_SOCK" ]]; then
-    ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock;
+# find ssh-agent properly by symlinking auth_sock
+# (needed when detaching/reattaching tmux)
+_SOCK=~/.ssh/ssh_auth_sock
+if [ ! -S "$_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
+    ln -sf "$SSH_AUTH_SOCK" "$_SOCK"
 fi
-export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock;
+# always set SSH_AUTH_SOCK because even if we start ssh-agent in
+# another bash session, this session will start to work
+export SSH_AUTH_SOCK="$_SOCK"
 
 # vim color hightlighter as less
 vless_setup() {
@@ -201,7 +205,7 @@ export IPv4_E='[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 # -w : -w "%{http_code} %{content_type} %{size_download}\n"
 #         "%{time_starttransfer}" (time to first byte)
 #          %{url_effective} (use with -L)
-# -G : append query params to the end of URL (use with --data/--data-urlencode)
+# -G (--get) : append query params to the end of URL (use with --data/--data-urlencode)
 # -d (--data) : POST, Content-Type: application/x-www-form-urlencoded
 #      -d name=daniel -d skill=lousy
 # --data-urlencode : similar to --data, but encodes content part of 'name=content'
