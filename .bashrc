@@ -91,16 +91,30 @@ tmux-ssh-env() {
     eval "$(tmux show-env | grep '^SSH_')"
 }
 
-# find ssh-agent properly by symlinking auth_sock
-# (needed when detaching/reattaching tmux)
 _SOCK=~/.ssh/ssh_auth_sock
+ssh-agent-setup() {
+    local ssh_agent_pid
+    ssh_agent_pid="$(pgrep ssh-agent)"
+    kill -0 "$ssh_agent_pid" 2>/dev/null || eval "$(ssh-agent)"
+    # symlinking auth_sock so that we can find ssh-agent
+    if [ ! -S "$_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
+        ln -sf "$SSH_AUTH_SOCK" "$_SOCK"
+    fi
+    export SSH_AUTH_SOCK="$_SOCK"
+
+    # use ssh-add to avoid entering passphrase for keys again
+    echo "Use \`ssh-add ~/.ssh/<key>' to add keys"
+    echo "Use \`ssh-add -L' to list keys added to ssh-agent"
+}
 if [ ! -S "$_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
     ln -sf "$SSH_AUTH_SOCK" "$_SOCK"
 fi
 # always set SSH_AUTH_SOCK because even if we start ssh-agent in
 # another bash session, this session will start to work
 export SSH_AUTH_SOCK="$_SOCK"
-# use ssh-add to avoid entering passphrase for keys again
+# when ssh-agent is not running on the box, we might still see a valid
+# SSH_AUTH_SOCK because ssh agent forwarding is enabled (from where we
+# sshed into this box).
 
 # vim color hightlighter as less
 vless_setup() {
@@ -252,7 +266,7 @@ tcpconn() {
     local port=80
     if [[ "$1" =~ $IPv4_E ]]; then
         ip=$1
-        [ ! -z "$2" ] && port=$2
+        [ -n "$2" ] && port=$2
     elif [[ "$1" =~ ^[0-9]{1,6}$ ]]; then
         port=$1
     else
