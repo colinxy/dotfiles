@@ -100,6 +100,7 @@ fi
 # always set SSH_AUTH_SOCK because even if we start ssh-agent in
 # another bash session, this session will start to work
 export SSH_AUTH_SOCK="$_SOCK"
+# use ssh-add to avoid entering passphrase for keys again
 
 # vim color hightlighter as less
 vless_setup() {
