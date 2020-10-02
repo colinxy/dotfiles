@@ -4,8 +4,13 @@
     lineNumber = true
 [alias]
     st = status
+
+    d = diff
     di = diff
     dif = diff
+    ds = diff --staged  # changes from index (staged)
+    dw = diff HEAD      # changes in the work tree from last commit
+
     l = log
 
     br = branch
