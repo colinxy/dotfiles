@@ -98,7 +98,7 @@ ssh-agent-setup() {
     # kill -0 also checks whether you ran ssh-agent (not someone else)
     kill -0 "$ssh_agent_pid" 2>/dev/null || eval "$(ssh-agent)"
     # symlinking auth_sock so that we can find ssh-agent
-    if [ ! -S "$_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
+    if [ -S "$SSH_AUTH_SOCK" ]; then
         ln -sf "$SSH_AUTH_SOCK" "$_SOCK"
     fi
     export SSH_AUTH_SOCK="$_SOCK"

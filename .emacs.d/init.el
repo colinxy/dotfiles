@@ -756,6 +756,8 @@ stack overflow answer https://stackoverflow.com/a/18885461."
   (async-bytecomp-package-mode 1))
 
 ;;; magit
+;; C-c M-g   `magit-file-dispatch': Invoke a Magit command that acts on the visited file
+;; C-c M-g b `magit-blame'
 (use-package magit
   :defer t
   :bind ("C-x g" . magit-status))
