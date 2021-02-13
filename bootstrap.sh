@@ -6,6 +6,7 @@ set -e
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 configs=(
+    .gitconfig
     .inputrc
     .bashrc
     .bash_colors
@@ -15,6 +16,7 @@ configs=(
 )
 
 linknames=(
+    .gitconfig
     .inputrc
     .bashrc
     .bash_colors

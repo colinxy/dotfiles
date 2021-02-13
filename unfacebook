@@ -20,7 +20,7 @@ TRACKER = [
 
 TRACKER_PARAM_RE = re.compile(
     '|'.join(['(fbclid)', '(ocid)', '(tpcc)', '(smid)', '(smtyp)',
-              '(utm_.*)', '(cm_.*)', '(ns_.*)', '(hsa_.*)'])
+              '(utm_.*)', '(cm_.*)', '(ns_.*)', '(hsa_.*)', '(at_.*)'])
 )
 
 STOP_REDIR_RE = re.compile(
