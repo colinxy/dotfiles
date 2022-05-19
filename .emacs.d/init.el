@@ -600,6 +600,7 @@ stack overflow answer https://stackoverflow.com/a/18885461."
   :config
   (setq undo-tree-visualizer-timestamps t)
   (setq undo-tree-visualizer-diff t)
+  (setq undo-tree-auto-save-history nil)
   (global-undo-tree-mode))
 
 
