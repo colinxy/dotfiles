@@ -70,27 +70,6 @@ https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard/issues/31
 mac, and =xclip= on linux (=sudo apt-get install xclip=).
 
 
-* Tmux
-
-** on mac
-
-problems with copy/paste, opening graphical applications
-
-solution: https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard
-
-#+BEGIN_SRC sh
-
-  brew install reattach-to-user-namespace
-
-#+END_SRC
-
-#+BEGIN_SRC conf
-
-  if-shell 'test "$(uname -s)" = Darwin' 'set-option -g default-command "exec reattach-to-user-namespace -l $SHELL"'
-
-#+END_SRC
-
-
 * Python
 
 ** Install pip

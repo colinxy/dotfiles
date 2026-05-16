@@ -174,10 +174,10 @@ alias diff-left='\diff --unchanged-line-format= --old-line-format="%L" --new-lin
 alias diff-right='\diff --unchanged-line-format= --old-line-format= --new-line-format="%L"'
 
 # C++
-export _CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare
-       -Werror=return-type -fstrict-overflow -Wstrict-overflow
-       -fsanitize=address -fsanitize=undefined -fsanitize=bounds
-       -fno-omit-frame-pointer'
+# export _CXXFLAGS='-std=c++11 -Wall -Wextra -Wno-sign-compare
+#        -Werror=return-type -fstrict-overflow -Wstrict-overflow
+#        -fsanitize=address -fsanitize=undefined -fsanitize=bounds
+#        -fno-omit-frame-pointer'
 # for 2's complement arithmetic, use -fwrapv
 
 # Golang
