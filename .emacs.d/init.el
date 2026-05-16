@@ -580,16 +580,8 @@ stack overflow answer https://stackoverflow.com/a/18885461."
 (use-package counsel-projectile
   :bind (("C-c f" . counsel-projectile-find-file)
          ("C-c d" . counsel-projectile-find-dir)
-         ("C-c s" . counsel-projectile-ag)
+         ("C-c s" . counsel-projectile-rg)
          ("C-c b" . counsel-projectile-switch-to-buffer)))
-
-;; for finding files, use ffip
-(use-package find-file-in-project
-  :disabled
-  :defer t
-  :bind (("C-c f" . find-file-in-project-by-selected)
-         ;; TODO: find better usage
-         ("C-c v" . find-file-with-similar-name)))
 
 
 ;;; undo tree

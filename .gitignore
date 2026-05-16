@@ -1,3 +1,5 @@
+# TODO: consider ignoring all under .emacs.d/ and explicitly track files with git add
+
 .emacs*.d/xkcd/
 .emacs*.d/irony
 .emacs*.d/meghanada
@@ -14,6 +16,7 @@
 .emacs*.d/.cask/
 .emacs*.d/projectile*
 .emacs*.d/transient/
+.emacs*.d/elpy/
 
 profile-dotemacs.el
 package.el
@@ -27,6 +30,10 @@ package.el
 .emacs*.d/recentf
 .emacs*.d/request
 .emacs*.d/logview-cache.extmap
+.emacs*.d/projects
 
 .DS_Store
 *.elc
+*.eln
+*.log
+*.tmp
