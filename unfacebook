@@ -9,8 +9,11 @@ from urllib.request import HTTPRedirectHandler
 
 REDIRECTOR = [
     ('facebook.com', 'u'),
+    ('youtube.com', 'q'),
     ('xg4ken.com', 'url[]'),
     ('fg8dgt.com', 'url'),
+    ('awin1.com', 'ued'),
+    ('shareasale.com', 'urllink'),
 ]
 
 TRACKER = [
@@ -20,12 +23,13 @@ TRACKER = [
 
 TRACKER_PARAM_RE = re.compile(
     '|'.join(['(fbclid)', '(ocid)', '(tpcc)', '(smid)', '(smtyp)',
-              '(utm_.*)', '(cm_.*)', '(ns_.*)', '(hsa_.*)', '(at_.*)'])
+              '(utm_.*)', '(cm_.*)', '(ns_.*)', '(hsa_.*)', '(at_.*)',
+              '(lplid)'])
 )
 
 STOP_REDIR_RE = re.compile(
     '({})$'.format('|'.join([
-        r'\.com',
+        r'((?<!shrsl)\.com)',  # negative look behind, i.e. don't stop when more specific urls matches
         r'\.org',
         r'\.net',
         r'\.gov',
@@ -61,7 +65,6 @@ class UrlFound(Exception):
 class HTTPRedirectCleaner(HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         debug_request(req)
-        logger.debug('After redirection: %s', newurl)
 
         newurl = clean_url(newurl)
         if not force and should_stop(newurl):
@@ -80,7 +83,9 @@ def clean_url(url):
         clean = True
         for host, param in REDIRECTOR:
             if host in parsed.netloc:
-                after_redir = urlparse.parse_qs(parsed.query)[param][0]
+                after_redir = urlparse.parse_qs(parsed.query).get(param, [''])[0]
+                if '//' not in after_redir:
+                    after_redir = 'https://' + after_redir
                 parsed = urlparse.urlparse(after_redir)
                 clean = False
 
@@ -98,13 +103,14 @@ def clean_url(url):
         query=urlparse.urlencode(rm_tracking, doseq=True),
         fragment=parsed.fragment,
     )
+    cleaned_url = urlparse.urlunparse(cleaned)
+    logger.debug('Cleaned up url: %s', cleaned_url)
 
-    return urlparse.urlunparse(cleaned)
+    return cleaned_url
 
 
 def clean_url_recur(url, simple=False):
     url = clean_url(url)
-    logger.debug('Cleaned up url: %s', url)
 
     if simple:
         return url
@@ -116,7 +122,6 @@ def clean_url_recur(url, simple=False):
     urlrequest.install_opener(opener)
 
     req = urlrequest.Request(url=url, method='HEAD')
-    debug_request(req)
     try:
         with urlrequest.urlopen(req) as resp:
             logger.debug(resp.status)

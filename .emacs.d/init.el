@@ -72,6 +72,9 @@
 ;; (setq blink-cursor-blinks 1)
 ;; show prefix key in echo area quicker
 (setq echo-keystrokes 0.1)
+;; no audible/visible bell
+(setq visible-bell t) ;turn off audible bells, which bring us visible bells
+(setq ring-bell-function 'ignore)       ;make bell function do nothing
 
 ;; do not indent with tabs
 (setq-default indent-tabs-mode nil)
@@ -1061,7 +1064,8 @@ Might be useful for modes not in `company-dabbrev-code-modes'."
          ;; only enable one of interactive-haskell-mode, intero-mode
          ;; (haskell-mode . interactive-haskell-mode)
          (haskell-mode . haskell-indentation-mode)
-         (haskell-mode . intero-mode)))
+         ;; (haskell-mode . intero-mode)
+         ))
 ;; make sure stack is installed
 (use-package intero
   :defer t)

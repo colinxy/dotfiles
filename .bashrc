@@ -119,7 +119,7 @@ export SSH_AUTH_SOCK="$_SOCK"
 
 # vim color hightlighter as less
 vless_setup() {
-    local vers=(82 81 80 74 73)
+    local vers=(91 82 81 80 74 73)
     for ver in "${vers[@]}"; do
         if [ -f "/usr/share/vim/vim${ver}/macros/less.vim" ]; then
             # shellcheck disable=SC2139
@@ -320,7 +320,7 @@ vshutdown() { VBoxManage controlvm "$1" acpipowerbutton; }
 # vargrant completion offered through contrib/bash/completion.sh
 # complete -W "$(vagrant --help | awk '/^[[:space:]]/ {print $1}')" vagrant
 
-export PYTHONSTARTUP="$HOME/.pythonrc"
+# export PYTHONSTARTUP="$HOME/.pythonrc"
 # pip3upgradeall() {
 #     python3 -m pip list --outdated | tail -n +3 | awk '{print $1}' | xargs python3 -m pip install -U # --user
 # }
